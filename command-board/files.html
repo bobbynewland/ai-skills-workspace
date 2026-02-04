@@ -188,24 +188,40 @@
         
         function initFirebase(config) {
             try {
-                firebase.initializeApp(config);
-                storage = firebase.storage();
-                
-                firebase.auth().signInAnonymously().then(() => {
-                    console.log('Firebase Storage connected');
-                    document.getElementById('syncStatus').className = 'sync-status online';
-                    document.getElementById('syncStatus').textContent = '● Online';
-                    document.getElementById('configCard').style.display = 'none';
-                    document.getElementById('uploadCard').style.display = 'block';
-                    document.getElementById('statsCard').style.display = 'block';
-                    document.getElementById('filesCard').style.display = 'block';
-                    document.getElementById('configBtn').style.display = 'inline-block';
-                    loadFiles();
-                });
+                // Check if Firebase is already initialized
+                if (firebase.apps.length > 0) {
+                    console.log('Firebase already initialized, updating config...');
+                    firebase.app().delete().then(() => {
+                        // Re-initialize with new config
+                        doInit(config);
+                    });
+                } else {
+                    doInit(config);
+                }
             } catch (e) {
                 console.error('Firebase init error:', e);
                 alert('Failed to connect. Check your config.');
             }
+        }
+        
+        function doInit(config) {
+            firebase.initializeApp(config);
+            storage = firebase.storage();
+            
+            firebase.auth().signInAnonymously().then(() => {
+                console.log('Firebase Storage connected');
+                document.getElementById('syncStatus').className = 'sync-status online';
+                document.getElementById('syncStatus').textContent = '● Online';
+                document.getElementById('configCard').style.display = 'none';
+                document.getElementById('uploadCard').style.display = 'block';
+                document.getElementById('statsCard').style.display = 'block';
+                document.getElementById('filesCard').style.display = 'block';
+                document.getElementById('configBtn').style.display = 'inline-block';
+                loadFiles();
+            }).catch(err => {
+                console.error('Auth error:', err);
+                alert('Connection failed. Check your API keys.');
+            });
         }
         
         function showConfig() {
