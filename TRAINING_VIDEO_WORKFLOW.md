@@ -46,6 +46,8 @@ End-to-end workflow for creating professional training videos at scale.
 - **Pictory** - Article-to-video
 
 ### Editing
+- **Google Vids** - AI-powered video creation (RECOMMENDED)
+- **Notebook LM** - AI research → video scripts
 - **CapCut** - Free mobile/desktop
 - **Canva** - Simple edits + graphics
 - **Descript** - Text-based editing
@@ -121,6 +123,64 @@ def create_training_script(topic, audience="beginner", duration="5min"):
 [1:00-1:45] Option B breakdown
 [1:45-2:30] Side-by-side comparison
 [2:30-3:00] Recommendation + CTA
+```
+
+## 🤖 Google Vids + Notebook LM Workflow
+
+### Step 1: Research with Notebook LM
+1. Go to https://notebooklm.google.com
+2. Create new notebook: "AI Skills Training - [Topic]"
+3. Upload sources:
+   - Platform documentation
+   - Template examples
+   - Competitor videos (transcripts)
+   - User feedback/FAQs
+4. Ask Notebook LM:
+   - "Summarize key points for a 5-min tutorial"
+   - "What are common user questions about [feature]?"
+   - "Create an outline for beginner audience"
+5. Export structured notes → script draft
+
+### Step 2: Generate Script
+```bash
+# Use Notebook LM output as input
+python3 create_training_script.py "[Topic from Notebook LM]" deep_dive beginner
+```
+
+### Step 3: Create in Google Vids
+1. Go to https://vids.google.com
+2. Create new project
+3. Import assets:
+   - Screen recordings (from OBS/Loom)
+   - Generated thumbnails
+   - Logo/branding assets
+4. Use AI features:
+   - **Smart Cut** - Remove silences/umms
+   - **Auto Caption** - 90% watch muted!
+   - **Background Removal** - Clean presenter shots
+   - **Scene Suggestions** - AI-recommended B-roll
+5. Add voiceover:
+   - Record directly in Vids, OR
+   - Upload ElevenLabs AI voice
+6. Apply branding:
+   - Lower thirds (AI Skills colors)
+   - Outro with CTA
+   - Background music from Vids library
+
+### Step 4: Export & Repurpose
+- Export 16:9 (YouTube)
+- Use Vids "Resize" for 9:16 (TikTok/Shorts)
+- Export audio-only for podcast
+
+### Notebook LM → Google Vids Pipeline
+```
+Notebook LM Research
+       ↓
+Structured Script
+       ↓
+Google Vids Edit
+       ↓
+Multi-Platform Export
 ```
 
 ## 🚀 Automation Scripts
