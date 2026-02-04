@@ -85,11 +85,13 @@
         <div class="card" id="configCard">
             <h2>🔥 Firebase Setup</h2>
             <div class="config-inputs">
-                <input type="text" id="apiKey" placeholder="API Key">
-                <input type="text" id="projectId" placeholder="Project ID">
-                <input type="text" id="storageBucket" placeholder="Storage Bucket (project.appspot.com)">
-                <button onclick="initFirebaseFromInputs()">Connect</button>
+                <input type="text" id="apiKey" placeholder="API Key (e.g., AIzaSy...)" value="AIzaSyAVmSmiuJDcCAiZhq3xqXSJZnWtviLvnuU">
+                <input type="text" id="projectId" placeholder="Project ID (e.g., my-project)" value="winslow-756c3">
+                <input type="text" id="storageBucket" placeholder="Storage Bucket (e.g., my-project.appspot.com)" value="winslow-756c3.appspot.com">
+                <input type="text" id="authDomain" placeholder="Auth Domain (e.g., my-project.firebaseapp.com)" value="winslow-756c3.firebaseapp.com">
+                <button onclick="initFirebaseFromInputs()">Connect Firebase</button>
             </div>
+            <p style="color: #888; margin-top: 10px; font-size: 0.85rem;">⚠️ Use your Storage Bucket URL (project.appspot.com), NOT the Database URL!</p>
         </div>
         
         <!-- Upload -->
@@ -139,6 +141,7 @@
                 document.getElementById('apiKey').value = config.apiKey || '';
                 document.getElementById('projectId').value = config.projectId || '';
                 document.getElementById('storageBucket').value = config.storageBucket || '';
+                document.getElementById('authDomain').value = config.authDomain || '';
                 initFirebase(config);
             }
             
@@ -150,13 +153,31 @@
         };
         
         function initFirebaseFromInputs() {
+            const apiKey = document.getElementById('apiKey').value.trim();
+            const projectId = document.getElementById('projectId').value.trim();
+            const storageBucket = document.getElementById('storageBucket').value.trim();
+            const authDomain = document.getElementById('authDomain').value.trim();
+            
+            // Validate inputs
+            if (!apiKey || !projectId || !storageBucket) {
+                alert('Please fill in all required fields (API Key, Project ID, Storage Bucket)');
+                return;
+            }
+            
+            // Ensure storageBucket uses correct format (project.appspot.com)
+            if (storageBucket.includes('firebaseio.com')) {
+                alert('❌ ERROR: You entered the Database URL!\n\nPlease use your Storage Bucket URL instead:\n• Format: your-project.appspot.com\n• NOT: https://your-project.firebaseio.com\n\nFind it in Firebase Console → Storage → Location');
+                return;
+            }
+            
             const config = {
-                apiKey: document.getElementById('apiKey').value,
-                projectId: document.getElementById('projectId').value,
-                storageBucket: document.getElementById('storageBucket').value,
-                authDomain: `${document.getElementById('projectId').value}.firebaseapp.com`,
+                apiKey: apiKey,
+                projectId: projectId,
+                storageBucket: storageBucket,
+                authDomain: authDomain || `${projectId}.firebaseapp.com`,
                 appId: "1:000000000:web:000000"
             };
+            
             localStorage.setItem('firebase_file_config', JSON.stringify(config));
             initFirebase(config);
         }
