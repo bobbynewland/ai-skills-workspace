@@ -101,6 +101,14 @@
         <!-- Upload -->
         <div class="card" id="uploadCard" style="display:none;">
             <h2>📤 Upload Files</h2>
+            <div id="corsWarning" style="background: rgba(255,193,7,0.1); border: 1px solid #ffc107; padding: 12px; border-radius: 8px; margin-bottom: 16px; display: none;">
+                <p style="color: #ffc107; margin: 0; font-size: 0.9rem;">
+                    ⚠️ <strong>CORS Issue Detected</strong><br>
+                    Firebase Storage is blocking uploads from this domain.<br>
+                    <strong>Solution:</strong> Use local server instead:<br>
+                    <a href="http://147.93.40.188:8080/command-board/files.html" style="color: #00d4ff;">http://147.93.40.188:8080/command-board/files.html</a>
+                </p>
+            </div>
             <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
                 <div class="icon">📎</div>
                 <p>Click or drag files here to upload</p>
@@ -270,7 +278,15 @@
                 },
                 (error) => {
                     console.error('Upload error:', error);
-                    alert(`Failed to upload ${file.name}`);
+                    // Check if it's a CORS error
+                    if (error.code === 'storage/unauthorized' || 
+                        error.message?.includes('CORS') || 
+                        error.message?.includes('preflight')) {
+                        document.getElementById('corsWarning').style.display = 'block';
+                        alert(`CORS Error: Firebase Storage is blocking uploads from this domain.\n\nUse the local server instead:\nhttp://147.93.40.188:8080/command-board/files.html`);
+                    } else {
+                        alert(`Failed to upload ${file.name}: ${error.message}`);
+                    }
                 },
                 () => {
                     upload.snapshot.ref.getDownloadURL().then(url => {
