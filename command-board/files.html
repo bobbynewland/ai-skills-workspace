@@ -78,18 +78,22 @@
     
     <div class="nav">
         <a href="index.html">← Command Board</a>
+        <a href="#" onclick="showConfig(); return false;" id="configBtn" style="display:none;">⚙️ Settings</a>
     </div>
     
     <div class="container">
         <!-- Config -->
         <div class="card" id="configCard">
-            <h2>🔥 Firebase Setup</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h2 style="margin: 0;">🔥 Firebase Setup</h2>
+                <button onclick="hideConfig()" id="backBtn" style="display:none; background: rgba(255,255,255,0.1); color: #fff; padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer;">← Back</button>
+            </div>
             <div class="config-inputs">
                 <input type="text" id="apiKey" placeholder="API Key (e.g., AIzaSy...)" value="AIzaSyAVmSmiuJDcCAiZhq3xqXSJZnWtviLvnuU">
                 <input type="text" id="projectId" placeholder="Project ID (e.g., my-project)" value="winslow-756c3">
                 <input type="text" id="storageBucket" placeholder="Storage Bucket (e.g., my-project.appspot.com)" value="winslow-756c3.appspot.com">
                 <input type="text" id="authDomain" placeholder="Auth Domain (e.g., my-project.firebaseapp.com)" value="winslow-756c3.firebaseapp.com">
-                <button onclick="initFirebaseFromInputs()">Connect Firebase</button>
+                <button onclick="initFirebaseFromInputs()">Connect / Update Firebase</button>
             </div>
             <p style="color: #888; margin-top: 10px; font-size: 0.85rem;">⚠️ Use your Storage Bucket URL (project.appspot.com), NOT the Database URL!</p>
         </div>
@@ -195,12 +199,36 @@
                     document.getElementById('uploadCard').style.display = 'block';
                     document.getElementById('statsCard').style.display = 'block';
                     document.getElementById('filesCard').style.display = 'block';
+                    document.getElementById('configBtn').style.display = 'inline-block';
                     loadFiles();
                 });
             } catch (e) {
                 console.error('Firebase init error:', e);
                 alert('Failed to connect. Check your config.');
             }
+        }
+        
+        function showConfig() {
+            document.getElementById('configCard').style.display = 'block';
+            document.getElementById('uploadCard').style.display = 'none';
+            document.getElementById('statsCard').style.display = 'none';
+            document.getElementById('filesCard').style.display = 'none';
+            document.getElementById('backBtn').style.display = 'inline-block';
+        }
+        
+        function hideConfig() {
+            document.getElementById('configCard').style.display = 'none';
+            document.getElementById('uploadCard').style.display = 'block';
+            document.getElementById('statsCard').style.display = 'block';
+            document.getElementById('filesCard').style.display = 'block';
+            document.getElementById('backBtn').style.display = 'none';
+        }
+        
+        function hideConfig() {
+            document.getElementById('configCard').style.display = 'none';
+            document.getElementById('uploadCard').style.display = 'block';
+            document.getElementById('statsCard').style.display = 'block';
+            document.getElementById('filesCard').style.display = 'block';
         }
         
         function handleFiles(fileList) {
