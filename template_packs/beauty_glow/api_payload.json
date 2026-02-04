@@ -1,0 +1,36 @@
+{
+  "pack": {
+    "name": "Celebrity Beauty Campaigns",
+    "slug": "celebrity-beauty-campaigns-v2",
+    "access_level": "free",
+    "is_published": true,
+    "thumbnail_url": "http://147.93.40.188:8080/template_packs/beauty_glow/pack_thumbnail.png"
+  },
+  "templates": [
+    {
+      "title": "Kylie Rose Gold",
+      "prompt_text": "Ultra luxury beauty campaign, Kylie Cosmetics aesthetic, full bleed edge-to-edge design, dripping rose gold liquid lip gloss texture filling entire background, soft pink marble surface, elegant woman with perfect glass skin, luxury skincare jar on velvet pedestal, millennial pink luxury, 9:16 vertical format",
+      "image_url": "http://147.93.40.188:8080/template_packs/beauty_glow/kylie_fullbleed.png"
+    },
+    {
+      "title": "Fenty Neon",
+      "prompt_text": "Fenty Beauty style campaign, moody dark background with neon pink accent lighting, rich melanin skin model with glowing skin, reflective glass prism textures, luxury skincare bottle catching neon light, bold white and neon pink typography, chrome metallic accents, editorial fashion photography, dramatic rim lighting, 9:16 vertical, bold and inclusive luxury beauty",
+      "image_url": "http://147.93.40.188:8080/template_packs/beauty_glow/seedream_fenty.png"
+    },
+    {
+      "title": "Cardi Glam",
+      "prompt_text": "Cardi B glam campaign, dramatic gold foil textured background, sparkling diamond textures, bold confident model with long nails holding luxury skincare jar, gold marble surface with diamond dust, dripping gold typography, Hollywood glamour lighting, gold sparkle everywhere, dramatic and extra, 9:16 vertical, unapologetic luxury",
+      "image_url": "http://147.93.40.188:8080/template_packs/beauty_glow/seedream_cardi.png"
+    },
+    {
+      "title": "Hollywood Glamour",
+      "prompt_text": "Charlotte Tilbury Hollywood glamour campaign, vintage gold velvet curtain background, old Hollywood vanity mirror with bulbs, elegant model with red lipstick and flawless skin, luxury cream jar on marble vanity, classic gold serif typography, warm golden hour lighting, red roses scattered, old Hollywood glamour, sophisticated and timeless, 9:16 vertical, cinematic",
+      "image_url": "http://147.93.40.188:8080/template_packs/beauty_glow/seedream_hollywood.png"
+    },
+    {
+      "title": "Glossier Clouds",
+      "prompt_text": "Glossier campaign aesthetic, soft cloudy cotton candy texture background, dewy fresh-faced model with natural makeup, clear glass skincare bottle with condensation droplets, pink gradient background with cloud textures, simple clean font, minimal layout, soft natural window lighting, fluffy clouds and cotton candy aesthetic, Gen Z beauty, 9:16 vertical, fresh and dewy",
+      "image_url": "http://147.93.40.188:8080/template_packs/beauty_glow/seedream_glossier.png"
+    }
+  ]
+}

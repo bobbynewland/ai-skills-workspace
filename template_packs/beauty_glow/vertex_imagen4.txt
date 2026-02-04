@@ -1,0 +1,6 @@
+VERTEX AI IMAGEN 4 PROMPT:
+==================================================
+
+Professional beauty salon advertisement poster, elegant woman with glowing skin, text 'LUXE BEAUTY BAR' at top, 'HYDRA GLOW FACIAL' headline, '9' price, 'Book at LuxeBeautyBar.com' at bottom, soft pink and cream colors, luxury spa aesthetic, vertical 9:16 format, high-end beauty ad
+
+ERROR: module 'google.cloud.aiplatform' has no attribute 'ImageGenerationModel'

@@ -1,0 +1,36 @@
+{
+  "pack": {
+    "name": "Restaurant Collection",
+    "slug": "restaurant-collection",
+    "access_level": "free",
+    "is_published": false,
+    "thumbnail_url": "http://147.93.40.188:8080/template_packs/restaurant_pack/pack_thumbnail.png"
+  },
+  "templates": [
+    {
+      "title": "Burger Barn",
+      "prompt_text": "Appetizing burger restaurant advertisement, juicy double cheeseburger as hero, sesame seed bun, melted cheese dripping, fresh lettuce and tomato, dark wooden table background, warm golden lighting, rustic casual dining aesthetic, full bleed edge-to-edge",
+      "image_url": "http://147.93.40.188:8080/template_packs/restaurant_pack/burger_barn.png"
+    },
+    {
+      "title": "Steakhouse 42",
+      "prompt_text": "Elegant fine dining restaurant advertisement, beautifully plated steak with herb butter, white porcelain plate, candlelit table with wine glass, dark sophisticated background, soft warm lighting, upscale luxury dining aesthetic, full bleed edge-to-edge",
+      "image_url": "http://147.93.40.188:8080/template_packs/restaurant_pack/steakhouse_42.png"
+    },
+    {
+      "title": "Mama's Pizzeria",
+      "prompt_text": "Delicious pizza restaurant advertisement, hot fresh pepperoni pizza with cheese pull, wood-fired oven in background, checkered tablecloth, warm family atmosphere, steam rising, cozy Italian restaurant aesthetic, full bleed edge-to-edge",
+      "image_url": "http://147.93.40.188:8080/template_packs/restaurant_pack/mamas_pizzeria.png"
+    },
+    {
+      "title": "Sunrise Coffee",
+      "prompt_text": "Cozy coffee shop advertisement, artisan latte with beautiful foam art, warm wooden counter, morning sunlight streaming, rustic brick wall background, fresh croissant beside cup, hipster cafe aesthetic, full bleed edge-to-edge",
+      "image_url": "http://147.93.40.188:8080/template_packs/restaurant_pack/sunrise_coffee.png"
+    },
+    {
+      "title": "Taco Libre",
+      "prompt_text": "Trendy food truck advertisement, colorful gourmet tacos with fresh toppings, vibrant graffiti wall background, urban street scene, bold neon accents, paper tray with lime wedges, urban food truck aesthetic, full bleed edge-to-edge",
+      "image_url": "http://147.93.40.188:8080/template_packs/restaurant_pack/taco_libre.png"
+    }
+  ]
+}

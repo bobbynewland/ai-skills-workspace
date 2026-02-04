@@ -1,0 +1,46 @@
+{
+  "pack": {
+    "name": "Cool 3D Product Ads",
+    "slug": "cool-3d-product-ads",
+    "access_level": "free",
+    "is_published": false,
+    "thumbnail_url": "http://147.93.40.188:8080/template_packs/cool_3d/tech_product_3d.png"
+  },
+  "templates": [
+    {
+      "title": "Luxury Tequila",
+      "prompt_text": "Ultra luxury tequila advertisement, premium crystal-clear tequila bottle with gold accents floating elegantly, agave plant silhouette in background, warm amber and gold lighting, Mexican heritage aesthetic, rich mahogany surface, sophisticated nightlife vibe, hyper-realistic 3D render, full bleed edge-to-edge",
+      "image_url": "http://147.93.40.188:8080/template_packs/cool_3d/luxury_tequila.png"
+    },
+    {
+      "title": "Volt Energy Drink",
+      "prompt_text": "Ultra-premium energy drink advertisement, sleek matte black can with electric blue lightning accents, condensation droplets, extreme sports energy, dynamic motion blur background, intense electric blue and black color scheme, high-octane adrenaline aesthetic, hyper-realistic 3D render, full bleed edge-to-edge",
+      "image_url": "http://147.93.40.188:8080/template_packs/cool_3d/volt_energy.png"
+    },
+    {
+      "title": "Ocean Gold Sea Moss",
+      "prompt_text": "Premium sea moss wellness elixir advertisement, elegant glass bottle with golden-green liquid, tropical ocean waves background, natural health vibes, sea moss and tropical botanicals, soft emerald and gold color scheme, holistic health aesthetic, fresh ocean breeze feeling, hyper-realistic 3D render, full bleed edge-to-edge",
+      "image_url": "http://147.93.40.188:8080/template_packs/cool_3d/ocean_gold_seamoss.png"
+    },
+    {
+      "title": "Wildflower Honey",
+      "prompt_text": "Luxury organic honey brand advertisement, artisan hexagonal glass jar with raw golden honey, honeycomb texture background with dripping honey, warm golden amber lighting, bees and wildflowers, farm-to-table artisan aesthetic, natural earthy vibes, hyper-realistic 3D render, full bleed edge-to-edge",
+      "image_url": "http://147.93.40.188:8080/template_packs/cool_3d/wildflower_honey.png"
+    },
+    {
+      "title": "Sea Moss Health Supplement",
+      "prompt_text": "Premium sea moss health supplement advertisement, elegant amber glass bottle with gold label, 92 minerals badge, thyroid and immune support icons, irish sea moss and bladderwrack botanicals, ocean wave background with golden light, holistic health aesthetic, natural organic vibe, hyper-realistic 3D render, full bleed edge-to-edge",
+      "image_url": "http://147.93.40.188:8080/template_packs/cool_3d/seamoss_health.png"
+    },
+    {
+      "title": "Tech Product 3D",
+      "prompt_text": "Stunning 3D product advertisement poster, premium wireless headphones floating in mid-air with dynamic shadows, sleek black and silver design, dramatic spotlight lighting from above, dark gradient background with subtle tech grid pattern, particles and light rays, hyper-realistic 3D render, professional e-commerce aesthetic, full bleed edge-to-edge",
+      "image_url": "http://147.93.40.188:8080/template_packs/cool_3d/tech_product_3d.png"
+    },
+    {
+      "title": "Skincare 3D",
+      "prompt_text": "Luxury 3D skincare product advertisement, elegant serum bottle with gold dropper floating in clouds of golden mist, soft pink and gold color scheme, magical sparkling particles, soft ethereal lighting, dreamy heavenly atmosphere, hyper-realistic 3D render, beauty e-commerce aesthetic, full bleed edge-to-edge",
+      "image_url": "http://147.93.40.188:8080/template_packs/cool_3d/skincare_3d.png"
+    }
+  ]
+}

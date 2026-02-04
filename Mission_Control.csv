@@ -1,0 +1,8 @@
+Task,Category,Priority,Status,Owner,Notes
+"Setup Google Drive Infrastructure","Ops","High","Done","Winslow","Shared folder established"
+"Draft Master Strategy Doc","Strategy","High","Done","Winslow","Uploaded v1"
+"Create First 5 Templates","Product","High","To Do","Winslow","Using Template Creator skill"
+"Design Ambassador Landing Page Copy","Marketing","Medium","To Do","Winslow",""
+"Recruit First 5 Ambassadors","Growth","High","Backlog","Winslow",""
+"Setup Sub-Agent Social Swarm","Tech","Medium","Backlog","Winslow",""
+"Finalize MVP Features","Dev","High","In Progress","User",""

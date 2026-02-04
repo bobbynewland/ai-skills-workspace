@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.1",
+  "type": "template_pack",
+  "pack": {
+    "pack_id": "organic-elegance-pack",
+    "pack_name": "Organic Elegance",
+    "pack_description": "Soft, natural designs perfect for salons, spas, wellness brands, and local product businesses. Clean, approachable, and premium without being flashy.",
+    "category": "Wellness & Local Business",
+    "tags": ["organic", "natural", "wellness", "spa", "salon", "local", "approachable", "soft"],
+    "drop_announcement": {
+      "headline": "New Drop: Organic Elegance Pack",
+      "body": "Soft, natural designs that make your local business look welcoming and professional. Perfect for salons, spas, and wellness brands."
+    }
+  },
+  "templates": [
+    {
+      "template_id": "product-showcase",
+      "template_name": "Product Showcase",
+      "template_description": "Elegant product-focused template with sage green and cream palette. Perfect for showcasing products or services.",
+      "style_mode": "photorealistic",
+      "edit_mode": "reference_first",
+      "featured_image": "product_showcase.png",
+      "aspect_ratios": ["1:1", "4:5"],
+      "required_elements": ["product_name", "description", "price", "cta"],
+      "editable_fields": [
+        { "key": "product_name", "label": "Product/Service Name", "default": "Rosemary Mint Shampoo" },
+        { "key": "description", "label": "Description", "default": "Sulfate-free formula for daily use" },
+        { "key": "price", "label": "Price", "default": "$24" },
+        { "key": "cta", "label": "Call to Action", "default": "Shop at MariasGarden.com" }
+      ]
+    },
+    {
+      "template_id": "service-promo",
+      "template_name": "Service Promotion",
+      "template_description": "Vertical story format for promoting services. Soft greens with botanical elements, perfect for Instagram Stories.",
+      "style_mode": "photorealistic",
+      "edit_mode": "reference_first",
+      "featured_image": "service_promo.png",
+      "aspect_ratios": ["9:16"],
+      "required_elements": ["service_name", "offer", "valid_until", "book_cta"],
+      "editable_fields": [
+        { "key": "service_name", "label": "Service Name", "default": "Deep Tissue Massage" },
+        { "key": "offer", "label": "Special Offer", "default": "$20 Off First Visit" },
+        { "key": "valid_until", "label": "Valid Until", "default": "Offer ends Feb 28" },
+        { "key": "book_cta", "label": "Booking CTA", "default": "Text (555) 234-5678" }
+      ]
+    },
+    {
+      "template_id": "community-post",
+      "template_name": "Community Announcement",
+      "template_description": "Warm and inviting template for community updates, new hours, or local events. Earth tones with friendly energy.",
+      "style_mode": "photorealistic",
+      "edit_mode": "reference_first",
+      "featured_image": "community_post.png",
+      "aspect_ratios": ["1:1", "4:5"],
+      "required_elements": ["headline", "message", "contact", "location"],
+      "editable_fields": [
+        { "key": "headline", "label": "Headline", "default": "Now Open Sundays!" },
+        { "key": "message", "label": "Message", "default": "Relaxation shouldn't wait. New Sunday hours 10am-4pm." },
+        { "key": "contact", "label": "Contact Info", "default": "MariasGardenSpa.com" },
+        { "key": "location", "label": "Location", "default": "452 Oakwood Ave, Suite B" }
+      ]
+    }
+  ]
+}

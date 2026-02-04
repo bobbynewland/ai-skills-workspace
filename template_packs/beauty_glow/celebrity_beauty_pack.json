@@ -1,0 +1,97 @@
+{
+  "schema_version": "1.1",
+  "type": "template_pack",
+  "pack": {
+    "pack_id": "celebrity-beauty-campaigns",
+    "pack_name": "Celebrity Beauty Campaigns",
+    "pack_description": "Million dollar ad creative for small business budgets. Kylie, Rihanna, Cardi B, Hollywood glamour, and Glossier aesthetics. Textures, scenes, and luxury that converts.",
+    "category": "Premium Beauty",
+    "tags": ["luxury", "celebrity", "beauty", "campaign", "high-end", "salon", "spa", "glamour"],
+    "drop_announcement": {
+      "headline": "New Drop: Celebrity Beauty Campaigns",
+      "body": "Million dollar ad creative for small business budgets. Kylie Jenner, Rihanna Fenty, Cardi B glamour - all ready to customize with your brand."
+    }
+  },
+  "templates": [
+    {
+      "template_id": "kylie-style",
+      "template_name": "Kylie Rose Gold",
+      "template_description": "Dripping rose gold gloss on pink marble. Millennial pink luxury with Kylie Cosmetics aesthetic.",
+      "style_mode": "photorealistic",
+      "edit_mode": "reference_first",
+      "featured_image": "kylie_style.png",
+      "aspect_ratios": ["9:16"],
+      "required_elements": ["brand_name", "product_name", "price", "texture_emphasis"],
+      "editable_fields": [
+        { "key": "brand_name", "label": "Brand", "default": "GLOW ESSENTIALS" },
+        { "key": "product_name", "label": "Product", "default": "Lip Kit Collection" },
+        { "key": "price", "label": "Price", "default": "$45" },
+        { "key": "texture", "label": "Texture Highlight", "default": "Dripping rose gold gloss" }
+      ]
+    },
+    {
+      "template_id": "rihanna-style",
+      "template_name": "Fenty Neon",
+      "template_description": "Moody dark with neon pink accents. Bold, inclusive, reflective glass prism aesthetic like Rihanna's Fenty Beauty.",
+      "style_mode": "photorealistic",
+      "edit_mode": "reference_first",
+      "featured_image": "rihanna_style.png",
+      "aspect_ratios": ["9:16"],
+      "required_elements": ["brand_name", "service_name", "price", "neon_accent"],
+      "editable_fields": [
+        { "key": "brand_name", "label": "Brand", "default": "LUXE BEAUTY BAR" },
+        { "key": "service_name", "label": "Service", "default": "GLOW FACIAL" },
+        { "key": "price", "label": "Price", "default": "$89" },
+        { "key": "accent_color", "label": "Neon Color", "default": "Hot Pink" }
+      ]
+    },
+    {
+      "template_id": "cardi-style",
+      "template_name": "Cardi Glam",
+      "template_description": "Gold foil, diamonds, dripping luxury. Unapologetic glamour with bold typography and sparkle.",
+      "style_mode": "photorealistic",
+      "edit_mode": "reference_first",
+      "featured_image": "cardi_style.png",
+      "aspect_ratios": ["9:16"],
+      "required_elements": ["brand_name", "treatment_name", "price", "luxury_elements"],
+      "editable_fields": [
+        { "key": "brand_name", "label": "Brand", "default": "GLOW ESSENTIALS" },
+        { "key": "treatment_name", "label": "Treatment", "default": "24K Gold Treatment" },
+        { "key": "price", "label": "Price", "default": "$129" },
+        { "key": "luxury_feature", "label": "Luxury Highlight", "default": "Diamond infused" }
+      ]
+    },
+    {
+      "template_id": "hollywood-style",
+      "template_name": "Hollywood Glamour",
+      "template_description": "Vintage gold velvet curtains, vanity mirror lights, red roses. Old Hollywood sophistication.",
+      "style_mode": "photorealistic",
+      "edit_mode": "reference_first",
+      "featured_image": "hollywood_style.png",
+      "aspect_ratios": ["9:16"],
+      "required_elements": ["brand_name", "product_name", "price", "hollywood_elements"],
+      "editable_fields": [
+        { "key": "brand_name", "label": "Brand", "default": "LUXE BEAUTY BAR" },
+        { "key": "product_name", "label": "Product", "default": "Magic Cream" },
+        { "key": "price", "label": "Price", "default": "$95" },
+        { "key": "glamour_note", "label": "Glamour Detail", "default": "Red carpet ready" }
+      ]
+    },
+    {
+      "template_id": "glossier-style",
+      "template_name": "Glossier Clouds",
+      "template_description": "Soft cotton candy textures, cloudy backgrounds, dewy fresh-faced model. Minimal, Gen Z, fresh aesthetic.",
+      "style_mode": "photorealistic",
+      "edit_mode": "reference_first",
+      "featured_image": "glossier_style.png",
+      "aspect_ratios": ["9:16"],
+      "required_elements": ["brand_name", "product_name", "price", "fresh_vibe"],
+      "editable_fields": [
+        { "key": "brand_name", "label": "Brand", "default": "GLOW ESSENTIALS" },
+        { "key": "product_name", "label": "Product", "default": "Balm Dotcom" },
+        { "key": "price", "label": "Price", "default": "$24" },
+        { "key": "vibe", "label": "Vibe", "default": "Cloud-like softness" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+VERTEX AI IMAGEN 4 PROMPT:
+==================================================
+
+Professional beauty salon advertisement poster, elegant woman with glowing skin on left, skin cream jar on right, text 'LUXE BEAUTY BAR' at top, large text 'HYDRA GLOW FACIAL' in center, price '9' displayed, text 'Book at LuxeBeautyBar.com' at bottom, soft pink and cream colors, luxury spa aesthetic, vertical 9:16 format
+
+ERROR: Publisher Model `projects/project-814a33f4-e708-4012-916/locations/us-central1/publishers/google/models/gemini-3-pro-image-preview` was not found or your project does not have access to it. Please ensure you are using a valid model version. For more information, see: https://cloud.google.com/vertex-ai/generative-ai/docs/learn/model-versions

@@ -1,0 +1,31 @@
+{
+  "pack": {
+    "name": "Service Professionals",
+    "slug": "service-professionals",
+    "access_level": "free",
+    "is_published": false,
+    "thumbnail_url": "http://147.93.40.188:8080/template_packs/service_professionals/pack_thumbnail.png"
+  },
+  "templates": [
+    {
+      "title": "CPA Accountant",
+      "prompt_text": "Professional CPA accountant advertisement, confident Black woman in business suit reviewing financial documents, modern office background with calculator and laptop, organized desk with files, trustworthy and professional atmosphere, clean corporate blue and white color scheme, full bleed edge-to-edge",
+      "image_url": "http://147.93.40.188:8080/template_packs/service_professionals/cpa_accountant.png"
+    },
+    {
+      "title": "Chiropractic Care",
+      "prompt_text": "Professional chiropractor advertisement, friendly Hispanic male doctor in white coat with stethoscope, spinal alignment chart in background, modern wellness clinic setting, caring and healing atmosphere, calming green and white medical aesthetic, full bleed edge-to-edge",
+      "image_url": "http://147.93.40.188:8080/template_packs/service_professionals/chiropractor.png"
+    },
+    {
+      "title": "Cosmetology Spa",
+      "prompt_text": "Luxury cosmetology advertisement, elegant Asian woman esthetician with glowing skin performing facial treatment, high-end spa setting with soft lighting, skincare products and botanicals, relaxing luxury atmosphere, soft pink and gold color scheme, full bleed edge-to-edge",
+      "image_url": "http://147.93.40.188:8080/template_packs/service_professionals/cosmetologist.png"
+    },
+    {
+      "title": "Legal Services",
+      "prompt_text": "Professional attorney advertisement, confident Middle Eastern woman lawyer in power suit at desk with legal books, modern law firm office with city skyline view, scales of justice statue, authoritative and trustworthy atmosphere, professional navy blue and gold color scheme, full bleed edge-to-edge",
+      "image_url": "http://147.93.40.188:8080/template_packs/service_professionals/attorney.png"
+    }
+  ]
+}

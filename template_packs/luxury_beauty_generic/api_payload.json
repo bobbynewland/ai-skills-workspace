@@ -1,0 +1,36 @@
+{
+  "pack": {
+    "name": "Luxury Beauty Collection",
+    "slug": "luxury-beauty-collection",
+    "access_level": "free",
+    "is_published": false,
+    "thumbnail_url": "http://147.93.40.188:8080/template_packs/luxury_beauty_generic/pack_thumbnail.png"
+  },
+  "templates": [
+    {
+      "title": "Rose Gold Luxury",
+      "prompt_text": "Ultra luxury beauty advertisement, rose gold liquid texture background, soft pink marble surface, elegant woman with glowing skin, luxury skincare jar, millennial pink luxury, full bleed 9:16 vertical format",
+      "image_url": "http://147.93.40.188:8080/template_packs/luxury_beauty_generic/rose_gold_luxury.png"
+    },
+    {
+      "title": "Neon Mood Board",
+      "prompt_text": "Edgy beauty advertisement, moody dark background with neon pink accent lighting, confident model with glowing skin, reflective glass textures, luxury skincare bottle, bold neon typography, chrome metallic accents, dramatic rim lighting, full bleed 9:16 vertical format",
+      "image_url": "http://147.93.40.188:8080/template_packs/luxury_beauty_generic/neon_mood.png"
+    },
+    {
+      "title": "Gold Glamour",
+      "prompt_text": "Glamorous beauty advertisement, dramatic gold foil textured background, sparkling textures, bold model with elegant nails holding luxury skincare jar, gold marble surface, dripping gold typography, Hollywood glamour lighting, full bleed 9:16 vertical format",
+      "image_url": "http://147.93.40.188:8080/template_packs/luxury_beauty_generic/gold_glamour.png"
+    },
+    {
+      "title": "Vintage Vanity",
+      "prompt_text": "Classic beauty advertisement, vintage gold velvet curtain background, elegant vanity mirror with bulbs, sophisticated model with red lipstick, luxury cream jar on marble vanity, classic gold serif typography, warm golden lighting, red roses, full bleed 9:16 vertical format",
+      "image_url": "http://147.93.40.188:8080/template_packs/luxury_beauty_generic/vintage_vanity.png"
+    },
+    {
+      "title": "Soft Cloud Aesthetic",
+      "prompt_text": "Fresh beauty advertisement, soft cloudy cotton candy texture background, dewy fresh-faced model with natural makeup, clear glass skincare bottle with condensation, pink gradient with cloud textures, simple clean font, minimal layout, soft natural lighting, full bleed 9:16 vertical format",
+      "image_url": "http://147.93.40.188:8080/template_packs/luxury_beauty_generic/soft_cloud.png"
+    }
+  ]
+}

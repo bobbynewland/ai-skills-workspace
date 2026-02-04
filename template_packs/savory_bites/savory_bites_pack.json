@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.1",
+  "type": "template_pack",
+  "pack": {
+    "pack_id": "savory-bites-pack",
+    "pack_name": "Savory Bites",
+    "pack_description": "Bold, appetizing templates for restaurants, food trucks, burger joints, and delivery services. Hunger-inducing designs that drive orders.",
+    "category": "Food & Restaurant",
+    "tags": ["food", "restaurant", "burger", "delivery", "appetizing", "bold", "fast-food"],
+    "drop_announcement": {
+      "headline": "New Drop: Savory Bites Pack",
+      "body": "Hunger-inducing templates for restaurants and food businesses. Bold colors, dynamic layouts, and appetite appeal built in."
+    }
+  },
+  "templates": [
+    {
+      "template_id": "burger-special",
+      "template_name": "Burger Special",
+      "template_description": "Bold burger restaurant flyer with red and yellow energy. Perfect for promoting signature items and specials.",
+      "style_mode": "photorealistic",
+      "edit_mode": "reference_first",
+      "featured_image": "burger_special.png",
+      "aspect_ratios": ["1:1", "4:5"],
+      "required_elements": ["item_name", "price", "description", "order_cta"],
+      "editable_fields": [
+        { "key": "item_name", "label": "Menu Item", "default": "The Big Mike Burger" },
+        { "key": "price", "label": "Price", "default": "$13.49" },
+        { "key": "description", "label": "Description", "default": "Double patty, applewood bacon, secret sauce" },
+        { "key": "order_cta", "label": "Order CTA", "default": "Order at BigMikesBurgers.com" }
+      ]
+    },
+    {
+      "template_id": "delivery-promo",
+      "template_name": "Delivery Promo",
+      "template_description": "Vertical story format for delivery promotions. Bold orange and black with speed and convenience messaging.",
+      "style_mode": "photorealistic",
+      "edit_mode": "reference_first",
+      "featured_image": "delivery_promo.png",
+      "aspect_ratios": ["9:16"],
+      "required_elements": ["offer", "delivery_time", "min_order", "app_cta"],
+      "editable_fields": [
+        { "key": "offer", "label": "Offer", "default": "FREE Delivery" },
+        { "key": "delivery_time", "label": "Delivery Time", "default": "25 Min Delivery Guarantee" },
+        { "key": "min_order", "label": "Min Order", "default": "$12 Minimum" },
+        { "key": "app_cta", "label": "App CTA", "default": "Order: (555) 876-5432" }
+      ]
+    },
+    {
+      "template_id": "combo-deal",
+      "template_name": "Combo Deal",
+      "template_description": "Family-friendly combo meal promotion. Warm colors, multiple product showcase, value-focused messaging.",
+      "style_mode": "photorealistic",
+      "edit_mode": "reference_first",
+      "featured_image": "combo_deal.png",
+      "aspect_ratios": ["1:1", "4:5"],
+      "required_elements": ["combo_name", "items_included", "combo_price", "savings"],
+      "editable_fields": [
+        { "key": "combo_name", "label": "Combo Name", "default": "The Crew Pack" },
+        { "key": "items_included", "label": "Items", "default": "4 Burgers + 2 Fries + 4 Drinks" },
+        { "key": "combo_price", "label": "Combo Price", "default": "$38.99" },
+        { "key": "savings", "label": "Savings", "default": "You Save $11" }
+      ]
+    }
+  ]
+}

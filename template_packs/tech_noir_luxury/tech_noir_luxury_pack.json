@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.1",
+  "type": "template_pack",
+  "pack": {
+    "pack_id": "tech-noir-luxury-pack",
+    "pack_name": "Tech Noir Luxury",
+    "pack_description": "Dark mode aesthetic with neon accents that makes small businesses look like $500M tech unicorns. Perfect for barbers, bakeries, boutiques, and service businesses ready to level up.",
+    "category": "Premium Business",
+    "tags": ["luxury", "dark-mode", "neon", "tech", "premium", "modern", "small-business"],
+    "drop_announcement": {
+      "headline": "New Drop: Tech Noir Luxury Pack",
+      "body": "Give your small business the visual swagger of a Silicon Valley unicorn. Dark mode, neon accents, glassmorphism—pure premium energy."
+    }
+  },
+  "templates": [
+    {
+      "template_id": "hero-dark-mode",
+      "template_name": "Hero Dark Mode",
+      "template_description": "Square format hero template with dark charcoal background, electric cyan neon lines, and glassmorphism card design.",
+      "style_mode": "photorealistic",
+      "edit_mode": "reference_first",
+      "featured_image": "hero_dark_mode.png",
+      "aspect_ratios": ["1:1", "4:5"],
+      "required_elements": ["headline", "subheadline", "cta_button", "brand_name"],
+      "editable_fields": [
+        { "key": "headline", "label": "Headline", "default": "Elite Auto Detailing" },
+        { "key": "subheadline", "label": "Subheadline", "default": "Ceramic coating • Paint correction • Full restoration" },
+        { "key": "cta_button", "label": "CTA Text", "default": "Book Appointment" },
+        { "key": "brand_name", "label": "Business Name", "default": "Velvet Finish Auto Spa" },
+        { "key": "accent_color", "label": "Neon Color", "default": "#00D4FF" }
+      ]
+    },
+    {
+      "template_id": "story-vertical",
+      "template_name": "Story Vertical",
+      "template_description": "Vertical story format with dark navy gradient, magenta neon glow, and glass texture panels. Perfect for Instagram Stories.",
+      "style_mode": "photorealistic",
+      "edit_mode": "reference_first",
+      "featured_image": "story_vertical.png",
+      "aspect_ratios": ["9:16"],
+      "required_elements": ["headline", "offer_text", "cta_swipe", "contact_info"],
+      "editable_fields": [
+        { "key": "headline", "label": "Headline", "default": "24HR FLASH SALE" },
+        { "key": "offer_text", "label": "Offer Details", "default": "50% OFF All Full Detail Packages" },
+        { "key": "cta_swipe", "label": "Swipe Text", "default": "Swipe up to claim" },
+        { "key": "contact_info", "label": "Contact", "default": "@VelvetFinishAuto" }
+      ]
+    },
+    {
+      "template_id": "detail-product",
+      "template_name": "Detail Product",
+      "template_description": "Close-up product showcase with dual tone lighting, glass reflection, and geometric neon frame. Premium product photography aesthetic.",
+      "style_mode": "photorealistic",
+      "edit_mode": "reference_first",
+      "featured_image": "detail_product.png",
+      "aspect_ratios": ["1:1", "4:5"],
+      "required_elements": ["product_name", "price", "description", "badge"],
+      "editable_fields": [
+        { "key": "product_name", "label": "Product Name", "default": "Ceramic Pro Coating" },
+        { "key": "price", "label": "Price", "default": "$599" },
+        { "key": "description", "label": "Description", "default": "5-year protection • showroom shine guaranteed" },
+        { "key": "badge", "label": "Badge Text", "default": "Most Popular" }
+      ]
+    }
+  ]
+}

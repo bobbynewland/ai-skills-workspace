@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍽️ Restaurant Collection - Preview</title>
+    <style>
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: #fff; padding: 40px; margin: 0; }
+        h1 { font-size: 3rem; background: linear-gradient(90deg, #ff6b35, #f7931e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #888; font-size: 1.2rem; margin-bottom: 50px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 30px; max-width: 1400px; margin: 0 auto; }
+        .card { background: rgba(255,255,255,0.05); border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); transition: transform 0.3s; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        .card img { width: 100%; height: auto; display: block; }
+        .card-info { padding: 25px; }
+        .card-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; }
+        .burger { color: #ff6b35; }
+        .steak { color: #8b4513; }
+        .pizza { color: #f7931e; }
+        .coffee { color: #d4a574; }
+        .taco { color: #ff006e; }
+        .card-desc { color: #aaa; font-size: 1rem; }
+        .price-tag { display: inline-block; background: linear-gradient(90deg, #ff6b35, #f7931e); padding: 5px 15px; border-radius: 20px; font-weight: 600; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>🍽️ Restaurant Collection</h1>
+    <p class="subtitle">Ready-to-post templates for food businesses</p>
+    
+    <div class="grid">
+        <div class="card">
+            <img src="burger_barn.png" alt="Burger Barn">
+            <div class="card-info">
+                <div class="card-title burger">Burger Barn</div>
+                <div class="card-desc">Juicy double stack, rustic casual dining</div>
+                <div class="price-tag">$12.99</div>
+            </div>
+        </div>
+        <div class="card">
+            <img src="steakhouse_42.png" alt="Steakhouse 42">
+            <div class="card-info">
+                <div class="card-title steak">Steakhouse 42</div>
+                <div class="card-desc">Prime rib dinner, upscale elegance</div>
+                <div class="price-tag">$48</div>
+            </div>
+        </div>
+        <div class="card">
+            <img src="mamas_pizzeria.png" alt="Mama's Pizzeria">
+            <div class="card-info">
+                <div class="card-title pizza">Mama's Pizzeria</div>
+                <div class="card-desc">Family feast deal, wood-fired oven</div>
+                <div class="price-tag">$24.99</div>
+            </div>
+        </div>
+        <div class="card">
+            <img src="sunrise_coffee.png" alt="Sunrise Coffee">
+            <div class="card-info">
+                <div class="card-title coffee">Sunrise Coffee</div>
+                <div class="card-desc">Morning brew special, hipster cafe</div>
+                <div class="price-tag">$5.50</div>
+            </div>
+        </div>
+        <div class="card">
+            <img src="taco_libre.png" alt="Taco Libre">
+            <div class="card-info">
+                <div class="card-title taco">Taco Libre</div>
+                <div class="card-desc">Street taco trio, urban food truck</div>
+                <div class="price-tag">$9.99</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

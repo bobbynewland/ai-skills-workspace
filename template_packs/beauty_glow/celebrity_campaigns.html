@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💎 Celebrity Beauty Campaigns</title>
+    <style>
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: #fff; padding: 40px; margin: 0; }
+        h1 { font-size: 3rem; background: linear-gradient(90deg, #ffd700, #ff69b4, #00d4ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #888; font-size: 1.2rem; margin-bottom: 50px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 30px; max-width: 1400px; margin: 0 auto; }
+        .card { background: rgba(255,255,255,0.05); border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); transition: transform 0.3s; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        .card img { width: 100%; height: auto; display: block; }
+        .card-info { padding: 25px; }
+        .card-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; }
+        .kylie { color: #ff69b4; }
+        .rihanna { color: #ff006e; }
+        .cardi { color: #ffd700; }
+        .hollywood { color: #ff9f43; }
+        .glossier { color: #ffccd5; }
+        .card-desc { color: #aaa; font-size: 1rem; }
+        .price-tag { display: inline-block; background: linear-gradient(90deg, #ff006e, #8338ec); padding: 5px 15px; border-radius: 20px; font-weight: 600; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>💎 Celebrity Beauty Campaigns</h1>
+    <p class="subtitle">Million dollar ad creative for small business budgets</p>
+    
+    <div class="grid">
+        <div class="card">
+            <img src="kylie_style.png" alt="Kylie Style">
+            <div class="card-info">
+                <div class="card-title kylie">Kylie Style</div>
+                <div class="card-desc">Rose gold dripping gloss on pink marble</div>
+                <div class="price-tag">$45 Lip Kit</div>
+            </div>
+        </div>
+        <div class="card">
+            <img src="rihanna_style.png" alt="Fenty Style">
+            <div class="card-info">
+                <div class="card-title rihanna">Fenty Style</div>
+                <div class="card-desc">Neon pink moody with glass prisms</div>
+                <div class="price-tag">$89 Glow Facial</div>
+            </div>
+        </div>
+        <div class="card">
+            <img src="cardi_style.png" alt="Cardi Style">
+            <div class="card-info">
+                <div class="card-title cardi">Cardi Glam</div>
+                <div class="card-desc">Diamonds, gold foil, dripping luxury</div>
+                <div class="price-tag">$129 Gold Treatment</div>
+            </div>
+        </div>
+        <div class="card">
+            <img src="hollywood_style.png" alt="Hollywood Glamour">
+            <div class="card-info">
+                <div class="card-title hollywood">Hollywood Glamour</div>
+                <div class="card-desc">Vintage velvet curtains, vanity lights</div>
+                <div class="price-tag">$95 Magic Cream</div>
+            </div>
+        </div>
+        <div class="card">
+            <img src="glossier_style.png" alt="Glossier Aesthetic">
+            <div class="card-info">
+                <div class="card-title glossier">Glossier Vibes</div>
+                <div class="card-desc">Clouds, cotton candy, dewy skin</div>
+                <div class="price-tag">$24 Balm</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

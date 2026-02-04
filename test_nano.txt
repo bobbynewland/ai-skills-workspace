@@ -1,0 +1,4 @@
+PROMPT:
+Kids clothing boutique Instagram post template, playful pastel colors, featuring children's apparel, clean modern layout, marketing template style
+
+ERROR: 404 NOT_FOUND. {'error': {'code': 404, 'message': 'Publisher Model `projects/project-814a33f4-e708-4012-916/locations/us-central1/publishers/google/models/gemini-2.5-pro-preview-03-25` was not found or your project does not have access to it. Please ensure you are using a valid model version. For more information, see: https://cloud.google.com/vertex-ai/generative-ai/docs/learn/model-versions', 'status': 'NOT_FOUND'}}

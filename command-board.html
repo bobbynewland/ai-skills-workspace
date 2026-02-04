@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Skills Studio - Command Board</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: #fff; min-height: 100vh; padding: 20px; }
+        
+        /* Utility */
+        .hidden { display: none !important; }
+        
+        /* Header */
+        .header { text-align: center; margin-bottom: 30px; padding: 20px; }
+        .header h1 { font-size: 2.5rem; background: linear-gradient(90deg, #00d4ff, #7b2cbf); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
+        .header p { color: #888; font-size: 1.1rem; }
+        
+        /* Stats */
+        .stats { display: flex; justify-content: center; gap: 30px; margin-bottom: 30px; flex-wrap: wrap; }
+        .stat-box { background: rgba(255,255,255,0.05); padding: 15px 30px; border-radius: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
+        .stat-number { font-size: 2rem; font-weight: bold; color: #00d4ff; }
+        .stat-label { color: #888; font-size: 0.9rem; }
+        
+        /* Revenue Tracker */
+        .money-tracker { background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(123,44,191,0.1)); padding: 20px; border-radius: 16px; margin-bottom: 30px; border: 1px solid rgba(0,212,255,0.2); }
+        .money-tracker h3 { color: #00d4ff; margin-bottom: 15px; }
+        .money-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .money-item { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; }
+        .money-label { color: #888; font-size: 0.9rem; }
+        .money-value { font-size: 1.8rem; font-weight: bold; color: #00ff88; }
+        
+        /* Board Layout */
+        .board { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; max-width: 1400px; margin: 0 auto; }
+        .column { background: rgba(255,255,255,0.03); border-radius: 16px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; }
+        .column-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid; }
+        .column-title { font-size: 1.2rem; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .column-count { background: rgba(255,255,255,0.1); padding: 4px 12px; border-radius: 20px; font-size: 0.9rem; }
+        
+        /* Column Colors */
+        .todo .column-header { border-color: #ff6b6b; }
+        .progress .column-header { border-color: #ffd93d; }
+        .review .column-header { border-color: #6bcf7f; }
+        .done .column-header { border-color: #00d4ff; }
+        
+        /* Tasks */
+        .tasks { min-height: 100px; flex-grow: 1; }
+        .task-card { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 16px; margin-bottom: 12px; cursor: pointer; transition: all 0.2s ease; border: 1px solid rgba(255,255,255,0.08); border-left: 3px solid transparent; }
+        .task-card:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.2); }
+        .task-title { font-weight: 600; margin-bottom: 8px; line-height: 1.4; pointer-events: none; }
+        .task-meta { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; pointer-events: none; }
+        .task-desc-preview { font-size: 0.8rem; color: #aaa; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 8px; pointer-events: none; }
+        
+        /* Tags & Priorities */
+        .tag { font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; font-weight: 500; }
+        .tag-marketing { background: rgba(255,107,107,0.2); color: #ff6b6b; }
+        .tag-dev { background: rgba(0,212,255,0.2); color: #00d4ff; }
+        .tag-content { background: rgba(255,217,61,0.2); color: #ffd93d; }
+        .tag-ambassador { background: rgba(107,207,127,0.2); color: #6bcf7f; }
+        .tag-urgent { background: rgba(255,0,0,0.2); color: #ff4444; }
+        .tag-ops { background: rgba(156, 39, 176, 0.2); color: #e040fb; }
+        
+        .priority { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+        .priority-high { background: #ff4444; }
+        .priority-medium { background: #ffd93d; }
+        .priority-low { background: #6bcf7f; }
+        
+        .add-task-btn { width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 2px dashed rgba(255,255,255,0.2); border-radius: 8px; color: #888; cursor: pointer; transition: all 0.3s; margin-top: 10px; }
+        .add-task-btn:hover { background: rgba(255,255,255,0.1); color: #fff; border-color: rgba(255,255,255,0.4); }
+        
+        /* Modals */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: #1a1a2e; padding: 30px; border-radius: 16px; width: 90%; max-width: 600px; border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; gap: 1rem; max-height: 90vh; overflow-y: auto; }
+        .modal h2 { color: #00d4ff; margin-bottom: 0; }
+        
+        .form-group label { display: block; margin-bottom: 5px; color: #888; font-size: 0.9rem; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-family: inherit; font-size: 1rem; }
+        .form-group textarea { min-height: 150px; resize: vertical; line-height: 1.5; }
+        
+        .btn-group { display: flex; gap: 10px; margin-top: 10px; }
+        .btn { flex: 1; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
+        .btn-primary { background: linear-gradient(90deg, #00d4ff, #7b2cbf); color: #fff; }
+        .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; }
+        .btn-danger { background: rgba(255, 68, 68, 0.2); color: #ff4444; }
+        .btn:hover { transform: translateY(-2px); filter: brightness(1.2); }
+        
+        /* Detail View Specifics */
+        .detail-meta { display: flex; gap: 1rem; margin-bottom: 1rem; }
+        .detail-meta > div { flex: 1; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 AI Skills Studio</h1>
+        <p>Mission Control v2.0</p>
+    </div>
+    
+    <div class="money-tracker">
+        <h3>💰 Revenue Tracker</h3>
+        <div class="money-grid">
+            <div class="money-item">
+                <div class="money-label">Ambassadors</div>
+                <div class="money-value" id="stat-ambassadors">0</div>
+            </div>
+            <div class="money-item">
+                <div class="money-label">Monthly Revenue</div>
+                <div class="money-value" id="stat-revenue">$0</div>
+            </div>
+            <div class="money-item">
+                <div class="money-label">Active Users</div>
+                <div class="money-value" id="stat-users">0</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="stats">
+        <div class="stat-box"><div class="stat-number" id="total-tasks">0</div><div class="stat-label">Total</div></div>
+        <div class="stat-box"><div class="stat-number" id="count-todo-stat">0</div><div class="stat-label">To Do</div></div>
+        <div class="stat-box"><div class="stat-number" id="count-progress-stat">0</div><div class="stat-label">In Progress</div></div>
+        <div class="stat-box"><div class="stat-number" id="count-done-stat">0</div><div class="stat-label">Done</div></div>
+    </div>
+    
+    <div class="board">
+        <!-- Columns generated by JS -->
+        <div class="column todo" id="col-todo">
+            <div class="column-header"><div class="column-title">📋 To Do</div><span class="column-count">0</span></div>
+            <div class="tasks" ondrop="drop(event)" ondragover="allowDrop(event)" data-status="todo"></div>
+            <button class="add-task-btn" onclick="openAddModal('todo')">+ Add Task</button>
+        </div>
+        <div class="column progress" id="col-progress">
+            <div class="column-header"><div class="column-title">🔥 In Progress</div><span class="column-count">0</span></div>
+            <div class="tasks" ondrop="drop(event)" ondragover="allowDrop(event)" data-status="progress"></div>
+            <button class="add-task-btn" onclick="openAddModal('progress')">+ Add Task</button>
+        </div>
+        <div class="column review" id="col-review">
+            <div class="column-header"><div class="column-title">👀 Review</div><span class="column-count">0</span></div>
+            <div class="tasks" ondrop="drop(event)" ondragover="allowDrop(event)" data-status="review"></div>
+            <button class="add-task-btn" onclick="openAddModal('review')">+ Add Task</button>
+        </div>
+        <div class="column done" id="col-done">
+            <div class="column-header"><div class="column-title">✅ Done</div><span class="column-count">0</span></div>
+            <div class="tasks" ondrop="drop(event)" ondragover="allowDrop(event)" data-status="done"></div>
+            <button class="add-task-btn" onclick="openAddModal('done')">+ Add Task</button>
+        </div>
+    </div>
+
+    <!-- Add Task Modal -->
+    <div class="modal" id="addModal">
+        <div class="modal-content">
+            <h2>New Task</h2>
+            <div class="form-group"><label>Title</label><input type="text" id="addTitle" placeholder="Task name..."></div>
+            <div class="detail-meta">
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="addCategory">
+                        <option value="dev">Dev</option>
+                        <option value="marketing">Marketing</option>
+                        <option value="content">Content</option>
+                        <option value="ambassador">Ambassador</option>
+                        <option value="ops">Ops</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Priority</label>
+                    <select id="addPriority">
+                        <option value="high">High 🔴</option>
+                        <option value="medium">Medium 🟡</option>
+                        <option value="low">Low 🟢</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group"><label>Notes</label><textarea id="addDesc" placeholder="Details..."></textarea></div>
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="closeModal('addModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="submitNewTask()">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit/Detail Modal -->
+    <div class="modal" id="detailModal">
+        <div class="modal-content">
+            <input type="hidden" id="editId">
+            <div class="form-group"><label>Title</label><input type="text" id="editTitle"></div>
+            <div class="detail-meta">
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="editStatus">
+                        <option value="todo">To Do</option>
+                        <option value="progress">In Progress</option>
+                        <option value="review">Review</option>
+                        <option value="done">Done</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Priority</label>
+                    <select id="editPriority">
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group"><label>Detailed Notes (Auto-saved locally)</label><textarea id="editDesc"></textarea></div>
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="closeModal('detailModal')">Close</button>
+                <button class="btn btn-primary" onclick="saveEdit()">Save Changes</button>
+                <button class="btn btn-danger" onclick="deleteTask()">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Model
+        let state = {
+            tasks: [], // Array of objects: { id, title, desc, category, priority, status, created }
+            config: {
+                ambassadors: 0,
+                revenue: 0,
+                users: 0
+            }
+        };
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            loadState();
+            renderBoard();
+        });
+
+        // --- Core Functions ---
+
+        function loadState() {
+            const raw = localStorage.getItem('winslow_board_v2');
+            if (raw) {
+                state = JSON.parse(raw);
+            } else {
+                // Seed default data if empty
+                state.tasks = [
+                    { id: Date.now(), title: "Setup Mission Control", desc: "Board is live.", category: "ops", priority: "high", status: "done" },
+                    { id: Date.now()+1, title: "Create Kids Clothing Templates", desc: "Need 5-10 high quality templates for the launch.", category: "content", priority: "high", status: "todo" }
+                ];
+                saveState();
+            }
+            
+            // Restore stat values
+            document.getElementById('stat-ambassadors').textContent = state.config.ambassadors;
+            document.getElementById('stat-revenue').textContent = '$' + state.config.revenue;
+            document.getElementById('stat-users').textContent = state.config.users;
+        }
+
+        function saveState() {
+            localStorage.setItem('winslow_board_v2', JSON.stringify(state));
+            renderStats();
+        }
+
+        function renderBoard() {
+            // Clear cols
+            document.querySelectorAll('.tasks').forEach(el => el.innerHTML = '');
+            
+            // Populate
+            state.tasks.forEach(task => {
+                const card = createCardElement(task);
+                const col = document.querySelector(`.tasks[data-status="${task.status}"]`);
+                if (col) col.appendChild(card);
+            });
+
+            renderStats();
+        }
+
+        function createCardElement(task) {
+            const div = document.createElement('div');
+            div.className = 'task-card';
+            div.draggable = true;
+            div.dataset.id = task.id;
+            div.onclick = () => openDetail(task.id);
+            div.ondragstart = (e) => {
+                e.dataTransfer.setData('text/plain', task.id);
+                div.style.opacity = '0.5';
+            };
+            div.ondragend = () => div.style.opacity = '1';
+
+            const priorityClass = 'priority-' + task.priority;
+            const tagClass = 'tag-' + task.category;
+            
+            // Preview desc (first 50 chars)
+            const descPreview = task.desc ? `<div class="task-desc-preview">${task.desc.substring(0, 60)}${task.desc.length > 60 ? '...' : ''}</div>` : '';
+
+            div.innerHTML = `
+                <div class="task-title"><span class="priority ${priorityClass}"></span>${task.title}</div>
+                ${descPreview}
+                <div class="task-meta">
+                    <span class="tag ${tagClass}">${task.category.toUpperCase()}</span>
+                </div>
+            `;
+            return div;
+        }
+
+        function renderStats() {
+            // Column Counts
+            ['todo', 'progress', 'review', 'done'].forEach(s => {
+                const count = state.tasks.filter(t => t.status === s).length;
+                const col = document.querySelector(`#col-${s} .column-count`);
+                if(col) col.innerText = count;
+                
+                // Header Stats
+                const statBox = document.getElementById(`count-${s}-stat`);
+                if(statBox) statBox.innerText = count;
+            });
+            document.getElementById('total-tasks').innerText = state.tasks.length;
+        }
+
+        // --- Interaction ---
+
+        let addTargetColumn = 'todo';
+
+        function openAddModal(status) {
+            addTargetColumn = status;
+            document.getElementById('addModal').style.display = 'flex';
+            document.getElementById('addTitle').focus();
+        }
+
+        function submitNewTask() {
+            const title = document.getElementById('addTitle').value;
+            if (!title) return;
+
+            const newTask = {
+                id: Date.now().toString(),
+                title: title,
+                desc: document.getElementById('addDesc').value,
+                category: document.getElementById('addCategory').value,
+                priority: document.getElementById('addPriority').value,
+                status: addTargetColumn,
+                created: Date.now()
+            };
+
+            state.tasks.push(newTask);
+            saveState();
+            renderBoard();
+            closeModal('addModal');
+            
+            // Reset form
+            document.getElementById('addTitle').value = '';
+            document.getElementById('addDesc').value = '';
+        }
+
+        function openDetail(id) {
+            const task = state.tasks.find(t => t.id == id); // loose match for string/number id
+            if (!task) return;
+
+            document.getElementById('editId').value = task.id;
+            document.getElementById('editTitle').value = task.title;
+            document.getElementById('editDesc').value = task.desc || '';
+            document.getElementById('editStatus').value = task.status;
+            document.getElementById('editPriority').value = task.priority;
+
+            document.getElementById('detailModal').style.display = 'flex';
+        }
+
+        function saveEdit() {
+            const id = document.getElementById('editId').value;
+            const task = state.tasks.find(t => t.id == id);
+            if (task) {
+                task.title = document.getElementById('editTitle').value;
+                task.desc = document.getElementById('editDesc').value;
+                task.status = document.getElementById('editStatus').value;
+                task.priority = document.getElementById('editPriority').value;
+                saveState();
+                renderBoard();
+                closeModal('detailModal');
+            }
+        }
+
+        function deleteTask() {
+            const id = document.getElementById('editId').value;
+            if (confirm('Delete this task?')) {
+                state.tasks = state.tasks.filter(t => t.id != id);
+                saveState();
+                renderBoard();
+                closeModal('detailModal');
+            }
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // --- Drag & Drop ---
+
+        function allowDrop(ev) { ev.preventDefault(); }
+
+        function drop(ev) {
+            ev.preventDefault();
+            const id = ev.dataTransfer.getData("text");
+            const targetCol = ev.target.closest('.tasks');
+            
+            if (targetCol) {
+                const newStatus = targetCol.dataset.status;
+                const task = state.tasks.find(t => t.id == id);
+                if (task && task.status !== newStatus) {
+                    task.status = newStatus;
+                    saveState();
+                    renderBoard();
+                }
+            }
+        }
+
+        // Close details on outside click
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>

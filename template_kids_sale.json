@@ -1,0 +1,79 @@
+{
+  "templateId": "kids-sale-002",
+  "name": "Super Sale Story",
+  "type": "instagram-story",
+  "category": "kids-clothing",
+  "dimensions": {
+    "width": 1080,
+    "height": 1920
+  },
+  "layers": [
+    {
+      "id": "background",
+      "type": "color",
+      "color": "#FFF4E6",
+      "position": { "x": 0, "y": 0 },
+      "size": { "width": 1080, "height": 1920 }
+    },
+    {
+      "id": "big-text",
+      "type": "text",
+      "text": "HUGE SALE",
+      "position": { "x": 540, "y": 200 },
+      "font": "Oswald-Bold",
+      "size": 150,
+      "color": "#FF6B6B",
+      "align": "center",
+      "rotation": -5,
+      "editable": true
+    },
+    {
+      "id": "discount-circle",
+      "type": "shape",
+      "shape": "circle",
+      "color": "#FF6B6B",
+      "position": { "x": 800, "y": 400 },
+      "size": { "width": 300, "height": 300 }
+    },
+    {
+      "id": "discount-text",
+      "type": "text",
+      "text": "50%\nOFF",
+      "position": { "x": 950, "y": 550 },
+      "font": "Inter-Bold",
+      "size": 80,
+      "color": "#FFFFFF",
+      "align": "center",
+      "editable": true
+    },
+    {
+      "id": "photo-grid-1",
+      "type": "image-placeholder",
+      "position": { "x": 50, "y": 600 },
+      "size": { "width": 480, "height": 600 },
+      "placeholder": "Product 1"
+    },
+    {
+      "id": "photo-grid-2",
+      "type": "image-placeholder",
+      "position": { "x": 550, "y": 600 },
+      "size": { "width": 480, "height": 600 },
+      "placeholder": "Product 2"
+    },
+    {
+      "id": "swipe-text",
+      "type": "text",
+      "text": "SWIPE UP TO SHOP",
+      "position": { "x": 540, "y": 1700 },
+      "font": "Inter-Medium",
+      "size": 40,
+      "color": "#000000",
+      "align": "center",
+      "editable": false
+    }
+  ],
+  "metadata": {
+    "style": "bold",
+    "tags": ["sale", "story", "urgent"]
+  }
+}

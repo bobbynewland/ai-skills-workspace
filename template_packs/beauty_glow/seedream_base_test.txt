@@ -1,0 +1,6 @@
+FAL.AI NANO BANANA PRO PROMPT:
+==================================================
+
+Professional beauty salon advertisement, elegant woman with glowing skin, text 'LUXE BEAUTY BAR' at top, 'HYDRA GLOW FACIAL' headline, '9' price, soft pink and cream colors, luxury spa aesthetic, vertical 1080x1920 format
+
+ERROR: Path /seedream/v4.5 not found

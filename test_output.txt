@@ -1,0 +1,5 @@
+PROMPT:
+Professional kids clothing boutique Instagram post, playful pastel design, clean modern layout
+
+DIMENSIONS: 1080x1080
+API: Google AI Studio (Gemini)

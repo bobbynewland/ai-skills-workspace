@@ -1,0 +1,83 @@
+{
+  "templateId": "kids-bestseller-003",
+  "name": "Best Seller Spotlight",
+  "type": "facebook-ad",
+  "category": "kids-clothing",
+  "dimensions": {
+    "width": 1200,
+    "height": 628
+  },
+  "layers": [
+    {
+      "id": "bg-split",
+      "type": "shape",
+      "shape": "rectangle",
+      "color": "#F8FAFC",
+      "position": { "x": 0, "y": 0 },
+      "size": { "width": 600, "height": 628 }
+    },
+    {
+      "id": "product-hero",
+      "type": "image-placeholder",
+      "position": { "x": 600, "y": 0 },
+      "size": { "width": 600, "height": 628 },
+      "placeholder": "Hero Product Image"
+    },
+    {
+      "id": "badge",
+      "type": "text",
+      "text": "⭐ BEST SELLER",
+      "position": { "x": 50, "y": 50 },
+      "font": "Inter-Bold",
+      "size": 24,
+      "color": "#F59E0B",
+      "align": "left"
+    },
+    {
+      "id": "headline",
+      "type": "text",
+      "text": "The Hoodie Everyone\nIs Talking About",
+      "position": { "x": 50, "y": 150 },
+      "font": "Inter-ExtraBold",
+      "size": 60,
+      "color": "#0F172A",
+      "align": "left",
+      "editable": true
+    },
+    {
+      "id": "desc",
+      "type": "text",
+      "text": "Soft, durable, and ready for adventure. Grab yours before they sell out again.",
+      "position": { "x": 50, "y": 350 },
+      "font": "Inter-Regular",
+      "size": 30,
+      "color": "#475569",
+      "align": "left",
+      "width": 500,
+      "editable": true
+    },
+    {
+      "id": "cta",
+      "type": "shape",
+      "shape": "rectangle",
+      "color": "#0F172A",
+      "position": { "x": 50, "y": 500 },
+      "size": { "width": 200, "height": 60 },
+      "radius": 8
+    },
+    {
+      "id": "cta-text",
+      "type": "text",
+      "text": "Shop Now",
+      "position": { "x": 150, "y": 540 },
+      "font": "Inter-Bold",
+      "size": 24,
+      "color": "#FFFFFF",
+      "align": "center"
+    }
+  ],
+  "metadata": {
+    "style": "clean",
+    "tags": ["bestseller", "ad", "facebook"]
+  }
+}

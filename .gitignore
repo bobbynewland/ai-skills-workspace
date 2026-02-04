@@ -1,0 +1,37 @@
+# Keys & Secrets
+.keys/
+*.key
+*.pem
+.env
+
+# Node modules
+node_modules/
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Temp files
+tmp/
+temp/
+*.tmp
+
+# Large generated files (optional - keep if you want in repo)
+# *.png
+# *.jpg
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Dependencies
+package-lock.json
+yarn.lock
+*.json
