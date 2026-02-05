@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Search - AI Skills Studio</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); 
+            color: #fff; 
+            min-height: 100vh; 
+            padding: 20px; 
+        }
+        
+        .header { 
+            text-align: center; 
+            margin-bottom: 30px; 
+            padding: 20px; 
+        }
+        .header h1 { 
+            font-size: 2rem; 
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            margin-bottom: 10px; 
+        }
+        .header p { color: #888; }
+        
+        .nav { 
+            display: flex; 
+            justify-content: center; 
+            gap: 10px; 
+            margin-bottom: 20px; 
+        }
+        .nav a { 
+            color: #00d4ff; 
+            text-decoration: none; 
+            padding: 8px 16px; 
+            background: rgba(0,212,255,0.1); 
+            border-radius: 6px; 
+        }
+        
+        .search-container { 
+            max-width: 800px; 
+            margin: 0 auto 30px; 
+        }
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .search-box input {
+            flex: 1;
+            padding: 15px 20px;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(0,212,255,0.3);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1rem;
+        }
+        .search-box input:focus {
+            outline: none;
+            border-color: #00d4ff;
+        }
+        .search-box button {
+            padding: 15px 30px;
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .search-box button:hover {
+            filter: brightness(1.2);
+        }
+        
+        .filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .filter-btn {
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            color: #888;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .filter-btn.active {
+            background: rgba(0,212,255,0.2);
+            border-color: #00d4ff;
+            color: #00d4ff;
+        }
+        
+        .results {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .result-item {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.2s;
+        }
+        .result-item:hover {
+            border-color: rgba(0,212,255,0.3);
+            transform: translateY(-2px);
+        }
+        .result-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #00d4ff;
+            margin-bottom: 8px;
+        }
+        .result-meta {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 10px;
+        }
+        .result-preview {
+            color: #aaa;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .result-tags {
+            margin-top: 10px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .tag {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            background: rgba(0,212,255,0.1);
+            border-radius: 12px;
+            color: #00d4ff;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        .stats {
+            text-align: center;
+            color: #888;
+            margin-bottom: 20px;
+        }
+        
+        .highlight {
+            background: rgba(0,212,255,0.3);
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🧠 Memory Search</h1>
+        <p>Search through all memories and discussions</p>
+    </div>
+    
+    <div class="nav">
+        <a href="index.html">← Command Board</a>
+        <a href="files.html">📁 Files</a>
+    </div>
+    
+    <div class="search-container">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search memories, tasks, discussions..." onkeyup="if(event.key==='Enter')searchMemories()">
+            <button onclick="searchMemories()">🔍 Search</button>
+        </div>
+        
+        <div class="filters">
+            <button class="filter-btn active" onclick="setFilter('all')">All</button>
+            <button class="filter-btn" onclick="setFilter('memory')">📝 Memories</button>
+            <button class="filter-btn" onclick="setFilter('tasks')">📋 Tasks</button>
+            <button class="filter-btn" onclick="setFilter('templates')">🎨 Templates</button>
+        </div>
+    </div>
+    
+    <div class="stats" id="stats"></div>
+    <div class="results" id="results"></div>
+
+    <script>
+        // Mock data for demo - in production this would come from an API
+        const mockMemories = [
+            {
+                title: "Service Professionals Template Pack Created",
+                date: "2026-02-04",
+                source: "2026-02-04.md",
+                preview: "Created 4 templates for service professionals: CPA Accountant (Black woman), Chiropractor (Hispanic male), Cosmetologist (Asian woman), Attorney (Middle Eastern woman)...",
+                tags: ["🎨 Templates", "✅ Complete"],
+                type: "templates"
+            },
+            {
+                title: "Command Board Firebase Sync Setup",
+                date: "2026-02-04",
+                source: "2026-02-04.md",
+                preview: "Connected Command Board to Firebase for real-time sync across devices. Added drag-and-drop functionality and file transfer system...",
+                tags: ["⚙️ Dev", "✅ Complete"],
+                type: "memory"
+            },
+            {
+                title: "Small Business Elite Pack",
+                date: "2026-02-05",
+                source: "2026-02-05.md",
+                preview: "Created 5 high-end small business templates with diverse representation: Business Consulting, Real Estate, Fitness, Design Agency, Wealth Management...",
+                tags: ["🎨 Templates", "✅ Complete"],
+                type: "templates"
+            },
+            {
+                title: "AI Avatar Video Production",
+                date: "2026-02-04",
+                source: "2026-02-04.md",
+                preview: "Set up fully automated AI video production with ElevenLabs and HeyGen. Created 6 video scripts for training content...",
+                tags: ["🎬 Video", "🔥 In Progress"],
+                type: "memory"
+            },
+            {
+                title: "Gemini Pro Coding Workflow",
+                date: "2026-02-05",
+                source: "2026-02-05.md",
+                preview: "Created Gemini Pro coding workflow to save Kimi API credits. Gemini Flash is free for coding tasks...",
+                tags: ["⚙️ Dev", "✅ Complete"],
+                type: "memory"
+            }
+        ];
+        
+        let currentFilter = 'all';
+        
+        function setFilter(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            searchMemories();
+        }
+        
+        function searchMemories() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const resultsContainer = document.getElementById('results');
+            const statsContainer = document.getElementById('stats');
+            
+            if (!query) {
+                resultsContainer.innerHTML = '';
+                statsContainer.innerHTML = '';
+                return;
+            }
+            
+            // Filter by search query and type
+            let results = mockMemories.filter(item => {
+                const matchesQuery = item.title.toLowerCase().includes(query) ||
+                                   item.preview.toLowerCase().includes(query) ||
+                                   item.tags.some(tag => tag.toLowerCase().includes(query));
+                const matchesFilter = currentFilter === 'all' || item.type === currentFilter;
+                return matchesQuery && matchesFilter;
+            });
+            
+            // Highlight matches
+            results = results.map(item => ({
+                ...item,
+                title: highlightText(item.title, query),
+                preview: highlightText(item.preview, query)
+            }));
+            
+            // Display stats
+            statsContainer.innerHTML = `Found ${results.length} result${results.length !== 1 ? 's' : ''} for "${query}"`;
+            
+            // Display results
+            if (results.length === 0) {
+                resultsContainer.innerHTML = '<div class="no-results">No memories found matching your search</div>';
+            } else {
+                resultsContainer.innerHTML = results.map(item => `
+                    <div class="result-item">
+                        <div class="result-title">${item.title}</div>
+                        <div class="result-meta">📅 ${item.date} | 📄 ${item.source}</div>
+                        <div class="result-preview">${item.preview}</div>
+                        <div class="result-tags">
+                            ${item.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        function highlightText(text, query) {
+            const regex = new RegExp(`(${query})`, 'gi');
+            return text.replace(regex, '<span class="highlight">$1</span>');
+        }
+        
+        // Load on startup
+        window.onload = function() {
+            document.getElementById('searchInput').focus();
+        };
+    </script>
+</body>
+</html>

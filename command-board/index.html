@@ -132,7 +132,10 @@
     </div>
 
     <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto 20px; flex-wrap: wrap; gap: 10px;">
-        <a href="files.html" style="color: #00d4ff; text-decoration: none; padding: 10px 20px; background: rgba(0,212,255,0.1); border-radius: 8px;">📁 File Transfer</a>
+        <div style="display: flex; gap: 10px;">
+            <a href="files.html" style="color: #00d4ff; text-decoration: none; padding: 10px 20px; background: rgba(0,212,255,0.1); border-radius: 8px;">📁 File Transfer</a>
+            <a href="memory_search.html" style="color: #00d4ff; text-decoration: none; padding: 10px 20px; background: rgba(0,212,255,0.1); border-radius: 8px;">🧠 Memory</a>
+        </div>
         <div style="display: flex; align-items: center; gap: 10px;">
             <div class="sync-status offline" id="syncStatus">Offline Mode</div>
             <button onclick="showConfigPanel()" id="settingsBtn" style="display:none; color: #00d4ff; background: rgba(0,212,255,0.1); border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">⚙️ Settings</button>
