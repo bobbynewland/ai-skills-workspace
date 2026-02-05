@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grace Community Church | Welcome Home</title>
+    <meta name="description" content="Welcome to Grace Community Church. Join us for worship and community.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <style>
+        :root {
+            --color-primary: #1E3A5F;
+            --color-primary-dark: #152A45;
+            --color-accent: #D4AF37;
+            --color-accent-light: #E5C158;
+        }
+        
+        * {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .gradient-gold {
+            background: linear-gradient(135deg, #D4AF37 0%, #E5C158 100%);
+        }
+        
+        .gradient-hero {
+            background: linear-gradient(135deg, rgba(30, 58, 95, 0.9) 0%, rgba(21, 42, 69, 0.8) 100%);
+        }
+        
+        .hero-bg {
+            background-image: url('https://images.unsplash.com/photo-1548625149-fc4a29cf7092?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        .nav-scrolled {
+            background: rgba(30, 58, 95, 0.98) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #D4AF37 0%, #E5C158 100%);
+            color: #1E3A5F;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .form-input:focus {
+            border-color: #1E3A5F;
+            box-shadow: 0 0 0 3px rgba(30, 58, 95, 0.1);
+        }
+        
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 bg-transparent py-4">
+        <div class="container mx-auto px-6">
+            <div class="flex justify-between items-center">
+                <!-- Logo -->
+                <a href="#" class="flex items-center space-x-3">
+                    <div class="w-10 h-10 gradient-gold rounded-lg flex items-center justify-center">
+                        <i class="fas fa-cross text-white text-lg"></i>
+                    </div>
+                    <span class="text-white text-xl font-semibold tracking-wide">Grace Community</span>
+                </a>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="text-white hover:text-yellow-400 transition">Home</a>
+                    <a href="#about" class="text-white hover:text-yellow-400 transition">About</a>
+                    <a href="#services" class="text-white hover:text-yellow-400 transition">Services</a>
+                    <a href="#ministries" class="text-white hover:text-yellow-400 transition">Ministries</a>
+                    <a href="#contact" class="btn-primary px-6 py-2 rounded-md font-medium">Plan a Visit</a>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden text-white text-2xl">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white mt-4 rounded-lg mx-6 shadow-xl">
+            <div class="flex flex-col p-6 space-y-4">
+                <a href="#home" class="text-gray-800 hover:text-blue-900 font-medium">Home</a>
+                <a href="#about" class="text-gray-800 hover:text-blue-900 font-medium">About</a>
+                <a href="#services" class="text-gray-800 hover:text-blue-900 font-medium">Services</a>
+                <a href="#ministries" class="text-gray-800 hover:text-blue-900 font-medium">Ministries</a>
+                <a href="#contact" class="btn-primary px-6 py-3 rounded-md font-medium text-center">Plan a Visit</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-bg min-h-screen flex items-center relative">
+        <div class="absolute inset-0 gradient-hero"></div>
+        <div class="container mx-auto px-6 relative z-10 pt-20">
+            <div class="max-w-3xl">
+                <h1 class="reveal text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+                    Welcome Home to <span class="text-yellow-400">Grace</span>
+                </h1>
+                <p class="reveal text-xl md:text-2xl text-gray-200 mb-8 font-light">
+                    A place where you belong, grow in faith, and discover your purpose. Join us this Sunday.
+                </p>
+                <div class="reveal flex flex-col sm:flex-row gap-4">
+                    <a href="#services" class="btn-primary px-8 py-4 rounded-md font-semibold text-lg text-center">
+                        <i class="fas fa-calendar-alt mr-2"></i>Service Times
+                    </a>
+                    <a href="#contact" class="border-2 border-white text-white px-8 py-4 rounded-md font-semibold text-lg text-center hover:bg-white hover:text-blue-900 transition">
+                        <i class="fas fa-map-marker-alt mr-2"></i>Plan Your Visit
+                    </a>
+                </div>
+                
+                <!-- Service Times Quick View -->
+                <div class="reveal mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center">
+                        <p class="text-yellow-400 font-semibold">Sunday Morning</p>
+                        <p class="text-white text-lg">9:00 AM</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center">
+                        <p class="text-yellow-400 font-semibold">Sunday Main</p>
+                        <p class="text-white text-lg">11:00 AM</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center">
+                        <p class="text-yellow-400 font-semibold">Sunday Evening</p>
+                        <p class="text-white text-lg">6:00 PM</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white animate-bounce">
+            <i class="fas fa-chevron-down text-2xl"></i>
+        </div>
+    </section>
+
+    <!-- Service Times Section -->
+    <section id="services" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-4xl md:text-5xl font-bold text-blue-900 mb-4">Join Us This Sunday</h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">We gather every week to worship, learn, and grow together as a community.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Service 1 -->
+                <div class="reveal card-hover bg-gray-50 rounded-2xl p-8 text-center border border-gray-100">
+                    <div class="w-16 h-16 gradient-gold rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-sun text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-blue-900 mb-2">Early Service</h3>
+                    <p class="text-3xl font-bold text-yellow-600 mb-4">9:00 AM</p>
+                    <p class="text-gray-600 mb-4">Traditional worship with hymns and liturgy. Perfect for early risers.</p>
+                    <div class="flex items-center justify-center text-gray-500 text-sm">
+                        <i class="fas fa-child mr-2"></i> Nursery Available
+                    </div>
+                </div>
+                
+                <!-- Service 2 -->
+                <div class="reveal card-hover bg-blue-900 rounded-2xl p-8 text-center text-white">
+                    <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-users text-blue-900 text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">Main Service</h3>
+                    <p class="text-3xl font-bold text-yellow-400 mb-4">11:00 AM</p>
+                    <p class="text-gray-300 mb-4">Contemporary worship with live music and relevant teaching.</p>
+                    <div class="flex items-center justify-center text-yellow-400 text-sm">
+                        <i class="fas fa-star mr-2"></i> Most Popular
+                    </div>
+                </div>
+                
+                <!-- Service 3 -->
+                <div class="reveal card-hover bg-gray-50 rounded-2xl p-8 text-center border border-gray-100">
+                    <div class="w-16 h-16 gradient-gold rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-moon text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-blue-900 mb-2">Evening Service</h3>
+                    <p class="text-3xl font-bold text-yellow-600 mb-4">6:00 PM</p>
+                    <p class="text-gray-600 mb-4">Intimate worship and Bible study. Great for families.</p>
+                    <div class="flex items-center justify-center text-gray-500 text-sm">
+                        <i class="fas fa-utensils mr-2"></i> Dinner After
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="reveal">
+                    <img src="https://images.unsplash.com/photo-1507692049790-de58290a4334?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                         alt="Pastor" 
+                         class="rounded-2xl shadow-2xl w-full h-96 object-cover">
+                </div>
+                <div class="reveal">
+                    <p class="text-yellow-600 font-semibold mb-2">ABOUT OUR CHURCH</p>
+                    <h2 class="text-4xl md:text-5xl font-bold text-blue-900 mb-6">A Place to Belong</h2>
+                    <p class="text-gray-600 mb-6 text-lg leading-relaxed">
+                        Grace Community Church has been serving our community for over 50 years. We believe in creating 
+                        a welcoming environment where everyone can experience the love of God, grow in their faith, 
+                        and find their purpose.
+                    </p>
+                    <p class="text-gray-600 mb-8 text-lg leading-relaxed">
+                        Led by Pastor Michael Thompson, our church is committed to biblical teaching, authentic 
+                        worship, and serving our local community through various outreach programs.
+                    </p>
+                    
+                    <div class="grid grid-cols-3 gap-6 text-center">
+                        <div>
+                            <p class="text-3xl font-bold text-blue-900">50+</p>
+                            <p class="text-gray-600 text-sm">Years of Service</p>
+                        </div>
+                        <div>
+                            <p class="text-3xl font-bold text-blue-900">1,200</p>
+                            <p class="text-gray-600 text-sm">Members</p>
+                        </div>
+                        <div>
+                            <p class="text-3xl font-bold text-blue-900">25</p>
+                            <p class="text-gray-600 text-sm">Ministries</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ministries Section -->
+    <section id="ministries" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-4xl md:text-5xl font-bold text-blue-900 mb-4">Our Ministries</h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">There's a place for everyone to connect and serve.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Youth Ministry -->
+                <div class="reveal card-hover bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+                    <div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-fire text-blue-900 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-blue-900 mb-2">Youth Ministry</h3>
+                    <p class="text-gray-600 mb-4">Dynamic programs for middle and high school students.</p>
+                    <a href="#contact" class="text-yellow-600 font-medium hover:text-yellow-700">Learn More →</a>
+                </div>
+                
+                <!-- Children's Ministry -->
+                <div class="reveal card-hover bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+                    <div class="w-14 h-14 bg-yellow-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-child text-yellow-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-blue-900 mb-2">Children's Church</h3>
+                    <p class="text-gray-600 mb-4">Fun, safe environment for kids to learn about Jesus.</p>
+                    <a href="#contact" class="text-yellow-600 font-medium hover:text-yellow-700">Learn More →</a>
+                </div>
+                
+                <!-- Worship Ministry -->
+                <div class="reveal card-hover bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+                    <div class="w-14 h-14 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-music text-purple-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-blue-900 mb-2">Worship Team</h3>
+                    <p class="text-gray-600 mb-4">Join our worship team and help lead others into God's presence.</p>
+                    <a href="#contact" class="text-yellow-600 font-medium hover:text-yellow-700">Learn More →</a>
+                </div>
+                
+                <!-- Community Ministry -->
+                <div class="reveal card-hover bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+                    <div class="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas fa-hands-helping text-green-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-blue-900 mb-2">Community Outreach</h3>
+                    <p class="text-gray-600 mb-4">Serve our community through food drives and local missions.</p>
+                    <a href="#contact" class="text-yellow-600 font-medium hover:text-yellow-700">Learn More →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-blue-900">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-2 gap-12">
+                <!-- Contact Form -->
+                <div class="reveal bg-white rounded-2xl p-8 shadow-2xl">
+                    <h2 class="text-3xl font-bold text-blue-900 mb-2">Get in Touch</h2>
+                    <p class="text-gray-600 mb-6">We'd love to hear from you. Send us a message!</p>
+                    
+                    <form id="contactForm" class="space-y-4">
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-1">First Name</label>
+                                <input type="text" name="firstName" required 
+                                       class="form-input w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:outline-none transition">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-1">Last Name</label>
+                                <input type="text" name="lastName" required 
+                                       class="form-input w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:outline-none transition">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-1">Email</label>
+                            <input type="email" name="email" required 
+                                   class="form-input w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:outline-none transition">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-1">Phone</label>
+                            <input type="tel" name="phone" 
+                                   class="form-input w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:outline-none transition">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-1">Message</label>
+                            <textarea name="message" rows="4" required 
+                                      class="form-input w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:outline-none transition resize-none"></textarea>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <input type="checkbox" name="prayerRequest" id="prayerRequest" 
+                                   class="mt-1 mr-3 w-5 h-5 text-blue-900 rounded">
+                            <label for="prayerRequest" class="text-gray-600">
+                                This is a prayer request
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary w-full py-4 rounded-lg font-semibold text-lg">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Contact Info -->
+                <div class="reveal text-white">
+                    <h2 class="text-3xl font-bold mb-6">Visit Us</h2>
+                    <p class="text-gray-300 mb-8 text-lg">Join us for worship and experience the warmth of our community.</p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                                <i class="fas fa-map-marker-alt text-yellow-400 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-1">Address</h4>
+                                <p class="text-gray-300">123 Faith Avenue<br>Your City, ST 12345</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                                <i class="fas fa-phone text-yellow-400 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-1">Phone</h4>
+                                <p class="text-gray-300">(555) 123-4567</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                                <i class="fas fa-envelope text-yellow-400 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-1">Email</h4>
+                                <p class="text-gray-300">hello@gracecommunity.church</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
+                                <i class="fas fa-clock text-yellow-400 text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-1">Office Hours</h4>
+                                <p class="text-gray-300">Mon-Fri: 9:00 AM - 5:00 PM</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Social Links -->
+                    <div class="mt-8">
+                        <h4 class="font-semibold mb-4">Follow Us</h4>
+                        <div class="flex space-x-4">
+                            <a href="#" class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-yellow-400 hover:text-blue-900 transition">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-yellow-400 hover:text-blue-900 transition">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-yellow-400 hover:text-blue-900 transition">
+                                <i class="fab fa-youtube"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-yellow-400 hover:text-blue-900 transition">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-blue-950 text-white py-12">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-8 h-8 gradient-gold rounded flex items-center justify-center">
+                            <i class="fas fa-cross text-white text-sm"></i>
+                        </div>
+                        <span class="font-semibold">Grace Community</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">A place where you belong, grow in faith, and discover your purpose.</p>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="#about" class="hover:text-yellow-400 transition">About Us</a></li>
+                        <li><a href="#services" class="hover:text-yellow-400 transition">Service Times</a></li>
+                        <li><a href="#ministries" class="hover:text-yellow-400 transition">Ministries</a></li>
+                        <li><a href="#contact" class="hover:text-yellow-400 transition">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">Service Times</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li>Sunday: 9:00 AM, 11:00 AM, 6:00 PM</li>
+                        <li>Wednesday: 7:00 PM (Bible Study)</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold mb-4">Newsletter</h4>
+                    <p class="text-gray-400 text-sm mb-3">Stay updated with church news and events.</p>
+                    <form class="flex">
+                        <input type="email" placeholder="Your email" 
+                               class="flex-1 px-4 py-2 rounded-l-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none">
+                        <button type="submit" class="px-4 py-2 bg-yellow-500 text-blue-900 rounded-r-lg font-medium hover:bg-yellow-400 transition">
+                            Join
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 text-sm">© 2026 Grace Community Church. All rights reserved.</p>
+                <div class="flex space-x-6 mt-4 md:mt-0 text-sm text-gray-400">
+                    <a href="#" class="hover:text-white transition">Privacy Policy</a>
+                    <a href="#" class="hover:text-white transition">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Register ScrollTrigger
+        gsap.registerPlugin(ScrollTrigger);
+        
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('nav-scrolled');
+            } else {
+                navbar.classList.remove('nav-scrolled');
+            }
+        });
+        
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+        
+        // Scroll reveal animations
+        const reveals = document.querySelectorAll('.reveal');
+        reveals.forEach((element, index) => {
+            gsap.to(element, {
+                scrollTrigger: {
+                    trigger: element,
+                    start: 'top 85%',
+                    toggleActions: 'play none none none'
+                },
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                delay: index * 0.1,
+                ease: 'power3.out'
+            });
+        });
+        
+        // Form submission
+        document.getElementById('contactForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = {
+                firstName: formData.get('firstName'),
+                lastName: formData.get('lastName'),
+                email: formData.get('email'),
+                phone: formData.get('phone'),
+                message: formData.get('message'),
+                prayerRequest: formData.get('prayerRequest') === 'on',
+                source: 'church_website'
+            };
+            
+            // Here you would send to Go High Level webhook
+            console.log('Form data:', data);
+            
+            // Show success message
+            alert('Thank you! We will be in touch soon.');
+            e.target.reset();
+        });
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    // Close mobile menu if open
+                    document.getElementById('mobile-menu').classList.add('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
