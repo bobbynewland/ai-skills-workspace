@@ -10,19 +10,27 @@ import sys
 
 def get_auth_token():
     """Get auth token - tries OAuth first, then API key"""
-    # Try Antigravity OAuth first
-    auth_file = "/root/.openclaw/agents/main/agent/auth-profiles.json"
-    if os.path.exists(auth_file):
-        with open(auth_file, 'r') as f:
-            auth = json.load(f)
-        profile = auth.get("profiles", {}).get("google-antigravity:framelensmedia@gmail.com")
-        if profile:
-            import time
-            if profile.get("expires", 0) > time.time() * 1000:
-                print("✅ Using Antigravity OAuth (FREE)")
-                return ("oauth", profile.get("access"))
-            else:
-                print("⚠️ Antigravity OAuth expired, falling back to API key")
+    import time
+    
+    # Try Antigravity OAuth - check current agent first, then main
+    agent = os.getenv('OPENCLAW_AGENT', 'main')
+    auth_paths = [
+        f"/root/.openclaw/agents/{agent}/agent/auth-profiles.json",
+        "/root/.openclaw/agents/google-antigravity/agent/auth-profiles.json",
+        "/root/.openclaw/agents/main/agent/auth-profiles.json"
+    ]
+    
+    for auth_file in auth_paths:
+        if os.path.exists(auth_file):
+            with open(auth_file, 'r') as f:
+                auth = json.load(f)
+            profile = auth.get("profiles", {}).get("google-antigravity:framelensmedia@gmail.com")
+            if profile:
+                if profile.get("expires", 0) > time.time() * 1000:
+                    print(f"✅ Using Antigravity OAuth from {auth_file} (FREE)")
+                    return ("oauth", profile.get("access"))
+                else:
+                    print(f"⚠️ OAuth expired in {auth_file}")
     
     # Fall back to API key
     api_key = os.getenv('GEMINI_API_KEY')
