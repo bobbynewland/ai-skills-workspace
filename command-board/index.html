@@ -15,10 +15,14 @@
         body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: #fff; min-height: 100vh; padding: 20px; }
         
         /* Sync Status */
-        .sync-status { position: fixed; top: 20px; right: 20px; padding: 10px 20px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; z-index: 1000; }
+        .sync-status { padding: 10px 20px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
         .sync-status.online { background: #10b981; color: white; }
         .sync-status.offline { background: #f59e0b; color: white; }
         .sync-status.error { background: #ef4444; color: white; }
+        
+        @media (min-width: 768px) {
+            .sync-status { position: fixed; top: 20px; right: 20px; z-index: 1000; }
+        }
         
         /* Firebase Config Panel */
         .config-panel { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; margin-bottom: 20px; max-width: 600px; margin: 0 auto 30px; }
@@ -95,9 +99,6 @@
     </style>
 </head>
 <body>
-    <!-- Sync Status Indicator -->
-    <div class="sync-status offline" id="syncStatus">Offline Mode</div>
-    
     <!-- Firebase Config Panel -->
     <div class="config-panel" id="configPanel">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
@@ -114,9 +115,12 @@
         <button onclick="skipFirebase()" style="background: transparent; border: 1px solid #666; margin-left: 10px;">Use Local Only</button>
     </div>
 
-    <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto 20px; flex-wrap: wrap; gap: 10px;">
         <a href="files.html" style="color: #00d4ff; text-decoration: none; padding: 10px 20px; background: rgba(0,212,255,0.1); border-radius: 8px;">📁 File Transfer</a>
-        <button onclick="showConfigPanel()" id="settingsBtn" style="display:none; color: #00d4ff; background: rgba(0,212,255,0.1); border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">⚙️ Settings</button>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <div class="sync-status offline" id="syncStatus">Offline Mode</div>
+            <button onclick="showConfigPanel()" id="settingsBtn" style="display:none; color: #00d4ff; background: rgba(0,212,255,0.1); border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">⚙️ Settings</button>
+        </div>
     </div>
     
     <div class="header">
