@@ -9,10 +9,16 @@ import os
 import sys
 
 def get_auth_token():
-    """Get auth token - tries OAuth first, then API key"""
+    """Get auth token - prefers API key, tries OAuth as fallback"""
     import time
     
-    # Try Antigravity OAuth - check current agent first, then main
+    # Prefer API key if set (works with billing enabled)
+    api_key = os.getenv('GEMINI_API_KEY')
+    if api_key:
+        print("✅ Using Gemini API key")
+        return ("api", api_key)
+    
+    # Try Antigravity OAuth as fallback
     agent = os.getenv('OPENCLAW_AGENT', 'main')
     auth_paths = [
         f"/root/.openclaw/agents/{agent}/agent/auth-profiles.json",
@@ -31,12 +37,6 @@ def get_auth_token():
                     return ("oauth", profile.get("access"))
                 else:
                     print(f"⚠️ OAuth expired in {auth_file}")
-    
-    # Fall back to API key
-    api_key = os.getenv('GEMINI_API_KEY')
-    if api_key:
-        print("✅ Using Gemini API key")
-        return ("api", api_key)
     
     print("❌ No auth found. Set GEMINI_API_KEY or refresh Antigravity OAuth")
     return None
