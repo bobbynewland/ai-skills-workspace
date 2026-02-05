@@ -100,19 +100,23 @@
     
     <!-- Firebase Config Panel -->
     <div class="config-panel" id="configPanel">
-        <h3>🔥 Firebase Sync Setup</h3>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h3 style="margin: 0;">🔥 Firebase Sync Setup</h3>
+            <button onclick="hideConfigPanel()" id="configBackBtn" style="display: none; background: rgba(255,255,255,0.1); color: #fff; padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer;">← Back</button>
+        </div>
         <p style="color: #888; margin-bottom: 15px; font-size: 0.9rem;">Enter your Firebase config to enable real-time sync across devices</p>
         <input type="text" id="firebaseApiKey" placeholder="API Key" value="AIzaSyAVmSmiuJDcCAiZhq3xqXSJZnWtviLvnuU">
         <input type="text" id="firebaseProjectId" placeholder="Project ID" value="winslow-756c3">
         <input type="text" id="firebaseDatabaseUrl" placeholder="Database URL (https://your-project-default-rtdb.firebaseio.com)" value="https://winslow-756c3-default-rtdb.firebaseio.com">
         <input type="text" id="syncId" placeholder="Sync ID (same on all devices)" value="winslow-main">
         <p style="color: #888; margin-bottom: 15px; font-size: 0.8rem;">💡 Use the SAME Sync ID on phone & desktop to sync tasks!</p>
-        <button onclick="saveFirebaseConfig()">Connect Firebase</button>
+        <button onclick="saveFirebaseConfig()">Connect / Update Firebase</button>
         <button onclick="skipFirebase()" style="background: transparent; border: 1px solid #666; margin-left: 10px;">Use Local Only</button>
     </div>
 
     <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto 20px;">
         <a href="files.html" style="color: #00d4ff; text-decoration: none; padding: 10px 20px; background: rgba(0,212,255,0.1); border-radius: 8px;">📁 File Transfer</a>
+        <button onclick="showConfigPanel()" id="settingsBtn" style="display:none; color: #00d4ff; background: rgba(0,212,255,0.1); border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">⚙️ Settings</button>
     </div>
     
     <div class="header">
@@ -247,6 +251,22 @@
             updateSyncStatus('offline');
         }
         
+        function showConfigPanel() {
+            document.getElementById('configPanel').style.display = 'block';
+            document.getElementById('configBackBtn').style.display = 'inline-block';
+            document.querySelector('.board').style.display = 'none';
+            document.querySelector('.stats').style.display = 'none';
+            document.querySelector('.money-tracker').style.display = 'none';
+        }
+        
+        function hideConfigPanel() {
+            document.getElementById('configPanel').style.display = 'none';
+            document.getElementById('configBackBtn').style.display = 'none';
+            document.querySelector('.board').style.display = 'grid';
+            document.querySelector('.stats').style.display = 'flex';
+            document.querySelector('.money-tracker').style.display = 'block';
+        }
+        
         function initFirebase(config) {
             try {
                 firebase.initializeApp(config);
@@ -259,6 +279,7 @@
                     setupFirebaseListeners();
                     updateSyncStatus('online');
                     document.getElementById('configPanel').style.display = 'none';
+                    document.getElementById('settingsBtn').style.display = 'inline-block';
                 }).catch(err => {
                     console.error('Auth error:', err);
                     updateSyncStatus('error');
