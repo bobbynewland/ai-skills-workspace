@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Skills Studio - Command Board (Firebase Sync)</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: #fff; min-height: 100vh; padding: 20px; }
+        
+        /* Sync Status */
+        .sync-status { padding: 10px 20px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
+        .sync-status.online { background: #10b981; color: white; }
+        .sync-status.offline { background: #f59e0b; color: white; }
+        .sync-status.error { background: #ef4444; color: white; }
+        
+        @media (min-width: 768px) {
+            .sync-status { position: fixed; top: 20px; right: 20px; z-index: 1000; }
+        }
+        
+        /* Firebase Config Panel */
+        .config-panel { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; margin-bottom: 20px; max-width: 600px; margin: 0 auto 30px; }
+        .config-panel h3 { color: #00d4ff; margin-bottom: 15px; }
+        .config-panel input { width: 100%; padding: 10px; margin-bottom: 10px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 6px; }
+        .config-panel button { background: #00d4ff; color: #000; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        
+        /* Header */
+        .header { text-align: center; margin-bottom: 30px; padding: 20px; }
+        .header h1 { font-size: 2.5rem; background: linear-gradient(90deg, #00d4ff, #7b2cbf); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
+        .header p { color: #888; font-size: 1.1rem; }
+        
+        /* Global Search */
+        .search-container { max-width: 600px; margin: 0 auto 30px; position: relative; }
+        .search-container input { width: 100%; padding: 15px 50px 15px 20px; background: rgba(255,255,255,0.05); border: 2px solid rgba(0,212,255,0.3); border-radius: 12px; color: #fff; font-size: 1rem; transition: all 0.3s; }
+        .search-container input:focus { outline: none; border-color: #00d4ff; background: rgba(0,212,255,0.05); }
+        .search-container input::placeholder { color: #666; }
+        .search-container button { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.1); border: none; color: #fff; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
+        .search-container button:hover { background: rgba(255,68,68,0.3); }
+        .search-results { max-width: 600px; margin: -20px auto 30px; background: rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; border: 1px solid rgba(0,212,255,0.2); }
+        .search-results h4 { color: #00d4ff; margin-bottom: 15px; }
+        .search-result-item { padding: 12px; background: rgba(0,0,0,0.2); border-radius: 8px; margin-bottom: 10px; cursor: pointer; transition: all 0.2s; border-left: 3px solid #00d4ff; }
+        .search-result-item:hover { background: rgba(0,212,255,0.1); transform: translateX(5px); }
+        .search-result-title { font-weight: 600; color: #fff; margin-bottom: 4px; }
+        .search-result-desc { font-size: 0.85rem; color: #888; }
+        .search-result-status { font-size: 0.75rem; color: #00d4ff; margin-top: 4px; }
+        .no-results { text-align: center; color: #666; padding: 20px; }
+        
+        /* Stats */
+        .stats { display: flex; justify-content: center; gap: 30px; margin-bottom: 30px; flex-wrap: wrap; }
+        .stat-box { background: rgba(255,255,255,0.05); padding: 15px 30px; border-radius: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
+        .stat-number { font-size: 2rem; font-weight: bold; color: #00d4ff; }
+        .stat-label { color: #888; font-size: 0.9rem; }
+        
+        /* Revenue Tracker */
+        .money-tracker { background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(123,44,191,0.1)); padding: 20px; border-radius: 16px; margin-bottom: 30px; border: 1px solid rgba(0,212,255,0.2); }
+        .money-tracker h3 { color: #00d4ff; margin-bottom: 15px; }
+        .money-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .money-item { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; }
+        .money-label { color: #888; font-size: 0.9rem; }
+        .money-value { font-size: 1.8rem; font-weight: bold; color: #00ff88; }
+        
+        /* Board Layout */
+        .board { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; max-width: 1400px; margin: 0 auto; }
+        .column { background: rgba(255,255,255,0.03); border-radius: 16px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; }
+        .column-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid; }
+        .column-title { font-size: 1.2rem; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .column-count { background: rgba(255,255,255,0.1); padding: 4px 12px; border-radius: 20px; font-size: 0.9rem; }
+        
+        /* Column Colors */
+        .todo .column-header { border-color: #ff6b6b; }
+        .progress .column-header { border-color: #ffd93d; }
+        .review .column-header { border-color: #6bcf7f; }
+        .done .column-header { border-color: #00d4ff; }
+        
+        /* Tasks */
+        .tasks { min-height: 100px; flex-grow: 1; }
+        .task-card { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 16px; margin-bottom: 12px; cursor: grab; transition: all 0.2s ease; border: 1px solid rgba(255,255,255,0.08); border-left: 3px solid transparent; }
+        .task-card:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.2); }
+        .task-card.dragging { opacity: 0.5; cursor: grabbing; transform: rotate(3deg); }
+        .column.drag-over { background: rgba(0,212,255,0.1); border: 2px dashed #00d4ff; }
+        .task-title { font-weight: 600; margin-bottom: 8px; line-height: 1.4; }
+        .task-desc-preview { font-size: 0.8rem; color: #aaa; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 8px; }
+        
+        /* Tags & Priorities */
+        .tag { font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; font-weight: 500; }
+        .tag-marketing { background: rgba(255,107,107,0.2); color: #ff6b6b; }
+        .tag-dev { background: rgba(0,212,255,0.2); color: #00d4ff; }
+        .tag-content { background: rgba(255,217,61,0.2); color: #ffd93d; }
+        .tag-ops { background: rgba(156, 39, 176, 0.2); color: #e040fb; }
+        
+        .add-task-btn { width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 2px dashed rgba(255,255,255,0.2); border-radius: 8px; color: #888; cursor: pointer; transition: all 0.3s; margin-top: 10px; }
+        .add-task-btn:hover { background: rgba(255,255,255,0.1); color: #fff; border-color: rgba(255,255,255,0.4); }
+        
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: #1a1a2e; padding: 30px; border-radius: 16px; width: 90%; max-width: 600px; border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; gap: 1rem; max-height: 90vh; overflow-y: auto; }
+        .modal h2 { color: #00d4ff; margin-bottom: 0; }
+        
+        .form-group label { display: block; margin-bottom: 5px; color: #888; font-size: 0.9rem; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-family: inherit; font-size: 1rem; }
+        .form-group textarea { min-height: 150px; resize: vertical; line-height: 1.5; }
+        
+        .btn-group { display: flex; gap: 10px; margin-top: 10px; }
+        .btn { flex: 1; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
+        .btn-primary { background: linear-gradient(90deg, #00d4ff, #7b2cbf); color: #fff; }
+        .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; }
+        .btn-danger { background: rgba(255, 68, 68, 0.2); color: #ff4444; }
+        .btn:hover { transform: translateY(-2px); filter: brightness(1.2); }
+    </style>
+</head>
+<body>
+    <!-- Firebase Config Panel -->
+    <div class="config-panel" id="configPanel">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h3 style="margin: 0;">🔥 Firebase Sync Setup</h3>
+            <button onclick="hideConfigPanel()" id="configBackBtn" style="display: none; background: rgba(255,255,255,0.1); color: #fff; padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer;">← Back</button>
+        </div>
+        <p style="color: #888; margin-bottom: 15px; font-size: 0.9rem;">Enter your Firebase config to enable real-time sync across devices</p>
+        <input type="text" id="firebaseApiKey" placeholder="API Key" value="AIzaSyAVmSmiuJDcCAiZhq3xqXSJZnWtviLvnuU">
+        <input type="text" id="firebaseProjectId" placeholder="Project ID" value="winslow-756c3">
+        <input type="text" id="firebaseDatabaseUrl" placeholder="Database URL (https://your-project-default-rtdb.firebaseio.com)" value="https://winslow-756c3-default-rtdb.firebaseio.com">
+        <input type="text" id="syncId" placeholder="Sync ID (same on all devices)" value="winslow-main">
+        <p style="color: #888; margin-bottom: 15px; font-size: 0.8rem;">💡 Use the SAME Sync ID on phone & desktop to sync tasks!</p>
+        <button onclick="saveFirebaseConfig()">Connect / Update Firebase</button>
+        <button onclick="skipFirebase()" style="background: transparent; border: 1px solid #666; margin-left: 10px;">Use Local Only</button>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto 20px; flex-wrap: wrap; gap: 10px;">
+        <div style="display: flex; gap: 10px;">
+            <a href="files.html" style="color: #00d4ff; text-decoration: none; padding: 10px 20px; background: rgba(0,212,255,0.1); border-radius: 8px;">📁 File Transfer</a>
+            <a href="memory_search.html" style="color: #00d4ff; text-decoration: none; padding: 10px 20px; background: rgba(0,212,255,0.1); border-radius: 8px;">🧠 Memory</a>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <div class="sync-status offline" id="syncStatus">Offline Mode</div>
+            <button onclick="showConfigPanel()" id="settingsBtn" style="display:none; color: #00d4ff; background: rgba(0,212,255,0.1); border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">⚙️ Settings</button>
+        </div>
+    </div>
+    
+    <div class="header">
+        <h1>🚀 AI Skills Studio</h1>
+        <p>Mission Control v3.0 (Firebase Sync)</p>
+    </div>
+    
+    <!-- Global Search -->
+    <div class="search-container">
+        <input type="text" id="globalSearch" placeholder="🔍 Search all tasks..." onkeyup="searchTasks()">
+        <button onclick="clearSearch()" id="clearSearchBtn" style="display:none;">✕</button>
+    </div>
+    <div id="searchResults" class="search-results" style="display:none;"></div>
+    
+    <div class="money-tracker">
+        <h3>💰 Revenue Tracker</h3>
+        <div class="money-grid">
+            <div class="money-item">
+                <div class="money-label">Ambassadors</div>
+                <div class="money-value" id="stat-ambassadors">0</div>
+            </div>
+            <div class="money-item">
+                <div class="money-label">Monthly Revenue</div>
+                <div class="money-value" id="stat-revenue">$0</div>
+            </div>
+            <div class="money-item">
+                <div class="money-label">Active Users</div>
+                <div class="money-value" id="stat-users">0</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="stats">
+        <div class="stat-box"><div class="stat-number" id="total-tasks">0</div><div class="stat-label">Total</div></div>
+        <div class="stat-box"><div class="stat-number" id="count-todo-stat">0</div><div class="stat-label">To Do</div></div>
+        <div class="stat-box"><div class="stat-number" id="count-progress-stat">0</div><div class="stat-label">In Progress</div></div>
+        <div class="stat-box"><div class="stat-number" id="count-done-stat">0</div><div class="stat-label">Done</div></div>
+    </div>
+    
+    <div class="board">
+        <div class="column todo" id="col-todo">
+            <div class="column-header"><div class="column-title">📋 To Do</div><span class="column-count">0</span></div>
+            <div class="tasks" data-status="todo"></div>
+            <button class="add-task-btn" onclick="openAddModal('todo')">+ Add Task</button>
+        </div>
+        <div class="column progress" id="col-progress">
+            <div class="column-header"><div class="column-title">🔥 In Progress</div><span class="column-count">0</span></div>
+            <div class="tasks" data-status="progress"></div>
+            <button class="add-task-btn" onclick="openAddModal('progress')">+ Add Task</button>
+        </div>
+        <div class="column review" id="col-review">
+            <div class="column-header"><div class="column-title">👀 Review</div><span class="column-count">0</span></div>
+            <div class="tasks" data-status="review"></div>
+            <button class="add-task-btn" onclick="openAddModal('review')">+ Add Task</button>
+        </div>
+        <div class="column done" id="col-done">
+            <div class="column-header"><div class="column-title">✅ Done</div><span class="column-count">0</span></div>
+            <div class="tasks" data-status="done"></div>
+            <button class="add-task-btn" onclick="openAddModal('done')">+ Add Task</button>
+        </div>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div class="modal" id="taskModal">
+        <div class="modal-content">
+            <h2 id="modalTitle">New Task</h2>
+            <input type="hidden" id="editId">
+            <div class="form-group"><label>Title</label><input type="text" id="editTitle" placeholder="What needs to be done?"></div>
+            <div style="display: flex; gap: 1rem;">
+                <div class="form-group" style="flex: 1;"><label>Status</label><select id="editStatus"><option value="todo">To Do</option><option value="progress">In Progress</option><option value="review">Review</option><option value="done">Done</option></select></div>
+                <div class="form-group" style="flex: 1;"><label>Priority</label><select id="editPriority"><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select></div>
+            </div>
+            <div class="form-group"><label>Category</label><select id="editCategory"><option value="dev">Development</option><option value="marketing">Marketing</option><option value="content">Content</option><option value="ops">Operations</option></select></div>
+            <div class="form-group"><label>Detailed Notes</label><textarea id="editDesc" placeholder="Add details, links, context..."></textarea></div>
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+                <button class="btn btn-primary" onclick="saveTask()">Save Task</button>
+                <button class="btn btn-danger" id="deleteBtn" onclick="deleteTask()" style="display:none;">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State Management
+        let state = { tasks: [], config: { ambassadors: 0, revenue: 0, users: 0 } };
+        let db = null;
+        let firebaseEnabled = false;
+        
+        // Load from LocalStorage first
+        function loadLocalState() {
+            const raw = localStorage.getItem('winslow_board_firebase');
+            if (raw) {
+                state = JSON.parse(raw);
+                renderBoard();
+            } else {
+                // Default tasks
+                state.tasks = [
+                    { id: Date.now(), title: "Setup Firebase Sync", desc: "Connect to Firebase for real-time sync", category: "dev", priority: "high", status: "todo" },
+                    { id: Date.now()+1, title: "Create Templates", desc: "Generate marketing templates", category: "content", priority: "high", status: "todo" }
+                ];
+                saveState();
+                renderBoard();
+            }
+        }
+        
+        // Save to LocalStorage
+        function saveState() {
+            localStorage.setItem('winslow_board_firebase', JSON.stringify(state));
+            if (!firebaseEnabled) updateSyncStatus('offline');
+        }
+        
+        // Firebase Functions
+        function saveFirebaseConfig() {
+            const config = {
+                apiKey: document.getElementById('firebaseApiKey').value,
+                projectId: document.getElementById('firebaseProjectId').value,
+                databaseURL: document.getElementById('firebaseDatabaseUrl').value,
+                authDomain: `${document.getElementById('firebaseProjectId').value}.firebaseapp.com`,
+                storageBucket: `${document.getElementById('firebaseProjectId').value}.appspot.com`,
+                messagingSenderId: "000000000000",
+                appId: "1:000000000000:web:000000000000"
+            };
+            
+            // Save sync ID for cross-device sync
+            syncUserId = document.getElementById('syncId').value || 'winslow-main';
+            localStorage.setItem('firebase_sync_id', syncUserId);
+            
+            if (!config.apiKey || !config.projectId) {
+                alert('Please enter valid Firebase credentials');
+                return;
+            }
+            
+            localStorage.setItem('firebase_config', JSON.stringify(config));
+            initFirebase(config);
+        }
+        
+        function skipFirebase() {
+            document.getElementById('configPanel').style.display = 'none';
+            updateSyncStatus('offline');
+        }
+        
+        function showConfigPanel() {
+            document.getElementById('configPanel').style.display = 'block';
+            document.getElementById('configBackBtn').style.display = 'inline-block';
+            document.querySelector('.board').style.display = 'none';
+            document.querySelector('.stats').style.display = 'none';
+            document.querySelector('.money-tracker').style.display = 'none';
+        }
+        
+        function hideConfigPanel() {
+            document.getElementById('configPanel').style.display = 'none';
+            document.getElementById('configBackBtn').style.display = 'none';
+            document.querySelector('.board').style.display = 'grid';
+            document.querySelector('.stats').style.display = 'flex';
+            document.querySelector('.money-tracker').style.display = 'block';
+        }
+        
+        function initFirebase(config) {
+            try {
+                firebase.initializeApp(config);
+                db = firebase.database();
+                firebaseEnabled = true;
+                
+                // Anonymous auth
+                firebase.auth().signInAnonymously().then(() => {
+                    console.log('Firebase authenticated');
+                    setupFirebaseListeners();
+                    updateSyncStatus('online');
+                    document.getElementById('configPanel').style.display = 'none';
+                    document.getElementById('settingsBtn').style.display = 'inline-block';
+                }).catch(err => {
+                    console.error('Auth error:', err);
+                    updateSyncStatus('error');
+                });
+                
+            } catch (e) {
+                console.error('Firebase init error:', e);
+                updateSyncStatus('error');
+            }
+        }
+        
+        let syncUserId = localStorage.getItem('firebase_sync_id') || 'winslow-main';
+        
+        function setupFirebaseListeners() {
+            // Use shared sync ID instead of anonymous user ID
+            const sharedId = syncUserId;
+            
+            // Listen for remote changes
+            db.ref(`users/${sharedId}/tasks`).on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data && JSON.stringify(data) !== JSON.stringify(state.tasks)) {
+                    state.tasks = data;
+                    localStorage.setItem('winslow_board_firebase', JSON.stringify(state));
+                    renderBoard();
+                    console.log('Synced from Firebase');
+                }
+            });
+        }
+        
+        function syncToFirebase() {
+            if (!firebaseEnabled || !db) return;
+            
+            const sharedId = syncUserId;
+            db.ref(`users/${sharedId}/tasks`).set(state.tasks)
+                .then(() => {
+                    console.log('Synced to Firebase');
+                    updateSyncStatus('online');
+                })
+                .catch(err => {
+                    console.error('Sync error:', err);
+                    updateSyncStatus('error');
+                });
+        }
+        
+        function updateSyncStatus(status) {
+            const el = document.getElementById('syncStatus');
+            el.className = 'sync-status ' + status;
+            if (status === 'online') el.textContent = '● Live Sync';
+            else if (status === 'offline') el.textContent = '○ Offline Mode';
+            else if (status === 'error') el.textContent = '⚠ Sync Error';
+        }
+        
+        // Check for saved Firebase config on load
+        window.onload = function() {
+            loadLocalState();
+            
+            // Load saved sync ID
+            const savedSyncId = localStorage.getItem('firebase_sync_id');
+            if (savedSyncId) {
+                syncUserId = savedSyncId;
+                document.getElementById('syncId').value = savedSyncId;
+            }
+            
+            const savedConfig = localStorage.getItem('firebase_config');
+            if (savedConfig) {
+                try {
+                    initFirebase(JSON.parse(savedConfig));
+                } catch (e) {
+                    console.log('Failed to init Firebase from saved config');
+                }
+            }
+            
+            // Setup drag and drop on columns
+            document.querySelectorAll('.column').forEach(column => {
+                column.ondragover = handleDragOver;
+                column.ondragleave = handleDragLeave;
+                column.ondrop = handleDrop;
+            });
+        };
+        
+        // Render Functions
+        function renderBoard() {
+            document.querySelectorAll('.tasks').forEach(el => el.innerHTML = '');
+            
+            state.tasks.forEach(task => {
+                const card = createCardElement(task);
+                const col = document.querySelector(`.tasks[data-status="${task.status}"]`);
+                if (col) col.appendChild(card);
+            });
+            
+            renderStats();
+        }
+        
+        function createCardElement(task) {
+            const div = document.createElement('div');
+            div.className = 'task-card';
+            div.dataset.id = task.id;
+            div.draggable = true;
+            div.ondragstart = (e) => handleDragStart(e, task.id);
+            div.onclick = (e) => { if(!e.target.closest('.task-card').classList.contains('dragging')) openDetail(task.id); };
+            
+            const tagClass = 'tag-' + task.category;
+            const descPreview = task.desc ? `<div class="task-desc-preview">${task.desc.substring(0, 60)}${task.desc.length > 60 ? '...' : ''}</div>` : '';
+            
+            div.innerHTML = `
+                <div class="task-title">${task.title}</div>
+                ${descPreview}
+                <span class="tag ${tagClass}">${task.category.toUpperCase()}</span>
+            `;
+            return div;
+        }
+        
+        // Drag and Drop Functions
+        let draggedTaskId = null;
+        
+        function handleDragStart(e, taskId) {
+            draggedTaskId = taskId;
+            e.target.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+        
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            const column = e.target.closest('.column');
+            if (column) column.classList.add('drag-over');
+        }
+        
+        function handleDragLeave(e) {
+            const column = e.target.closest('.column');
+            if (column) column.classList.remove('drag-over');
+        }
+        
+        function handleDrop(e) {
+            e.preventDefault();
+            const column = e.target.closest('.column');
+            if (!column || !draggedTaskId) return;
+            
+            column.classList.remove('drag-over');
+            document.querySelectorAll('.task-card.dragging').forEach(el => el.classList.remove('dragging'));
+            
+            const newStatus = column.querySelector('.tasks').dataset.status;
+            const task = state.tasks.find(t => t.id == draggedTaskId);
+            
+            if (task && task.status !== newStatus) {
+                task.status = newStatus;
+                saveState();
+                syncToFirebase();
+                renderBoard();
+                console.log(`Task ${draggedTaskId} moved to ${newStatus}`);
+            }
+            
+            draggedTaskId = null;
+        }
+        
+        // Global Search Functions
+        function searchTasks() {
+            const searchTerm = document.getElementById('globalSearch').value.toLowerCase().trim();
+            const resultsContainer = document.getElementById('searchResults');
+            const clearBtn = document.getElementById('clearSearchBtn');
+            
+            if (!searchTerm) {
+                resultsContainer.style.display = 'none';
+                clearBtn.style.display = 'none';
+                renderBoard();
+                return;
+            }
+            
+            clearBtn.style.display = 'flex';
+            
+            const filtered = state.tasks.filter(task => 
+                task.title.toLowerCase().includes(searchTerm) ||
+                (task.desc && task.desc.toLowerCase().includes(searchTerm)) ||
+                task.category.toLowerCase().includes(searchTerm) ||
+                task.status.toLowerCase().includes(searchTerm)
+            );
+            
+            if (filtered.length === 0) {
+                resultsContainer.innerHTML = '<div class="no-results">No tasks found matching "' + searchTerm + '"</div>';
+            } else {
+                let html = '<h4>🔍 ' + filtered.length + ' result' + (filtered.length > 1 ? 's' : '') + ' for "' + searchTerm + '"</h4>';
+                filtered.forEach(task => {
+                    const statusEmoji = task.status === 'todo' ? '📋' : 
+                                       task.status === 'progress' ? '🔥' : 
+                                       task.status === 'review' ? '👀' : '✅';
+                    html += '<div class="search-result-item" onclick="openDetail(' + task.id + ')">';
+                    html += '<div class="search-result-title">' + statusEmoji + ' ' + task.title + '</div>';
+                    if (task.desc) {
+                        html += '<div class="search-result-desc">' + task.desc.substring(0, 60) + (task.desc.length > 60 ? '...' : '') + '</div>';
+                    }
+                    html += '<div class="search-result-status">Status: ' + task.status + ' | Category: ' + task.category + '</div>';
+                    html += '</div>';
+                });
+                resultsContainer.innerHTML = html;
+            }
+            
+            resultsContainer.style.display = 'block';
+        }
+        
+        function clearSearch() {
+            document.getElementById('globalSearch').value = '';
+            document.getElementById('searchResults').style.display = 'none';
+            document.getElementById('clearSearchBtn').style.display = 'none';
+            renderBoard();
+        }
+        
+        function renderStats() {
+            ['todo', 'progress', 'review', 'done'].forEach(s => {
+                const count = state.tasks.filter(t => t.status === s).length;
+                const col = document.querySelector(`#col-${s} .column-count`);
+                if(col) col.innerText = count;
+                const statBox = document.getElementById(`count-${s}-stat`);
+                if(statBox) statBox.innerText = count;
+            });
+            document.getElementById('total-tasks').innerText = state.tasks.length;
+        }
+        
+        // Modal Functions
+        let addTargetColumn = 'todo';
+        
+        function openAddModal(status) {
+            addTargetColumn = status;
+            document.getElementById('modalTitle').innerText = 'New Task';
+            document.getElementById('editId').value = '';
+            document.getElementById('editTitle').value = '';
+            document.getElementById('editDesc').value = '';
+            document.getElementById('editStatus').value = status;
+            document.getElementById('deleteBtn').style.display = 'none';
+            document.getElementById('taskModal').style.display = 'flex';
+            document.getElementById('editTitle').focus();
+        }
+        
+        function openDetail(id) {
+            const task = state.tasks.find(t => t.id == id);
+            if (!task) return;
+            
+            document.getElementById('modalTitle').innerText = 'Edit Task';
+            document.getElementById('editId').value = task.id;
+            document.getElementById('editTitle').value = task.title;
+            document.getElementById('editDesc').value = task.desc || '';
+            document.getElementById('editStatus').value = task.status;
+            document.getElementById('editPriority').value = task.priority || 'medium';
+            document.getElementById('editCategory').value = task.category || 'dev';
+            document.getElementById('deleteBtn').style.display = 'inline-block';
+            document.getElementById('taskModal').style.display = 'flex';
+        }
+        
+        function closeModal() {
+            document.getElementById('taskModal').style.display = 'none';
+        }
+        
+        function saveTask() {
+            const id = document.getElementById('editId').value;
+            const title = document.getElementById('editTitle').value;
+            if (!title) return;
+            
+            const taskData = {
+                title: title,
+                desc: document.getElementById('editDesc').value,
+                status: document.getElementById('editStatus').value,
+                priority: document.getElementById('editPriority').value,
+                category: document.getElementById('editCategory').value
+            };
+            
+            if (id) {
+                // Edit existing
+                const task = state.tasks.find(t => t.id == id);
+                Object.assign(task, taskData);
+            } else {
+                // Create new
+                taskData.id = Date.now().toString();
+                taskData.created = Date.now();
+                state.tasks.push(taskData);
+            }
+            
+            saveState();
+            syncToFirebase();
+            renderBoard();
+            closeModal();
+        }
+        
+        function deleteTask() {
+            const id = document.getElementById('editId').value;
+            if (confirm('Delete this task?')) {
+                state.tasks = state.tasks.filter(t => t.id != id);
+                saveState();
+                syncToFirebase();
+                renderBoard();
+                closeModal();
+            }
+        }
+        
+        // Close modal on outside click
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
