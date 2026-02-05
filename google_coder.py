@@ -88,7 +88,7 @@ def call_gemini(prompt, model="gemini-1.5-flash"):
         print(f"❌ Error: {e}")
         return None
 
-def generate_code(description, output_file=None, model="gemini-2.5-pro"):
+def generate_code(description, output_file=None, model="gemini-3-pro-preview"):
     """Generate code"""
     prompt = f"""Generate clean, well-documented code for:
 
@@ -150,16 +150,14 @@ def main():
     parser.add_argument('action', choices=['generate', 'review', 'explain'], help='Action')
     parser.add_argument('input', help='Input description or file path')
     parser.add_argument('--output', '-o', help='Output file path')
-    parser.add_argument('--model', '-m', 
+    parser.add_argument('--model', '-m',
                        choices=['gemini-3-pro-preview', 'gemini-2.5-pro', 'gemini-2.0-flash', 'gemini-2.5-flash'],
-                       default='gemini-2.0-flash',
-                       help='Model to use (default: gemini-2.0-flash)')
+                       default='gemini-3-pro-preview',
+                       help='Model to use (default: gemini-3-pro-preview)')
     args = parser.parse_args()
     
-    # Override model for specific actions
+    # Use Gemini 3 Pro by default for all coding tasks
     model = args.model
-    if args.action == 'review' and args.model == 'gemini-2.0-flash':
-        model = 'gemini-3-pro-preview'  # Use best model for reviews by default
     
     if args.action == 'generate':
         generate_code(args.input, args.output, model)
