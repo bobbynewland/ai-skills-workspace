@@ -102,9 +102,11 @@
     <div class="config-panel" id="configPanel">
         <h3>🔥 Firebase Sync Setup</h3>
         <p style="color: #888; margin-bottom: 15px; font-size: 0.9rem;">Enter your Firebase config to enable real-time sync across devices</p>
-        <input type="text" id="firebaseApiKey" placeholder="API Key">
-        <input type="text" id="firebaseProjectId" placeholder="Project ID">
-        <input type="text" id="firebaseDatabaseUrl" placeholder="Database URL (https://your-project-default-rtdb.firebaseio.com)">
+        <input type="text" id="firebaseApiKey" placeholder="API Key" value="AIzaSyAVmSmiuJDcCAiZhq3xqXSJZnWtviLvnuU">
+        <input type="text" id="firebaseProjectId" placeholder="Project ID" value="winslow-756c3">
+        <input type="text" id="firebaseDatabaseUrl" placeholder="Database URL (https://your-project-default-rtdb.firebaseio.com)" value="https://winslow-756c3-default-rtdb.firebaseio.com">
+        <input type="text" id="syncId" placeholder="Sync ID (same on all devices)" value="winslow-main">
+        <p style="color: #888; margin-bottom: 15px; font-size: 0.8rem;">💡 Use the SAME Sync ID on phone & desktop to sync tasks!</p>
         <button onclick="saveFirebaseConfig()">Connect Firebase</button>
         <button onclick="skipFirebase()" style="background: transparent; border: 1px solid #666; margin-left: 10px;">Use Local Only</button>
     </div>
@@ -227,7 +229,11 @@
                 appId: "1:000000000000:web:000000000000"
             };
             
-            if (!config.apiKey || config.apiKey === 'YOUR_API_KEY') {
+            // Save sync ID for cross-device sync
+            syncUserId = document.getElementById('syncId').value || 'winslow-main';
+            localStorage.setItem('firebase_sync_id', syncUserId);
+            
+            if (!config.apiKey || !config.projectId) {
                 alert('Please enter valid Firebase credentials');
                 return;
             }
@@ -264,11 +270,14 @@
             }
         }
         
+        let syncUserId = localStorage.getItem('firebase_sync_id') || 'winslow-main';
+        
         function setupFirebaseListeners() {
-            const userId = firebase.auth().currentUser?.uid || 'anonymous';
+            // Use shared sync ID instead of anonymous user ID
+            const sharedId = syncUserId;
             
             // Listen for remote changes
-            db.ref(`users/${userId}/tasks`).on('value', (snapshot) => {
+            db.ref(`users/${sharedId}/tasks`).on('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data && JSON.stringify(data) !== JSON.stringify(state.tasks)) {
                     state.tasks = data;
@@ -282,8 +291,8 @@
         function syncToFirebase() {
             if (!firebaseEnabled || !db) return;
             
-            const userId = firebase.auth().currentUser?.uid || 'anonymous';
-            db.ref(`users/${userId}/tasks`).set(state.tasks)
+            const sharedId = syncUserId;
+            db.ref(`users/${sharedId}/tasks`).set(state.tasks)
                 .then(() => {
                     console.log('Synced to Firebase');
                     updateSyncStatus('online');
@@ -305,6 +314,13 @@
         // Check for saved Firebase config on load
         window.onload = function() {
             loadLocalState();
+            
+            // Load saved sync ID
+            const savedSyncId = localStorage.getItem('firebase_sync_id');
+            if (savedSyncId) {
+                syncUserId = savedSyncId;
+                document.getElementById('syncId').value = savedSyncId;
+            }
             
             const savedConfig = localStorage.getItem('firebase_config');
             if (savedConfig) {
