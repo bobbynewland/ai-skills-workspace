@@ -88,7 +88,7 @@ def call_gemini(prompt, model="gemini-1.5-flash"):
         print(f"❌ Error: {e}")
         return None
 
-def generate_code(description, output_file=None, model="gemini-2.0-flash"):
+def generate_code(description, output_file=None, model="gemini-2.5-pro"):
     """Generate code"""
     prompt = f"""Generate clean, well-documented code for:
 
