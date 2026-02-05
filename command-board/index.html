@@ -35,6 +35,22 @@
         .header h1 { font-size: 2.5rem; background: linear-gradient(90deg, #00d4ff, #7b2cbf); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
         .header p { color: #888; font-size: 1.1rem; }
         
+        /* Global Search */
+        .search-container { max-width: 600px; margin: 0 auto 30px; position: relative; }
+        .search-container input { width: 100%; padding: 15px 50px 15px 20px; background: rgba(255,255,255,0.05); border: 2px solid rgba(0,212,255,0.3); border-radius: 12px; color: #fff; font-size: 1rem; transition: all 0.3s; }
+        .search-container input:focus { outline: none; border-color: #00d4ff; background: rgba(0,212,255,0.05); }
+        .search-container input::placeholder { color: #666; }
+        .search-container button { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.1); border: none; color: #fff; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
+        .search-container button:hover { background: rgba(255,68,68,0.3); }
+        .search-results { max-width: 600px; margin: -20px auto 30px; background: rgba(255,255,255,0.05); border-radius: 12px; padding: 20px; border: 1px solid rgba(0,212,255,0.2); }
+        .search-results h4 { color: #00d4ff; margin-bottom: 15px; }
+        .search-result-item { padding: 12px; background: rgba(0,0,0,0.2); border-radius: 8px; margin-bottom: 10px; cursor: pointer; transition: all 0.2s; border-left: 3px solid #00d4ff; }
+        .search-result-item:hover { background: rgba(0,212,255,0.1); transform: translateX(5px); }
+        .search-result-title { font-weight: 600; color: #fff; margin-bottom: 4px; }
+        .search-result-desc { font-size: 0.85rem; color: #888; }
+        .search-result-status { font-size: 0.75rem; color: #00d4ff; margin-top: 4px; }
+        .no-results { text-align: center; color: #666; padding: 20px; }
+        
         /* Stats */
         .stats { display: flex; justify-content: center; gap: 30px; margin-bottom: 30px; flex-wrap: wrap; }
         .stat-box { background: rgba(255,255,255,0.05); padding: 15px 30px; border-radius: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
@@ -127,6 +143,13 @@
         <h1>🚀 AI Skills Studio</h1>
         <p>Mission Control v3.0 (Firebase Sync)</p>
     </div>
+    
+    <!-- Global Search -->
+    <div class="search-container">
+        <input type="text" id="globalSearch" placeholder="🔍 Search all tasks..." onkeyup="searchTasks()">
+        <button onclick="clearSearch()" id="clearSearchBtn" style="display:none;">✕</button>
+    </div>
+    <div id="searchResults" class="search-results" style="display:none;"></div>
     
     <div class="money-tracker">
         <h3>💰 Revenue Tracker</h3>
@@ -437,6 +460,57 @@
             }
             
             draggedTaskId = null;
+        }
+        
+        // Global Search Functions
+        function searchTasks() {
+            const searchTerm = document.getElementById('globalSearch').value.toLowerCase().trim();
+            const resultsContainer = document.getElementById('searchResults');
+            const clearBtn = document.getElementById('clearSearchBtn');
+            
+            if (!searchTerm) {
+                resultsContainer.style.display = 'none';
+                clearBtn.style.display = 'none';
+                renderBoard();
+                return;
+            }
+            
+            clearBtn.style.display = 'flex';
+            
+            const filtered = state.tasks.filter(task => 
+                task.title.toLowerCase().includes(searchTerm) ||
+                (task.desc && task.desc.toLowerCase().includes(searchTerm)) ||
+                task.category.toLowerCase().includes(searchTerm) ||
+                task.status.toLowerCase().includes(searchTerm)
+            );
+            
+            if (filtered.length === 0) {
+                resultsContainer.innerHTML = '<div class="no-results">No tasks found matching "' + searchTerm + '"</div>';
+            } else {
+                let html = '<h4>🔍 ' + filtered.length + ' result' + (filtered.length > 1 ? 's' : '') + ' for "' + searchTerm + '"</h4>';
+                filtered.forEach(task => {
+                    const statusEmoji = task.status === 'todo' ? '📋' : 
+                                       task.status === 'progress' ? '🔥' : 
+                                       task.status === 'review' ? '👀' : '✅';
+                    html += '<div class="search-result-item" onclick="openDetail(' + task.id + ')">';
+                    html += '<div class="search-result-title">' + statusEmoji + ' ' + task.title + '</div>';
+                    if (task.desc) {
+                        html += '<div class="search-result-desc">' + task.desc.substring(0, 60) + (task.desc.length > 60 ? '...' : '') + '</div>';
+                    }
+                    html += '<div class="search-result-status">Status: ' + task.status + ' | Category: ' + task.category + '</div>';
+                    html += '</div>';
+                });
+                resultsContainer.innerHTML = html;
+            }
+            
+            resultsContainer.style.display = 'block';
+        }
+        
+        function clearSearch() {
+            document.getElementById('globalSearch').value = '';
+            document.getElementById('searchResults').style.display = 'none';
+            document.getElementById('clearSearchBtn').style.display = 'none';
+            renderBoard();
         }
         
         function renderStats() {
