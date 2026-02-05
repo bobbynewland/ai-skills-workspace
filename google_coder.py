@@ -80,7 +80,7 @@ def call_gemini(prompt, model="gemini-1.5-flash"):
         print(f"❌ Error: {e}")
         return None
 
-def generate_code(description, output_file=None):
+def generate_code(description, output_file=None, model="gemini-2.0-flash"):
     """Generate code"""
     prompt = f"""Generate clean, well-documented code for:
 
@@ -94,8 +94,8 @@ Requirements:
 
 Provide only the code without additional explanation."""
 
-    print(f"🤖 Generating code with Gemini...")
-    code = call_gemini(prompt, model="gemini-2.0-flash")
+    print(f"🤖 Generating code with {model}...")
+    code = call_gemini(prompt, model=model)
     
     if code:
         if output_file:
@@ -109,7 +109,7 @@ Provide only the code without additional explanation."""
         return True
     return False
 
-def review_code(file_path):
+def review_code(file_path, model="gemini-3-pro-preview"):
     """Review code file"""
     with open(file_path, 'r') as f:
         code = f.read()
@@ -126,8 +126,8 @@ Code:
 {code}
 ```"""
 
-    print(f"🤖 Reviewing {file_path}...")
-    review = call_gemini(prompt, model="gemini-2.5-pro")
+    print(f"🤖 Reviewing {file_path} with {model}...")
+    review = call_gemini(prompt, model=model)
     
     if review:
         print("\n" + "="*60)
@@ -142,12 +142,21 @@ def main():
     parser.add_argument('action', choices=['generate', 'review', 'explain'], help='Action')
     parser.add_argument('input', help='Input description or file path')
     parser.add_argument('--output', '-o', help='Output file path')
+    parser.add_argument('--model', '-m', 
+                       choices=['gemini-3-pro-preview', 'gemini-2.5-pro', 'gemini-2.0-flash', 'gemini-2.5-flash'],
+                       default='gemini-2.0-flash',
+                       help='Model to use (default: gemini-2.0-flash)')
     args = parser.parse_args()
     
+    # Override model for specific actions
+    model = args.model
+    if args.action == 'review' and args.model == 'gemini-2.0-flash':
+        model = 'gemini-3-pro-preview'  # Use best model for reviews by default
+    
     if args.action == 'generate':
-        generate_code(args.input, args.output)
+        generate_code(args.input, args.output, model)
     elif args.action == 'review':
-        review_code(args.input)
+        review_code(args.input, model)
 
 if __name__ == "__main__":
     main()
