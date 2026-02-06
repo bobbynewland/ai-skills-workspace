@@ -160,6 +160,54 @@
             .task-card { padding: 12px; }
             .editor-toolbar button { font-size: 0.8rem; padding: 8px 10px; }
         }
+        
+        /* Files View */
+        .files-view { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: none; }
+        .files-view.active { display: block; }
+        .files-container { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
+        .upload-area { 
+            background: rgba(255,255,255,0.03); 
+            border: 2px dashed rgba(0,212,255,0.3); 
+            border-radius: 16px; 
+            padding: 40px; 
+            text-align: center;
+            transition: all 0.3s;
+        }
+        .upload-area:hover, .upload-area.dragover { 
+            background: rgba(0,212,255,0.05); 
+            border-color: #00d4ff; 
+        }
+        .upload-icon { font-size: 3rem; margin-bottom: 15px; }
+        .file-list { background: rgba(255,255,255,0.03); border-radius: 16px; padding: 20px; }
+        .file-item { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between;
+            padding: 12px; 
+            background: rgba(255,255,255,0.05); 
+            border-radius: 8px; 
+            margin-bottom: 8px;
+        }
+        .file-info { display: flex; align-items: center; gap: 10px; }
+        .file-icon { font-size: 1.5rem; }
+        .file-name { font-weight: 500; }
+        .file-meta { color: #888; font-size: 0.8rem; }
+        .file-actions { display: flex; gap: 8px; }
+        .file-actions button { 
+            padding: 6px 12px; 
+            background: rgba(255,255,255,0.1); 
+            border: none; 
+            color: #fff; 
+            border-radius: 6px; 
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .file-actions button:hover { background: rgba(255,255,255,0.2); }
+        
+        @media (max-width: 768px) {
+            .files-container { grid-template-columns: 1fr; }
+            .upload-area { padding: 30px 20px; }
+        }
     </style>
 </head>
 <body>
@@ -195,6 +243,7 @@
         <div class="nav-tabs">
             <button class="nav-tab active" onclick="switchView('board')">📋 Tasks</button>
             <button class="nav-tab" onclick="switchView('docs')">📝 Docs</button>
+            <button class="nav-tab" onclick="switchView('files')">📁 Files</button>
         </div>
 
         <!-- Tasks View -->
@@ -248,6 +297,25 @@
                     </div>
                     <input type="text" id="docTitle" class="doc-title" placeholder="Document Title" oninput="saveDoc()">
                     <textarea id="docContent" class="doc-content" placeholder="Start typing... Real-time collaboration enabled!&#10;&#10;Perfect for:&#10;- Meeting notes&#10;- Content scripts&#10;- Ideas & brainstorming&#10;- Project documentation" oninput="saveDoc()"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Files View -->
+        <div id="filesView" class="files-view">
+            <div class="files-container">
+                <div class="upload-area" id="uploadArea" ondrop="dropFiles(event)" ondragover="allowDropFiles(event)">
+                    <div class="upload-icon">📁</div>
+                    <p>Drag & drop files here</p>
+                    <p style="color: #888; font-size: 0.9rem;">or</p>
+                    <input type="file" id="fileInput" multiple onchange="handleFiles(this.files)" style="display: none;">
+                    <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">Select Files</button>
+                </div>
+                <div class="file-list" id="fileList">
+                    <h3 style="color: #00d4ff; margin-bottom: 15px;">📂 Uploaded Files</h3>
+                    <div id="filesListContent">
+                        <p style="color: #666; text-align: center; padding: 40px;">No files uploaded yet</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -455,11 +523,14 @@
             document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
             event.target.classList.add('active');
             
+            // Hide all views
+            document.getElementById('boardView').style.display = 'none';
+            document.getElementById('docsView').classList.remove('active');
+            document.getElementById('filesView').classList.remove('active');
+            
             if (view === 'board') {
                 document.getElementById('boardView').style.display = 'grid';
-                document.getElementById('docsView').classList.remove('active');
-            } else {
-                document.getElementById('boardView').style.display = 'none';
+            } else if (view === 'docs') {
                 document.getElementById('docsView').classList.add('active');
                 // On mobile, hide sidebar by default when switching to docs
                 if (window.innerWidth <= 768) {
@@ -467,6 +538,9 @@
                     document.getElementById('docsToggleBtn').textContent = '📁 Show Documents';
                 }
                 if (!currentDocId && docs.length > 0) selectDoc(docs[0].id);
+            } else if (view === 'files') {
+                document.getElementById('filesView').classList.add('active');
+                loadFilesList();
             }
         }
 
@@ -652,6 +726,108 @@
                 currentDocId = null;
                 document.getElementById('docTitle').value = '';
                 document.getElementById('docContent').value = '';
+            }
+        }
+
+        // ==================== FILES ====================
+        
+        function allowDropFiles(e) {
+            e.preventDefault();
+            document.getElementById('uploadArea').classList.add('dragover');
+        }
+        
+        function dropFiles(e) {
+            e.preventDefault();
+            document.getElementById('uploadArea').classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        }
+        
+        async function handleFiles(files) {
+            if (!files.length) return;
+            
+            for (const file of files) {
+                await uploadFile(file);
+            }
+        }
+        
+        async function uploadFile(file) {
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const base64 = e.target.result;
+                const fileData = {
+                    name: file.name,
+                    type: file.type,
+                    size: file.size,
+                    data: base64,
+                    uploadedAt: Date.now()
+                };
+                
+                await db.ref(`workspaces/${workspaceId}/files`).push(fileData);
+                loadFilesList();
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        async function loadFilesList() {
+            const snapshot = await db.ref(`workspaces/${workspaceId}/files`).once('value');
+            const files = snapshot.val();
+            const container = document.getElementById('filesListContent');
+            
+            if (!files) {
+                container.innerHTML = '<p style="color: #666; text-align: center; padding: 40px;">No files uploaded yet</p>';
+                return;
+            }
+            
+            const fileEntries = Object.entries(files).sort((a, b) => b[1].uploadedAt - a[1].uploadedAt);
+            
+            container.innerHTML = fileEntries.map(([id, file]) => `
+                <div class="file-item">
+                    <div class="file-info">
+                        <span class="file-icon">${getFileIcon(file.type)}</span>
+                        <div>
+                            <div class="file-name">${escapeHtml(file.name)}</div>
+                            <div class="file-meta">${formatFileSize(file.size)} • ${formatDate(file.uploadedAt)}</div>
+                        </div>
+                    </div>
+                    <div class="file-actions">
+                        <button onclick="downloadFile('${id}')">💾 Download</button>
+                        <button onclick="deleteFile('${id}')" style="color: #ff6b6b;">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function getFileIcon(type) {
+            if (type.startsWith('image/')) return '🖼️';
+            if (type.startsWith('video/')) return '🎬';
+            if (type.startsWith('audio/')) return '🎵';
+            if (type.includes('pdf')) return '📄';
+            if (type.includes('word') || type.includes('document')) return '📝';
+            if (type.includes('excel') || type.includes('sheet')) return '📊';
+            return '📁';
+        }
+        
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+        
+        async function downloadFile(id) {
+            const snapshot = await db.ref(`workspaces/${workspaceId}/files/${id}`).once('value');
+            const file = snapshot.val();
+            if (!file) return;
+            
+            const a = document.createElement('a');
+            a.href = file.data;
+            a.download = file.name;
+            a.click();
+        }
+        
+        async function deleteFile(id) {
+            if (confirm('Delete this file?')) {
+                await db.ref(`workspaces/${workspaceId}/files/${id}`).remove();
+                loadFilesList();
             }
         }
 
