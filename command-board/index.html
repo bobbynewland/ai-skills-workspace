@@ -173,17 +173,8 @@
                 <input type="password" id="passwordInput" placeholder="Password" value="WinDev2026@@" style="padding-right: 50px;">
                 <button onclick="togglePassword()" style="position: absolute; right: 5px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: #888; cursor: pointer; padding: 10px; font-size: 0.9rem;">👁️</button>
             </div>
-            <div style="text-align: left; margin: 15px 0;">
-                <label style="color: #888; font-size: 0.85rem; cursor: pointer;">
-                    <input type="checkbox" id="createWorkspace" style="margin-right: 8px;">
-                    Create new workspace (if doesn't exist)
-                </label>
-            </div>
             <button onclick="joinWorkspace()">Join Workspace</button>
-            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
-                <button onclick="resetWorkspace()" style="background: transparent; border: 1px solid rgba(255,68,68,0.5); color: #ff6b6b; font-size: 0.85rem;">🔄 Reset Workspace (Admin Only)</button>
-            </div>
-            <div class="hint">Contact admin for workspace issues</div>
+            <div class="hint">Secure workspace - admin only</div>
         </div>
     </div>
 
@@ -395,18 +386,9 @@
                     }
                     console.log('✅ Password verified');
                 } else {
-                    // Workspace doesn't exist - check if admin wants to create
-                    const createNew = document.getElementById('createWorkspace').checked;
-                    if (!createNew) {
-                        alert('❌ Workspace not found!\n\nClick "Contact admin to create new workspaces" to enable creation.');
-                        return;
-                    }
-                    // Create new workspace with password
-                    await workspaceRef.set({
-                        passwordHash: passwordHash,
-                        createdAt: Date.now()
-                    });
-                    console.log('✅ Workspace created');
+                    // Workspace doesn't exist - admin only creation
+                    alert('❌ Workspace not found!\n\nContact admin to create new workspaces.');
+                    return;
                 }
                 
                 // Success - show app
