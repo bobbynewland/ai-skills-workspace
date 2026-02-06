@@ -168,16 +168,10 @@
         <div class="login-box">
             <h1>🚀 AI Skills Studio</h1>
             <p>Enter workspace credentials</p>
-            <input type="text" id="syncIdInput" placeholder="Workspace ID (e.g., winslow-main)" value="winslow-main">
-            <input type="password" id="passwordInput" placeholder="Workspace Password" style="margin-bottom: 5px;">
-            <div style="text-align: left; margin-bottom: 15px;">
-                <label style="color: #888; font-size: 0.85rem; cursor: pointer;">
-                    <input type="checkbox" id="createWorkspace" style="margin-right: 8px;">
-                    Create new workspace (if doesn't exist)
-                </label>
-            </div>
+            <input type="text" id="syncIdInput" placeholder="Workspace ID" value="winslow-main">
+            <input type="password" id="passwordInput" placeholder="Password" value="WinDev2026@@">
             <button onclick="joinWorkspace()">Join Workspace</button>
-            <div class="hint">Need both ID and password<br>Keep credentials secure!</div>
+            <div class="hint">Contact admin to create new workspaces</div>
         </div>
     </div>
 
@@ -326,7 +320,6 @@
         async function joinWorkspace() {
             workspaceId = document.getElementById('syncIdInput').value.trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
             const password = document.getElementById('passwordInput').value;
-            const createNew = document.getElementById('createWorkspace').checked;
             
             if (!workspaceId) {
                 alert('Please enter a workspace ID');
@@ -347,22 +340,14 @@
                 if (workspace) {
                     // Workspace exists - check password
                     if (workspace.passwordHash !== passwordHash) {
-                        alert('❌ Incorrect password!\n\nIf this is your workspace, enter the correct password.\nIf you want to create a new workspace, check "Create new workspace" and use a different ID.');
+                        alert('❌ Incorrect password!\n\nContact admin if you need access.');
                         return;
                     }
                     console.log('✅ Password verified');
                 } else {
-                    // Workspace doesn't exist
-                    if (!createNew) {
-                        alert('❌ Workspace not found!\n\nCheck "Create new workspace" to create it with your password.');
-                        return;
-                    }
-                    // Create new workspace with password
-                    await workspaceRef.set({
-                        passwordHash: passwordHash,
-                        createdAt: Date.now()
-                    });
-                    console.log('✅ Workspace created');
+                    // Workspace doesn't exist - contact admin
+                    alert('❌ Workspace not found!\n\nContact admin to create new workspaces.');
+                    return;
                 }
                 
                 // Success - show app
