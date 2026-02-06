@@ -416,6 +416,11 @@
             document.getElementById('userDisplay').textContent = currentUser.email;
             document.getElementById('syncMode').textContent = 'Personal';
             
+            updateSyncStatus('syncing');
+            
+            // Check Firebase connection first
+            checkConnection();
+            
             tasksRef = database.ref(`users/${currentUser.uid}/tasks`);
             console.log('tasksRef set to:', `users/${currentUser.uid}/tasks`);
             
@@ -428,6 +433,7 @@
             }, (error) => {
                 console.error('Sync error:', error);
                 updateSyncStatus('offline');
+                alert('Connection error: ' + error.message + '\n\nTry clicking the sync status to reconnect.');
             });
         }
 
@@ -450,6 +456,11 @@
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('mainApp').style.display = 'block';
             showLoading(false);
+            
+            // Start connection monitoring
+            setTimeout(() => {
+                checkConnection();
+            }, 1000);
         }
 
         // Logout
@@ -476,7 +487,47 @@
         function updateSyncStatus(status) {
             const el = document.getElementById('syncStatus');
             el.className = 'sync-status ' + status;
-            el.textContent = status === 'online' ? '● Live' : '○ Offline';
+            if (status === 'online') {
+                el.textContent = '🟢 Online';
+                el.style.background = '#10b981';
+            } else if (status === 'syncing') {
+                el.textContent = '🔄 Syncing...';
+                el.style.background = '#3b82f6';
+            } else {
+                el.textContent = '🔴 Offline - Click to retry';
+                el.style.background = '#ef4444';
+                el.style.cursor = 'pointer';
+                el.onclick = reconnectFirebase;
+            }
+        }
+
+        // Manual Reconnect
+        function reconnectFirebase() {
+            console.log('Manual reconnect triggered');
+            updateSyncStatus('syncing');
+            
+            if (currentMode === 'email' && currentUser) {
+                setupUserListener();
+            } else if (currentMode === 'shared' && syncId) {
+                setupSharedListener();
+            } else {
+                alert('Please log in again');
+                logout();
+            }
+        }
+
+        // Check Firebase Connection
+        function checkConnection() {
+            const connectedRef = database.ref('.info/connected');
+            connectedRef.on('value', (snap) => {
+                if (snap.val() === true) {
+                    console.log('Firebase connected');
+                    updateSyncStatus('online');
+                } else {
+                    console.log('Firebase disconnected');
+                    updateSyncStatus('offline');
+                }
+            });
         }
 
         // Render Board
