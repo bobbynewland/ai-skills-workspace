@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Skills Studio - Command Board</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: #fff; min-height: 100vh; }
+        
+        /* Login Screen */
+        .login-screen { position: fixed; inset: 0; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 20px; }
+        .login-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 40px; width: 100%; max-width: 420px; }
+        .login-tabs { display: flex; gap: 10px; margin-bottom: 30px; }
+        .login-tab { flex: 1; padding: 12px; background: rgba(255,255,255,0.05); border: none; color: #888; border-radius: 10px; cursor: pointer; font-weight: 500; }
+        .login-tab.active { background: linear-gradient(90deg, #00d4ff, #7b2cbf); color: #fff; }
+        .login-box h1 { font-size: 1.8rem; margin-bottom: 10px; text-align: center; }
+        .login-box p { color: #888; margin-bottom: 25px; text-align: center; font-size: 0.95rem; }
+        .login-box input { width: 100%; padding: 15px; margin-bottom: 15px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 10px; font-size: 1rem; }
+        .login-box input:focus { outline: none; border-color: #00d4ff; }
+        .login-box button.action-btn { width: 100%; padding: 15px; background: linear-gradient(90deg, #00d4ff, #7b2cbf); border: none; color: #fff; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; }
+        .login-box button.action-btn:hover { opacity: 0.9; }
+        .login-box .error { color: #ff6b6b; margin-top: 10px; font-size: 0.9rem; text-align: center; }
+        .login-box .hint { color: #666; margin-top: 15px; font-size: 0.85rem; text-align: center; }
+        
+        /* Header & User Bar */
+        .user-bar { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.05); flex-wrap: wrap; gap: 10px; }
+        .user-info { display: flex; align-items: center; gap: 15px; }
+        .sync-mode { color: #00d4ff; font-size: 0.85rem; background: rgba(0,212,255,0.1); padding: 4px 12px; border-radius: 20px; }
+        .sync-status { padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+        .sync-status.online { background: #10b981; color: white; }
+        .sync-status.syncing { background: #3b82f6; color: white; }
+        .logout-btn { background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; }
+        
+        /* Header */
+        .header { text-align: center; padding: 30px 20px 20px; }
+        .header h1 { font-size: 2.5rem; background: linear-gradient(90deg, #00d4ff, #7b2cbf); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
+        .header p { color: #888; }
+        
+        /* Navigation Tabs */
+        .nav-tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; padding: 0 20px; }
+        .nav-tab { padding: 12px 24px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #888; border-radius: 10px; cursor: pointer; font-weight: 500; transition: all 0.3s; }
+        .nav-tab:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        .nav-tab.active { background: linear-gradient(90deg, #00d4ff, #7b2cbf); color: #fff; border-color: transparent; }
+        
+        /* Documents Section */
+        .docs-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: none; }
+        .docs-container.active { display: block; }
+        .docs-sidebar { width: 280px; background: rgba(255,255,255,0.03); border-radius: 16px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); }
+        .docs-sidebar h3 { color: #00d4ff; margin-bottom: 15px; font-size: 1.1rem; }
+        .doc-list { max-height: 500px; overflow-y: auto; }
+        .doc-item { padding: 12px; background: rgba(255,255,255,0.05); border-radius: 8px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; }
+        .doc-item:hover { background: rgba(255,255,255,0.1); border-color: rgba(0,212,255,0.3); }
+        .doc-item.active { background: rgba(0,212,255,0.1); border-color: #00d4ff; }
+        .doc-item-title { font-weight: 500; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .doc-item-meta { font-size: 0.75rem; color: #666; }
+        .new-doc-btn { width: 100%; padding: 12px; background: linear-gradient(90deg, #00d4ff, #7b2cbf); border: none; color: #fff; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 15px; }
+        
+        /* Editor */
+        .editor-container { flex: 1; background: rgba(255,255,255,0.03); border-radius: 16px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); }
+        .editor-toolbar { display: flex; gap: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); flex-wrap: wrap; }
+        .editor-toolbar button { padding: 8px 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 6px; cursor: pointer; font-size: 0.9rem; }
+        .editor-toolbar button:hover { background: rgba(255,255,255,0.1); }
+        .doc-title-input { width: 100%; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 8px; font-size: 1.2rem; font-weight: 600; margin-bottom: 15px; }
+        .doc-title-input:focus { outline: none; border-color: #00d4ff; }
+        .doc-editor { width: 100%; min-height: 500px; padding: 20px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 8px; font-size: 1rem; line-height: 1.6; resize: vertical; font-family: 'Segoe UI', system-ui, sans-serif; }
+        .doc-editor:focus { outline: none; border-color: #00d4ff; }
+        .editor-layout { display: flex; gap: 20px; }
+        .collab-indicator { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #10b981; }
+        .collab-indicator::before { content: ''; width: 8px; height: 8px; background: #10b981; border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        
+        /* Board */
+        .board { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 1400px; margin: 20px auto; padding: 0 20px; }
+        .column { background: rgba(255,255,255,0.03); border-radius: 16px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); min-height: 400px; }
+        .column-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid; }
+        .todo .column-header { border-color: #ff6b6b; }
+        .progress .column-header { border-color: #ffd93d; }
+        .review .column-header { border-color: #6bcf7f; }
+        .done .column-header { border-color: #00d4ff; }
+        .column-title { font-size: 1.2rem; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .column-count { background: rgba(255,255,255,0.1); padding: 4px 12px; border-radius: 20px; font-size: 0.9rem; }
+        
+        /* Tasks */
+        .task-card { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 16px; margin-bottom: 12px; cursor: grab; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.08); }
+        .task-card:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .task-card.dragging { opacity: 0.5; }
+        .task-title { font-weight: 600; margin-bottom: 8px; font-size: 0.95rem; }
+        .task-desc { color: #888; font-size: 0.85rem; margin-bottom: 10px; }
+        .task-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+        .tag { font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; }
+        .tag-marketing { background: rgba(255,107,107,0.2); color: #ff6b6b; }
+        .tag-dev { background: rgba(0,212,255,0.2); color: #00d4ff; }
+        .tag-content { background: rgba(255,217,61,0.2); color: #ffd93d; }
+        .tag-ops { background: rgba(156, 39, 176, 0.2); color: #e040fb; }
+        
+        .add-task-btn { width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 2px dashed rgba(255,255,255,0.2); border-radius: 8px; color: #888; cursor: pointer; margin-top: 10px; }
+        .add-task-btn:hover { background: rgba(255,255,255,0.1); color: #fff; border-color: rgba(255,255,255,0.4); }
+        
+        /* Modal */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
+        .modal.active { display: flex; }
+        .modal-content { background: #1a1a2e; padding: 30px; border-radius: 16px; width: 100%; max-width: 500px; border: 1px solid rgba(255,255,255,0.1); max-height: 90vh; overflow-y: auto; }
+        .modal h2 { color: #00d4ff; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; color: #888; font-size: 0.9rem; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 1rem; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #00d4ff; }
+        .form-group textarea { min-height: 100px; resize: vertical; }
+        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
+        .btn { flex: 1; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
+        .btn-primary { background: linear-gradient(90deg, #00d4ff, #7b2cbf); color: #fff; }
+        .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; }
+        .btn-danger { background: rgba(255,68,68,0.2); color: #ff4444; }
+        
+        /* Loading */
+        .loading { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 10000; justify-content: center; align-items: center; }
+        .loading.active { display: flex; }
+        .spinner { width: 50px; height: 50px; border: 3px solid rgba(255,255,255,0.1); border-top-color: #00d4ff; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-box">
+            <div class="login-tabs">
+                <button class="login-tab active" onclick="switchTab('shared')" id="tab-shared">🔥 Shared Mode</button>
+                <button class="login-tab" onclick="switchTab('email')" id="tab-email">📧 Email Login</button>
+            </div>
+            
+            <!-- Shared Mode -->
+            <div id="sharedForm">
+                <h1>Collaborate</h1>
+                <p>Enter a shared workspace ID to collaborate</p>
+                <input type="text" id="syncIdInput" placeholder="Workspace ID (e.g., winslow-main)" value="winslow-main">
+                <button class="action-btn" onclick="joinShared()">Join Workspace</button>
+                <div class="hint">Use the same ID on all your devices</div>
+            </div>
+            
+            <!-- Email Mode -->
+            <div id="emailForm" style="display: none;">
+                <h1>Personal Board</h1>
+                <p id="emailSubtitle">Sign in to access your personal tasks</p>
+                <input type="email" id="emailInput" placeholder="Email" autocomplete="email">
+                <input type="password" id="passwordInput" placeholder="Password" autocomplete="current-password">
+                <div id="loginError" class="error" style="display: none;"></div>
+                <button class="action-btn" id="authBtn" onclick="handleAuth()">Sign In</button>
+                <div class="hint" style="margin-top: 15px;">
+                    <span id="toggleText">Don't have an account?</span>
+                    <a onclick="toggleAuthMode()" style="color: #00d4ff; cursor: pointer; margin-left: 5px;" id="toggleLink">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" style="display: none;">
+        <!-- User Bar -->
+        <div class="user-bar">
+            <div class="user-info">
+                <span id="userDisplay"></span>
+                <span class="sync-mode" id="syncMode">Shared</span>
+                <span class="sync-status online" id="syncStatus">Online</span>
+            </div>
+            <button class="logout-btn" onclick="logout()">Switch Mode</button>
+        </div>
+
+        <!-- Header -->
+        <div class="header">
+            <h1>Command Board</h1>
+            <p>Mission Control v3.0</p>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchView('board')" id="tab-board">📋 Tasks</button>
+            <button class="nav-tab" onclick="switchView('docs')" id="tab-docs">📝 Documents</button>
+        </div>
+
+        <!-- Board View -->
+        <div id="boardView" class="board">
+            <div class="column todo" ondragover="allowDrop(event)" ondrop="drop(event, 'todo')">
+                <div class="column-header">
+                    <span class="column-title">📋 To Do</span>
+                    <span class="column-count" id="count-todo">0</span>
+                </div>
+                <div class="tasks" id="col-todo"></div>
+                <button class="add-task-btn" onclick="openModal()">+ Add Task</button>
+            </div>
+            
+            <div class="column progress" ondragover="allowDrop(event)" ondrop="drop(event, 'progress')">
+                <div class="column-header">
+                    <span class="column-title">🔥 In Progress</span>
+                    <span class="column-count" id="count-progress">0</span>
+                </div>
+                <div class="tasks" id="col-progress"></div>
+            </div>
+            
+            <div class="column review" ondragover="allowDrop(event)" ondrop="drop(event, 'review')">
+                <div class="column-header">
+                    <span class="column-title">👀 Review</span>
+                    <span class="column-count" id="count-review">0</span>
+                </div>
+                <div class="tasks" id="col-review"></div>
+            </div>
+            
+            <div class="column done" ondragover="allowDrop(event)" ondrop="drop(event, 'done')">
+                <div class="column-header">
+                    <span class="column-title">✅ Done</span>
+                    <span class="column-count" id="count-done">0</span>
+                </div>
+                <div class="tasks" id="col-done"></div>
+            </div>
+        </div>
+
+        <!-- Documents View -->
+        <div id="docsView" class="docs-container">
+            <div class="editor-layout">
+                <!-- Sidebar -->
+                <div class="docs-sidebar">
+                    <h3>📝 Documents</h3>
+                    <div class="collab-indicator" style="margin-bottom: 15px;">● Live collaboration</div>
+                    <div class="doc-list" id="docList">
+                        <!-- Documents will be listed here -->
+                    </div>
+                    <button class="new-doc-btn" onclick="createNewDocument()">+ New Document</button>
+                </div>
+
+                <!-- Editor -->
+                <div class="editor-container">
+                    <div class="editor-toolbar">
+                        <button onclick="copyDocument()">📋 Copy All</button>
+                        <button onclick="downloadDocument()">💾 Download</button>
+                        <button onclick="deleteCurrentDocument()" style="color: #ff6b6b;">🗑️ Delete</button>
+                        <span id="lastSaved" style="margin-left: auto; color: #666; font-size: 0.85rem;"></span>
+                    </div>
+                    <input type="text" id="docTitle" class="doc-title-input" placeholder="Document Title" oninput="updateDocumentTitle()">
+                    <textarea id="docContent" class="doc-editor" placeholder="Start typing... collaborate in real-time!&#10;&#10;This is a shared document. You can:&#10;- Type and edit together&#10;- Copy text easily&#10;- Access from any device&#10;&#10;Perfect for notes, scripts, content, and ideas!" oninput="updateDocumentContent()"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Modal -->
+    <div id="taskModal" class="modal" onclick="if(event.target===this)closeModal()">
+        <div class="modal-content">
+            <h2 id="modalTitle">New Task</h2>
+            <input type="hidden" id="taskId">
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" id="taskTitle" placeholder="Task title">
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="taskDesc" placeholder="Description (optional)"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Category</label>
+                <select id="taskCategory">
+                    <option value="marketing">📢 Marketing</option>
+                    <option value="dev">💻 Development</option>
+                    <option value="content">✍️ Content</option>
+                    <option value="ops">⚙️ Operations</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Priority</label>
+                <select id="taskPriority">
+                    <option value="high">🔴 High</option>
+                    <option value="medium" selected>🟡 Medium</option>
+                    <option value="low">🟢 Low</option>
+                </select>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="saveTask()">Save</button>
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-danger" id="deleteBtn" onclick="deleteTask()" style="display: none;">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyAVmSmiuJDcCAiZhq3xqXSJZnWtviLvnuU",
+            authDomain: "winslow-756c3.firebaseapp.com",
+            databaseURL: "https://winslow-756c3-default-rtdb.firebaseio.com",
+            projectId: "winslow-756c3",
+            storageBucket: "winslow-756c3.appspot.com",
+            messagingSenderId: "1234548067",
+            appId: "1:1234548067:web:abc123def456"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        // State
+        let currentMode = 'shared'; // 'shared' or 'email'
+        let currentUser = null;
+        let syncId = null;
+        let tasks = [];
+        let isLoginMode = true;
+        let draggedTask = null;
+        let tasksRef = null;
+
+        // Check URL for sync ID
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlSyncId = urlParams.get('sync');
+        if (urlSyncId) {
+            document.getElementById('syncIdInput').value = urlSyncId;
+        }
+
+        // Tab Switching
+        function switchTab(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.login-tab').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(`tab-${mode}`).classList.add('active');
+            
+            if (mode === 'shared') {
+                document.getElementById('sharedForm').style.display = 'block';
+                document.getElementById('emailForm').style.display = 'none';
+            } else {
+                document.getElementById('sharedForm').style.display = 'none';
+                document.getElementById('emailForm').style.display = 'block';
+            }
+        }
+
+        // Join Shared Workspace
+        function joinShared() {
+            syncId = document.getElementById('syncIdInput').value.trim().toLowerCase();
+            if (!syncId) {
+                alert('Please enter a workspace ID');
+                return;
+            }
+            
+            // Sanitize syncId for Firebase path
+            syncId = syncId.replace(/[.#$[\]]/g, '_');
+            
+            currentMode = 'shared';
+            showMainApp();
+            setupSharedListener();
+        }
+
+        // Setup Shared Listener
+        function setupSharedListener() {
+            document.getElementById('userDisplay').textContent = `Workspace: ${syncId}`;
+            document.getElementById('syncMode').textContent = 'Shared';
+            
+            tasksRef = database.ref(`shared/${syncId}/tasks`);
+            
+            tasksRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                tasks = data ? Object.entries(data).map(([id, task]) => ({ id, ...task })) : [];
+                renderBoard();
+                updateSyncStatus('online');
+            }, (error) => {
+                console.error('Sync error:', error);
+                updateSyncStatus('offline');
+            });
+        }
+
+        // Email Auth
+        async function handleAuth() {
+            const email = document.getElementById('emailInput').value;
+            const password = document.getElementById('passwordInput').value;
+            const errorDiv = document.getElementById('loginError');
+            
+            if (!email || !password) {
+                errorDiv.textContent = 'Please enter email and password';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            showLoading(true);
+            
+            try {
+                if (isLoginMode) {
+                    await auth.signInWithEmailAndPassword(email, password);
+                } else {
+                    await auth.createUserWithEmailAndPassword(email, password);
+                }
+                errorDiv.style.display = 'none';
+            } catch (error) {
+                errorDiv.textContent = error.message;
+                errorDiv.style.display = 'block';
+                showLoading(false);
+            }
+        }
+
+        // Auth State Listener
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUser = user;
+                currentMode = 'email';
+                showMainApp();
+                setupUserListener();
+            }
+        });
+
+        // Setup User Listener
+        function setupUserListener() {
+            console.log('Setting up user listener for:', currentUser.email);
+            document.getElementById('userDisplay').textContent = currentUser.email;
+            document.getElementById('syncMode').textContent = 'Personal';
+            
+            updateSyncStatus('syncing');
+            
+            // Check Firebase connection first
+            checkConnection();
+            
+            tasksRef = database.ref(`users/${currentUser.uid}/tasks`);
+            console.log('tasksRef set to:', `users/${currentUser.uid}/tasks`);
+            
+            tasksRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                tasks = data ? Object.entries(data).map(([id, task]) => ({ id, ...task })) : [];
+                console.log('Tasks loaded:', tasks.length);
+                renderBoard();
+                updateSyncStatus('online');
+            }, (error) => {
+                console.error('Sync error:', error);
+                updateSyncStatus('offline');
+                alert('Connection error: ' + error.message + '\n\nTry clicking the sync status to reconnect.');
+            });
+        }
+
+        // Toggle Auth Mode
+        function toggleAuthMode() {
+            isLoginMode = !isLoginMode;
+            document.getElementById('authBtn').textContent = isLoginMode ? 'Sign In' : 'Sign Up';
+            document.getElementById('emailSubtitle').textContent = isLoginMode 
+                ? 'Sign in to access your personal tasks' 
+                : 'Create an account to get started';
+            document.getElementById('toggleText').textContent = isLoginMode 
+                ? "Don't have an account?" 
+                : "Already have an account?";
+            document.getElementById('toggleLink').textContent = isLoginMode ? 'Sign Up' : 'Sign In';
+            document.getElementById('loginError').style.display = 'none';
+        }
+
+        // Show/Hide Screens
+        function showMainApp() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            showLoading(false);
+            
+            // Start connection monitoring
+            setTimeout(() => {
+                checkConnection();
+            }, 1000);
+        }
+
+        // Logout
+        function logout() {
+            if (currentMode === 'email' && currentUser) {
+                auth.signOut();
+            }
+            if (tasksRef) {
+                tasksRef.off();
+            }
+            tasks = [];
+            renderBoard();
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('mainApp').style.display = 'none';
+            switchTab('shared');
+        }
+
+        // Loading
+        function showLoading(show) {
+            document.getElementById('loading').classList.toggle('active', show);
+        }
+
+        // Sync Status
+        function updateSyncStatus(status) {
+            const el = document.getElementById('syncStatus');
+            el.className = 'sync-status ' + status;
+            if (status === 'online') {
+                el.textContent = '🟢 Online';
+                el.style.background = '#10b981';
+            } else if (status === 'syncing') {
+                el.textContent = '🔄 Syncing...';
+                el.style.background = '#3b82f6';
+            } else {
+                el.textContent = '🔴 Offline - Click to retry';
+                el.style.background = '#ef4444';
+                el.style.cursor = 'pointer';
+                el.onclick = reconnectFirebase;
+            }
+        }
+
+        // Manual Reconnect
+        function reconnectFirebase() {
+            console.log('Manual reconnect triggered');
+            updateSyncStatus('syncing');
+            
+            if (currentMode === 'email' && currentUser) {
+                setupUserListener();
+            } else if (currentMode === 'shared' && syncId) {
+                setupSharedListener();
+            } else {
+                alert('Please log in again');
+                logout();
+            }
+        }
+
+        // Check Firebase Connection
+        function checkConnection() {
+            const connectedRef = database.ref('.info/connected');
+            connectedRef.on('value', (snap) => {
+                if (snap.val() === true) {
+                    console.log('Firebase connected');
+                    updateSyncStatus('online');
+                } else {
+                    console.log('Firebase disconnected');
+                    updateSyncStatus('offline');
+                }
+            });
+        }
+
+        // Render Board
+        function renderBoard() {
+            const columns = { todo: [], progress: [], review: [], done: [] };
+            tasks.forEach(task => {
+                if (columns[task.status]) columns[task.status].push(task);
+            });
+            
+            Object.keys(columns).forEach(status => {
+                const container = document.getElementById(`col-${status}`);
+                container.innerHTML = columns[status].map(task => createTaskCard(task)).join('');
+                document.getElementById(`count-${status}`).textContent = columns[status].length;
+            });
+        }
+
+        // Create Task Card
+        function createTaskCard(task) {
+            return `
+                <div class="task-card" draggable="true" ondragstart="drag(event, '${task.id}')" onclick="editTask('${task.id}')">
+                    <div class="task-title">${escapeHtml(task.title)}</div>
+                    ${task.desc ? `<div class="task-desc">${escapeHtml(task.desc)}</div>` : ''}
+                    <div class="task-meta">
+                        <span class="tag tag-${task.category}">${task.category}</span>
+                        <span style="color: ${getPriorityColor(task.priority)}; font-size: 0.75rem;">${task.priority}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getPriorityColor(p) {
+            return { high: '#ff6b6b', medium: '#ffd93d', low: '#6bcf7f' }[p] || '#888';
+        }
+
+        // Drag & Drop
+        function drag(event, taskId) {
+            draggedTask = taskId;
+        }
+
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+
+        async function drop(event, newStatus) {
+            event.preventDefault();
+            if (!draggedTask || !tasksRef) return;
+            
+            const task = tasks.find(t => t.id === draggedTask);
+            if (task && task.status !== newStatus) {
+                await tasksRef.child(draggedTask).update({
+                    status: newStatus,
+                    updatedAt: Date.now()
+                });
+            }
+            draggedTask = null;
+        }
+
+        // Save Task
+        async function saveTask() {
+            const id = document.getElementById('taskId').value;
+            const title = document.getElementById('taskTitle').value.trim();
+            const desc = document.getElementById('taskDesc').value.trim();
+            const category = document.getElementById('taskCategory').value;
+            const priority = document.getElementById('taskPriority').value;
+            
+            if (!title) {
+                alert('Please enter a task title');
+                return;
+            }
+            
+            // Ensure tasksRef is set
+            if (!tasksRef) {
+                if (currentMode === 'email' && currentUser) {
+                    tasksRef = database.ref(`users/${currentUser.uid}/tasks`);
+                } else if (currentMode === 'shared' && syncId) {
+                    tasksRef = database.ref(`shared/${syncId}/tasks`);
+                } else {
+                    alert('Not connected to workspace. Please refresh and log in again.');
+                    return;
+                }
+            }
+            
+            const taskData = {
+                title, desc, category, priority,
+                status: id ? tasks.find(t => t.id === id)?.status || 'todo' : 'todo',
+                updatedAt: Date.now()
+            };
+            
+            if (!id) taskData.createdAt = Date.now();
+            
+            try {
+                const taskRef = id ? tasksRef.child(id) : tasksRef.push();
+                await taskRef.set(taskData);
+                closeModal();
+            } catch (error) {
+                console.error('Error saving task:', error);
+                alert('Error saving task: ' + error.message);
+            }
+        }
+
+        // Delete Task
+        async function deleteTask() {
+            const id = document.getElementById('taskId').value;
+            if (!id || !tasksRef) return;
+            
+            if (confirm('Delete this task?')) {
+                await tasksRef.child(id).remove();
+                closeModal();
+            }
+        }
+
+        // Modal
+        function openModal() {
+            console.log('Opening modal, tasksRef:', tasksRef ? 'set' : 'null');
+            
+            // Ensure we're on board view
+            if (document.getElementById('boardView').style.display === 'none') {
+                switchView('board');
+            }
+            
+            // Ensure tasksRef is set
+            if (!tasksRef) {
+                if (currentMode === 'email' && currentUser) {
+                    tasksRef = database.ref(`users/${currentUser.uid}/tasks`);
+                } else if (currentMode === 'shared' && syncId) {
+                    tasksRef = database.ref(`shared/${syncId}/tasks`);
+                }
+            }
+            
+            document.getElementById('taskId').value = '';
+            document.getElementById('taskTitle').value = '';
+            document.getElementById('taskDesc').value = '';
+            document.getElementById('taskCategory').value = 'marketing';
+            document.getElementById('taskPriority').value = 'medium';
+            document.getElementById('modalTitle').textContent = 'New Task';
+            document.getElementById('deleteBtn').style.display = 'none';
+            document.getElementById('taskModal').classList.add('active');
+            setTimeout(() => document.getElementById('taskTitle').focus(), 100);
+        }
+
+        function editTask(id) {
+            const task = tasks.find(t => t.id === id);
+            if (!task) return;
+            
+            document.getElementById('taskId').value = id;
+            document.getElementById('taskTitle').value = task.title;
+            document.getElementById('taskDesc').value = task.desc || '';
+            document.getElementById('taskCategory').value = task.category;
+            document.getElementById('taskPriority').value = task.priority;
+            document.getElementById('modalTitle').textContent = 'Edit Task';
+            document.getElementById('deleteBtn').style.display = 'block';
+            document.getElementById('taskModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('taskModal').classList.remove('active');
+        }
+
+        // Escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+            if (e.key === 'n' && e.ctrlKey) {
+                e.preventDefault();
+                if (document.getElementById('mainApp').style.display !== 'none') {
+                    openModal();
+                }
+            }
+        });
+
+        // Enter key on login
+        document.getElementById('syncIdInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') joinShared();
+        });
+        document.getElementById('passwordInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleAuth();
+        });
+
+        // ==================== DOCUMENTS FEATURE ====================
+        
+        let currentDocId = null;
+        let docsRef = null;
+        let documents = [];
+        let docUpdateTimeout = null;
+
+        // Switch between Board and Documents views
+        function switchView(view) {
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(`tab-${view}`).classList.add('active');
+            
+            if (view === 'board') {
+                document.getElementById('boardView').style.display = 'grid';
+                document.getElementById('docsView').classList.remove('active');
+                // Ensure tasksRef is set up for board view
+                if (!tasksRef && currentUser) {
+                    setupUserListener();
+                } else if (!tasksRef && syncId) {
+                    setupSharedListener();
+                }
+            } else {
+                document.getElementById('boardView').style.display = 'none';
+                document.getElementById('docsView').classList.add('active');
+                setupDocumentsListener();
+            }
+        }
+
+        // Setup Documents Listener
+        function setupDocumentsListener() {
+            if (!tasksRef) return;
+            
+            // Use same ref path but /docs instead of /tasks
+            const path = currentMode === 'shared' 
+                ? `shared/${syncId}/docs` 
+                : `users/${currentUser.uid}/docs`;
+            
+            docsRef = database.ref(path);
+            
+            docsRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                documents = data ? Object.entries(data).map(([id, doc]) => ({ id, ...doc })) : [];
+                documents.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+                renderDocList();
+                
+                // Auto-select first doc if none selected
+                if (!currentDocId && documents.length > 0) {
+                    selectDocument(documents[0].id);
+                }
+            });
+        }
+
+        // Render Document List
+        function renderDocList() {
+            const list = document.getElementById('docList');
+            if (documents.length === 0) {
+                list.innerHTML = '<div style="color: #666; text-align: center; padding: 20px;">No documents yet.<br>Create one to get started!</div>';
+                return;
+            }
+            
+            list.innerHTML = documents.map(doc => `
+                <div class="doc-item ${doc.id === currentDocId ? 'active' : ''}" onclick="selectDocument('${doc.id}')">
+                    <div class="doc-item-title">${escapeHtml(doc.title || 'Untitled')}</div>
+                    <div class="doc-item-meta">${formatDate(doc.updatedAt)}</div>
+                </div>
+            `).join('');
+        }
+
+        // Create New Document
+        async function createNewDocument() {
+            if (!docsRef) {
+                alert('Not connected to workspace');
+                return;
+            }
+            
+            const newDoc = {
+                title: 'New Document',
+                content: '',
+                createdAt: Date.now(),
+                updatedAt: Date.now()
+            };
+            
+            const docRef = docsRef.push();
+            await docRef.set(newDoc);
+            selectDocument(docRef.key);
+        }
+
+        // Select Document
+        function selectDocument(docId) {
+            currentDocId = docId;
+            const doc = documents.find(d => d.id === docId);
+            if (doc) {
+                document.getElementById('docTitle').value = doc.title || '';
+                document.getElementById('docContent').value = doc.content || '';
+                document.getElementById('lastSaved').textContent = `Last saved: ${formatTime(doc.updatedAt)}`;
+            }
+            renderDocList();
+        }
+
+        // Update Document Title (debounced)
+        function updateDocumentTitle() {
+            if (!currentDocId || !docsRef) return;
+            
+            const title = document.getElementById('docTitle').value;
+            
+            clearTimeout(docUpdateTimeout);
+            docUpdateTimeout = setTimeout(async () => {
+                await docsRef.child(currentDocId).update({
+                    title,
+                    updatedAt: Date.now()
+                });
+                document.getElementById('lastSaved').textContent = 'Saved';
+            }, 500);
+        }
+
+        // Update Document Content (debounced)
+        function updateDocumentContent() {
+            if (!currentDocId || !docsRef) return;
+            
+            const content = document.getElementById('docContent').value;
+            
+            clearTimeout(docUpdateTimeout);
+            docUpdateTimeout = setTimeout(async () => {
+                await docsRef.child(currentDocId).update({
+                    content,
+                    updatedAt: Date.now()
+                });
+                document.getElementById('lastSaved').textContent = 'Saved';
+            }, 500);
+        }
+
+        // Copy Document Content
+        function copyDocument() {
+            const content = document.getElementById('docContent').value;
+            navigator.clipboard.writeText(content).then(() => {
+                showToast('📋 Copied to clipboard!');
+            });
+        }
+
+        // Download Document
+        function downloadDocument() {
+            const title = document.getElementById('docTitle').value || 'document';
+            const content = document.getElementById('docContent').value;
+            
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showToast('💾 Downloaded!');
+        }
+
+        // Delete Current Document
+        async function deleteCurrentDocument() {
+            if (!currentDocId || !docsRef) return;
+            
+            if (confirm('Delete this document? This cannot be undone.')) {
+                await docsRef.child(currentDocId).remove();
+                currentDocId = null;
+                document.getElementById('docTitle').value = '';
+                document.getElementById('docContent').value = '';
+                document.getElementById('lastSaved').textContent = '';
+            }
+        }
+
+        // Format Date
+        function formatDate(timestamp) {
+            if (!timestamp) return 'Just now';
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diff = now - date;
+            
+            if (diff < 60000) return 'Just now';
+            if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
+            if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
+            return date.toLocaleDateString();
+        }
+
+        // Format Time
+        function formatTime(timestamp) {
+            if (!timestamp) return '';
+            return new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // Toast Notification
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.style.cssText = 'position: fixed; bottom: 20px; right: 20px; background: #10b981; color: white; padding: 12px 20px; border-radius: 8px; z-index: 10000; font-weight: 500;';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
+        }
+    </script>
+</body>
+</html>
