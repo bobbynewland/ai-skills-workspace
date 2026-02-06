@@ -180,6 +180,9 @@
                 </label>
             </div>
             <button onclick="joinWorkspace()">Join Workspace</button>
+            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+                <button onclick="resetWorkspace()" style="background: transparent; border: 1px solid rgba(255,68,68,0.5); color: #ff6b6b; font-size: 0.85rem;">🔄 Reset Workspace (Admin Only)</button>
+            </div>
             <div class="hint">Contact admin for workspace issues</div>
         </div>
     </div>
@@ -329,10 +332,24 @@
             }
         }
 
-        // Show create workspace option (admin only)
-        function showCreateOption() {
-            document.getElementById('createOption').style.display = 'block';
-            alert('Admin mode enabled - you can now create workspaces');
+        // Reset Workspace (Admin Only)
+        async function resetWorkspace() {
+            const id = document.getElementById('syncIdInput').value.trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
+            if (!id) {
+                alert('Please enter a workspace ID first');
+                return;
+            }
+            
+            if (!confirm(`⚠️ WARNING: This will DELETE all data in workspace "${id}"!\n\nAre you sure you want to reset?`)) {
+                return;
+            }
+            
+            try {
+                await db.ref(`workspaces/${id}`).remove();
+                alert(`✅ Workspace "${id}" deleted!\n\nNow check "Create new workspace" and click Join to recreate it.`);
+            } catch (err) {
+                alert('Error: ' + err.message);
+            }
         }
 
         // Hash password (simple hash for client-side)
