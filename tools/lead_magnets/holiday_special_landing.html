@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Holiday Marketing Bundle | AI Skills Bootcamp</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', system-ui, sans-serif; 
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); 
+            color: #fff; 
+            line-height: 1.6;
+        }
+        .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
+        .header { text-align: center; margin-bottom: 40px; }
+        .badge { 
+            display: inline-block; 
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf); 
+            padding: 8px 20px; 
+            border-radius: 20px; 
+            font-size: 0.85rem; 
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        h1 { font-size: 2.5rem; margin-bottom: 20px; }
+        .subtitle { color: #888; font-size: 1.2rem; margin-bottom: 30px; }
+        .preview { 
+            background: rgba(255,255,255,0.05); 
+            border-radius: 20px; 
+            padding: 30px; 
+            margin-bottom: 40px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .template-list { list-style: none; margin: 20px 0; }
+        .template-list li { 
+            padding: 15px; 
+            background: rgba(0,212,255,0.1); 
+            border-radius: 10px; 
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .template-list li::before { content: "✓"; color: #00d4ff; font-weight: bold; }
+        .form { background: rgba(255,255,255,0.05); padding: 40px; border-radius: 20px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; color: #aaa; }
+        input { 
+            width: 100%; 
+            padding: 15px; 
+            background: rgba(0,0,0,0.3); 
+            border: 1px solid rgba(255,255,255,0.2); 
+            border-radius: 10px; 
+            color: #fff;
+            font-size: 1rem;
+        }
+        input:focus { outline: none; border-color: #00d4ff; }
+        button { 
+            width: 100%; 
+            padding: 18px; 
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf); 
+            border: none; 
+            border-radius: 10px; 
+            color: #fff; 
+            font-size: 1.1rem; 
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover { opacity: 0.9; }
+        .trust { text-align: center; margin-top: 30px; color: #666; font-size: 0.9rem; }
+        .urgency { 
+            background: rgba(255,107,107,0.1); 
+            border: 1px solid rgba(255,107,107,0.3); 
+            padding: 15px; 
+            border-radius: 10px; 
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .urgency span { color: #ff6b6b; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="badge">🎁 FREE DOWNLOAD</div>
+            <h1>Holiday Marketing Bundle</h1>
+            <p class="subtitle">Boost holiday sales with these proven templates - normally $97, yours FREE</p>
+        </div>
+        
+        <div class="preview">
+            <h3 style="margin-bottom: 20px;">What's Included:</h3>
+            <ul class="template-list">
+                <li>Holiday Sale</li><li>Seasonal Greeting</li><li>Gift Certificate</li>
+            </ul>
+            <p style="color: #888; margin-top: 20px;">✨ AI-Powered • Instant Download • Fully Customizable</p>
+        </div>
+        
+        <div class="urgency">
+            <span>⚡ Limited Time:</span> Only 500 downloads available this month
+        </div>
+        
+        <div class="form">
+            <h3 style="margin-bottom: 25px; text-align: center;">Get Instant Access</h3>
+            <form id="leadForm">
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" name="firstName" placeholder="Your first name" required>
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" name="email" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Business Type</label>
+                    <input type="text" name="business" placeholder="e.g., Restaurant, Salon, Shop">
+                </div>
+                <button type="submit">📥 Download FREE Templates Now</button>
+            </form>
+        </div>
+        
+        <div class="trust">
+            <p>🔒 Your information is secure. Unsubscribe anytime.</p>
+            <p style="margin-top: 10px;">Join 2,500+ business owners using our templates</p>
+        </div>
+    </div>
+    
+    <script>
+        document.getElementById('leadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = {
+                firstName: formData.get('firstName'),
+                email: formData.get('email'),
+                business: formData.get('business'),
+                magnet: 'holiday_special',
+                timestamp: new Date().toISOString()
+            };
+            
+            // Submit to your email service (Go High Level, etc.)
+            // await fetch('/api/capture-lead', { method: 'POST', body: JSON.stringify(data) });
+            
+            // Redirect to download
+            window.location.href = '/download/holiday_special';
+        });
+    </script>
+</body>
+</html>
