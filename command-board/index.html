@@ -169,7 +169,10 @@
             <h1>🚀 AI Skills Studio</h1>
             <p>Enter workspace credentials</p>
             <input type="text" id="syncIdInput" placeholder="Workspace ID" value="winslow-main">
-            <input type="password" id="passwordInput" placeholder="Password" value="WinDev2026@@">
+            <div style="position: relative;">
+                <input type="password" id="passwordInput" placeholder="Password" value="WinDev2026@@" style="padding-right: 50px;">
+                <button onclick="togglePassword()" style="position: absolute; right: 5px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: #888; cursor: pointer; padding: 10px; font-size: 0.9rem;">👁️</button>
+            </div>
             <button onclick="joinWorkspace()">Join Workspace</button>
             <div class="hint">Contact admin to create new workspaces</div>
         </div>
@@ -307,6 +310,19 @@
         let draggedTask = null;
         let saveTimeout = null;
 
+        // Toggle password visibility
+        function togglePassword() {
+            const input = document.getElementById('passwordInput');
+            const btn = event.target;
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                btn.textContent = '👁️';
+            }
+        }
+
         // Hash password (simple hash for client-side)
         async function hashPassword(password) {
             const encoder = new TextEncoder();
@@ -337,9 +353,14 @@
                 const snapshot = await workspaceRef.once('value');
                 const workspace = snapshot.val();
                 
+                console.log('Workspace found:', workspace ? 'YES' : 'NO');
+                console.log('Computed hash:', passwordHash);
+                
                 if (workspace) {
+                    console.log('Stored hash:', workspace.passwordHash);
                     // Workspace exists - check password
                     if (workspace.passwordHash !== passwordHash) {
+                        console.log('Hash mismatch!');
                         alert('❌ Incorrect password!\n\nContact admin if you need access.');
                         return;
                     }
