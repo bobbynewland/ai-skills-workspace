@@ -412,14 +412,17 @@
 
         // Setup User Listener
         function setupUserListener() {
+            console.log('Setting up user listener for:', currentUser.email);
             document.getElementById('userDisplay').textContent = currentUser.email;
             document.getElementById('syncMode').textContent = 'Personal';
             
             tasksRef = database.ref(`users/${currentUser.uid}/tasks`);
+            console.log('tasksRef set to:', `users/${currentUser.uid}/tasks`);
             
             tasksRef.on('value', (snapshot) => {
                 const data = snapshot.val();
                 tasks = data ? Object.entries(data).map(([id, task]) => ({ id, ...task })) : [];
+                console.log('Tasks loaded:', tasks.length);
                 renderBoard();
                 updateSyncStatus('online');
             }, (error) => {
@@ -539,7 +542,22 @@
             const category = document.getElementById('taskCategory').value;
             const priority = document.getElementById('taskPriority').value;
             
-            if (!title) return;
+            if (!title) {
+                alert('Please enter a task title');
+                return;
+            }
+            
+            // Ensure tasksRef is set
+            if (!tasksRef) {
+                if (currentMode === 'email' && currentUser) {
+                    tasksRef = database.ref(`users/${currentUser.uid}/tasks`);
+                } else if (currentMode === 'shared' && syncId) {
+                    tasksRef = database.ref(`shared/${syncId}/tasks`);
+                } else {
+                    alert('Not connected to workspace. Please refresh and log in again.');
+                    return;
+                }
+            }
             
             const taskData = {
                 title, desc, category, priority,
@@ -549,14 +567,14 @@
             
             if (!id) taskData.createdAt = Date.now();
             
-            if (!tasksRef) {
-                alert('Not connected to a workspace');
-                return;
+            try {
+                const taskRef = id ? tasksRef.child(id) : tasksRef.push();
+                await taskRef.set(taskData);
+                closeModal();
+            } catch (error) {
+                console.error('Error saving task:', error);
+                alert('Error saving task: ' + error.message);
             }
-            
-            const taskRef = id ? tasksRef.child(id) : tasksRef.push();
-            await taskRef.set(taskData);
-            closeModal();
         }
 
         // Delete Task
@@ -572,6 +590,22 @@
 
         // Modal
         function openModal() {
+            console.log('Opening modal, tasksRef:', tasksRef ? 'set' : 'null');
+            
+            // Ensure we're on board view
+            if (document.getElementById('boardView').style.display === 'none') {
+                switchView('board');
+            }
+            
+            // Ensure tasksRef is set
+            if (!tasksRef) {
+                if (currentMode === 'email' && currentUser) {
+                    tasksRef = database.ref(`users/${currentUser.uid}/tasks`);
+                } else if (currentMode === 'shared' && syncId) {
+                    tasksRef = database.ref(`shared/${syncId}/tasks`);
+                }
+            }
+            
             document.getElementById('taskId').value = '';
             document.getElementById('taskTitle').value = '';
             document.getElementById('taskDesc').value = '';
@@ -642,6 +676,12 @@
             if (view === 'board') {
                 document.getElementById('boardView').style.display = 'grid';
                 document.getElementById('docsView').classList.remove('active');
+                // Ensure tasksRef is set up for board view
+                if (!tasksRef && currentUser) {
+                    setupUserListener();
+                } else if (!tasksRef && syncId) {
+                    setupSharedListener();
+                }
             } else {
                 document.getElementById('boardView').style.display = 'none';
                 document.getElementById('docsView').classList.add('active');
