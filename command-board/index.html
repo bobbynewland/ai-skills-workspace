@@ -43,6 +43,39 @@
         .header h1 { font-size: 2.5rem; background: linear-gradient(90deg, #00d4ff, #7b2cbf); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
         .header p { color: #888; }
         
+        /* Navigation Tabs */
+        .nav-tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; padding: 0 20px; }
+        .nav-tab { padding: 12px 24px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #888; border-radius: 10px; cursor: pointer; font-weight: 500; transition: all 0.3s; }
+        .nav-tab:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        .nav-tab.active { background: linear-gradient(90deg, #00d4ff, #7b2cbf); color: #fff; border-color: transparent; }
+        
+        /* Documents Section */
+        .docs-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: none; }
+        .docs-container.active { display: block; }
+        .docs-sidebar { width: 280px; background: rgba(255,255,255,0.03); border-radius: 16px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); }
+        .docs-sidebar h3 { color: #00d4ff; margin-bottom: 15px; font-size: 1.1rem; }
+        .doc-list { max-height: 500px; overflow-y: auto; }
+        .doc-item { padding: 12px; background: rgba(255,255,255,0.05); border-radius: 8px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; }
+        .doc-item:hover { background: rgba(255,255,255,0.1); border-color: rgba(0,212,255,0.3); }
+        .doc-item.active { background: rgba(0,212,255,0.1); border-color: #00d4ff; }
+        .doc-item-title { font-weight: 500; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .doc-item-meta { font-size: 0.75rem; color: #666; }
+        .new-doc-btn { width: 100%; padding: 12px; background: linear-gradient(90deg, #00d4ff, #7b2cbf); border: none; color: #fff; border-radius: 8px; cursor: pointer; font-weight: 600; margin-top: 15px; }
+        
+        /* Editor */
+        .editor-container { flex: 1; background: rgba(255,255,255,0.03); border-radius: 16px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); }
+        .editor-toolbar { display: flex; gap: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); flex-wrap: wrap; }
+        .editor-toolbar button { padding: 8px 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 6px; cursor: pointer; font-size: 0.9rem; }
+        .editor-toolbar button:hover { background: rgba(255,255,255,0.1); }
+        .doc-title-input { width: 100%; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 8px; font-size: 1.2rem; font-weight: 600; margin-bottom: 15px; }
+        .doc-title-input:focus { outline: none; border-color: #00d4ff; }
+        .doc-editor { width: 100%; min-height: 500px; padding: 20px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 8px; font-size: 1rem; line-height: 1.6; resize: vertical; font-family: 'Segoe UI', system-ui, sans-serif; }
+        .doc-editor:focus { outline: none; border-color: #00d4ff; }
+        .editor-layout { display: flex; gap: 20px; }
+        .collab-indicator { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #10b981; }
+        .collab-indicator::before { content: ''; width: 8px; height: 8px; background: #10b981; border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        
         /* Board */
         .board { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 1400px; margin: 20px auto; padding: 0 20px; }
         .column { background: rgba(255,255,255,0.03); border-radius: 16px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); min-height: 400px; }
@@ -150,8 +183,14 @@
             <p>Mission Control v3.0</p>
         </div>
 
-        <!-- Board -->
-        <div class="board">
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchView('board')" id="tab-board">📋 Tasks</button>
+            <button class="nav-tab" onclick="switchView('docs')" id="tab-docs">📝 Documents</button>
+        </div>
+
+        <!-- Board View -->
+        <div id="boardView" class="board">
             <div class="column todo" ondragover="allowDrop(event)" ondrop="drop(event, 'todo')">
                 <div class="column-header">
                     <span class="column-title">📋 To Do</span>
@@ -183,6 +222,33 @@
                     <span class="column-count" id="count-done">0</span>
                 </div>
                 <div class="tasks" id="col-done"></div>
+            </div>
+        </div>
+
+        <!-- Documents View -->
+        <div id="docsView" class="docs-container">
+            <div class="editor-layout">
+                <!-- Sidebar -->
+                <div class="docs-sidebar">
+                    <h3>📝 Documents</h3>
+                    <div class="collab-indicator" style="margin-bottom: 15px;">● Live collaboration</div>
+                    <div class="doc-list" id="docList">
+                        <!-- Documents will be listed here -->
+                    </div>
+                    <button class="new-doc-btn" onclick="createNewDocument()">+ New Document</button>
+                </div>
+
+                <!-- Editor -->
+                <div class="editor-container">
+                    <div class="editor-toolbar">
+                        <button onclick="copyDocument()">📋 Copy All</button>
+                        <button onclick="downloadDocument()">💾 Download</button>
+                        <button onclick="deleteCurrentDocument()" style="color: #ff6b6b;">🗑️ Delete</button>
+                        <span id="lastSaved" style="margin-left: auto; color: #666; font-size: 0.85rem;"></span>
+                    </div>
+                    <input type="text" id="docTitle" class="doc-title-input" placeholder="Document Title" oninput="updateDocumentTitle()">
+                    <textarea id="docContent" class="doc-editor" placeholder="Start typing... collaborate in real-time!&#10;&#10;This is a shared document. You can:&#10;- Type and edit together&#10;- Copy text easily&#10;- Access from any device&#10;&#10;Perfect for notes, scripts, content, and ideas!" oninput="updateDocumentContent()"></textarea>
+                </div>
             </div>
         </div>
     </div>
@@ -560,6 +626,196 @@
         document.getElementById('passwordInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') handleAuth();
         });
+
+        // ==================== DOCUMENTS FEATURE ====================
+        
+        let currentDocId = null;
+        let docsRef = null;
+        let documents = [];
+        let docUpdateTimeout = null;
+
+        // Switch between Board and Documents views
+        function switchView(view) {
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(`tab-${view}`).classList.add('active');
+            
+            if (view === 'board') {
+                document.getElementById('boardView').style.display = 'grid';
+                document.getElementById('docsView').classList.remove('active');
+            } else {
+                document.getElementById('boardView').style.display = 'none';
+                document.getElementById('docsView').classList.add('active');
+                setupDocumentsListener();
+            }
+        }
+
+        // Setup Documents Listener
+        function setupDocumentsListener() {
+            if (!tasksRef) return;
+            
+            // Use same ref path but /docs instead of /tasks
+            const path = currentMode === 'shared' 
+                ? `shared/${syncId}/docs` 
+                : `users/${currentUser.uid}/docs`;
+            
+            docsRef = database.ref(path);
+            
+            docsRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                documents = data ? Object.entries(data).map(([id, doc]) => ({ id, ...doc })) : [];
+                documents.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+                renderDocList();
+                
+                // Auto-select first doc if none selected
+                if (!currentDocId && documents.length > 0) {
+                    selectDocument(documents[0].id);
+                }
+            });
+        }
+
+        // Render Document List
+        function renderDocList() {
+            const list = document.getElementById('docList');
+            if (documents.length === 0) {
+                list.innerHTML = '<div style="color: #666; text-align: center; padding: 20px;">No documents yet.<br>Create one to get started!</div>';
+                return;
+            }
+            
+            list.innerHTML = documents.map(doc => `
+                <div class="doc-item ${doc.id === currentDocId ? 'active' : ''}" onclick="selectDocument('${doc.id}')">
+                    <div class="doc-item-title">${escapeHtml(doc.title || 'Untitled')}</div>
+                    <div class="doc-item-meta">${formatDate(doc.updatedAt)}</div>
+                </div>
+            `).join('');
+        }
+
+        // Create New Document
+        async function createNewDocument() {
+            if (!docsRef) {
+                alert('Not connected to workspace');
+                return;
+            }
+            
+            const newDoc = {
+                title: 'New Document',
+                content: '',
+                createdAt: Date.now(),
+                updatedAt: Date.now()
+            };
+            
+            const docRef = docsRef.push();
+            await docRef.set(newDoc);
+            selectDocument(docRef.key);
+        }
+
+        // Select Document
+        function selectDocument(docId) {
+            currentDocId = docId;
+            const doc = documents.find(d => d.id === docId);
+            if (doc) {
+                document.getElementById('docTitle').value = doc.title || '';
+                document.getElementById('docContent').value = doc.content || '';
+                document.getElementById('lastSaved').textContent = `Last saved: ${formatTime(doc.updatedAt)}`;
+            }
+            renderDocList();
+        }
+
+        // Update Document Title (debounced)
+        function updateDocumentTitle() {
+            if (!currentDocId || !docsRef) return;
+            
+            const title = document.getElementById('docTitle').value;
+            
+            clearTimeout(docUpdateTimeout);
+            docUpdateTimeout = setTimeout(async () => {
+                await docsRef.child(currentDocId).update({
+                    title,
+                    updatedAt: Date.now()
+                });
+                document.getElementById('lastSaved').textContent = 'Saved';
+            }, 500);
+        }
+
+        // Update Document Content (debounced)
+        function updateDocumentContent() {
+            if (!currentDocId || !docsRef) return;
+            
+            const content = document.getElementById('docContent').value;
+            
+            clearTimeout(docUpdateTimeout);
+            docUpdateTimeout = setTimeout(async () => {
+                await docsRef.child(currentDocId).update({
+                    content,
+                    updatedAt: Date.now()
+                });
+                document.getElementById('lastSaved').textContent = 'Saved';
+            }, 500);
+        }
+
+        // Copy Document Content
+        function copyDocument() {
+            const content = document.getElementById('docContent').value;
+            navigator.clipboard.writeText(content).then(() => {
+                showToast('📋 Copied to clipboard!');
+            });
+        }
+
+        // Download Document
+        function downloadDocument() {
+            const title = document.getElementById('docTitle').value || 'document';
+            const content = document.getElementById('docContent').value;
+            
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showToast('💾 Downloaded!');
+        }
+
+        // Delete Current Document
+        async function deleteCurrentDocument() {
+            if (!currentDocId || !docsRef) return;
+            
+            if (confirm('Delete this document? This cannot be undone.')) {
+                await docsRef.child(currentDocId).remove();
+                currentDocId = null;
+                document.getElementById('docTitle').value = '';
+                document.getElementById('docContent').value = '';
+                document.getElementById('lastSaved').textContent = '';
+            }
+        }
+
+        // Format Date
+        function formatDate(timestamp) {
+            if (!timestamp) return 'Just now';
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diff = now - date;
+            
+            if (diff < 60000) return 'Just now';
+            if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
+            if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
+            return date.toLocaleDateString();
+        }
+
+        // Format Time
+        function formatTime(timestamp) {
+            if (!timestamp) return '';
+            return new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // Toast Notification
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.style.cssText = 'position: fixed; bottom: 20px; right: 20px; background: #10b981; color: white; padding: 12px 20px; border-radius: 8px; z-index: 10000; font-weight: 500;';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
+        }
     </script>
 </body>
 </html>
