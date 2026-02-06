@@ -597,7 +597,11 @@
 
         function renderTasks() {
             const cols = {todo: [], progress: [], review: [], done: []};
-            tasks.forEach(t => { if (cols[t.status]) cols[t.status].push(t); });
+            tasks.forEach(t => { 
+                // Support both 'status' and 'column' field names
+                const status = t.status || t.column || 'todo';
+                if (cols[status]) cols[status].push(t); 
+            });
             
             Object.keys(cols).forEach(status => {
                 const container = document.getElementById(`col-${status}`);
@@ -622,8 +626,9 @@
             e.preventDefault();
             if (!draggedTask) return;
             const task = tasks.find(t => t.id === draggedTask);
-            if (task && task.status !== newStatus) {
-                await tasksRef.child(draggedTask).update({status: newStatus, updatedAt: Date.now()});
+            const currentStatus = task.status || task.column;
+            if (task && currentStatus !== newStatus) {
+                await tasksRef.child(draggedTask).update({status: newStatus, column: newStatus, updatedAt: Date.now()});
             }
             draggedTask = null;
         }
@@ -663,6 +668,7 @@
                 category: document.getElementById('taskCategory').value,
                 priority: document.getElementById('taskPriority').value,
                 status: id ? tasks.find(t => t.id === id)?.status || 'todo' : 'todo',
+                column: id ? tasks.find(t => t.id === id)?.column || 'todo' : 'todo',
                 updatedAt: Date.now()
             };
             if (!id) data.createdAt = Date.now();
