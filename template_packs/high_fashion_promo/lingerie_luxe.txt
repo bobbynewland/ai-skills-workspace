@@ -1,0 +1,6 @@
+FAL.AI NANO BANANA PRO PROMPT:
+==================================================
+
+High fashion lingerie advertisement, beautiful mixed-race female model in elegant black lace bodysuit and silk robe, luxurious bedroom setting with soft lighting, text 'LUXE LINGERIE' in delicate gold script font at top, 'FEEL BEAUTIFUL' headline, 'Treat Yourself' tagline, black and blush pink color scheme, full-bleed edge-to-edge, Fashion Nova style aesthetic, sensual elegant pose, professional fashion photography
+
+ERROR: [{'loc': ['body', 'prompt'], 'msg': 'The content could not be processed because it contained material flagged by a content checker.', 'type': 'content_policy_violation', 'url': 'https://docs.fal.ai/errors#content_policy_violation', 'input': {'prompt': "High fashion lingerie advertisement, beautiful mixed-race female model in elegant black lace bodysuit and silk robe, luxurious bedroom setting with soft lighting, text 'LUXE LINGERIE' in delicate gold script font at top, 'FEEL BEAUTIFUL' headline, 'Treat Yourself' tagline, black and blush pink color scheme, full-bleed edge-to-edge, Fashion Nova style aesthetic, sensual elegant pose, professional fashion photography", 'image_size': {'width': 1080, 'height': 1920}, 'num_images': 1, 'max_images': 1, 'seed': None, 'sync_mode': False, 'enable_safety_checker': True}}]
