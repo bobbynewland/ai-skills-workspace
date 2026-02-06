@@ -101,6 +101,65 @@
         .editor-toolbar button:hover { background: rgba(255,255,255,0.1); }
         .doc-title { width: 100%; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 8px; font-size: 1.2rem; font-weight: 600; margin-bottom: 15px; }
         .doc-content { width: 100%; min-height: 500px; padding: 20px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 8px; font-size: 1rem; line-height: 1.6; resize: vertical; }
+        
+        /* Mobile Toggle for Docs Sidebar */
+        .docs-toggle { display: none; width: 100%; padding: 12px; background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3); color: #00d4ff; border-radius: 8px; cursor: pointer; margin-bottom: 15px; font-weight: 600; }
+        .docs-sidebar.hidden { display: none; }
+        
+        /* Mobile-First Responsive */
+        @media (max-width: 768px) {
+            .app-header { flex-direction: column; gap: 10px; padding: 10px; }
+            .workspace-info { flex-direction: column; gap: 5px; text-align: center; }
+            .header { padding: 15px 10px; }
+            .header h1 { font-size: 1.8rem; }
+            
+            .nav-tabs { padding: 0 10px; gap: 5px; }
+            .nav-tab { padding: 10px 16px; font-size: 0.9rem; }
+            
+            .board { grid-template-columns: 1fr; padding: 0 10px; gap: 15px; }
+            .column { padding: 15px; }
+            
+            /* Docs Mobile Layout */
+            .docs-layout { flex-direction: column; }
+            .docs-toggle { display: block; }
+            .docs-sidebar { 
+                width: 100%; 
+                max-height: 300px; 
+                overflow-y: auto;
+                margin-bottom: 15px;
+            }
+            .docs-sidebar.hidden { display: none; }
+            .doc-editor { padding: 15px; }
+            .editor-toolbar { 
+                flex-wrap: wrap; 
+                gap: 8px;
+            }
+            .editor-toolbar button { 
+                padding: 10px 14px; 
+                font-size: 0.9rem;
+                flex: 1;
+                min-width: 80px;
+            }
+            .doc-title { font-size: 1.1rem; padding: 10px; }
+            .doc-content { 
+                min-height: 300px; 
+                padding: 15px; 
+                font-size: 1rem;
+            }
+            
+            .modal-content { padding: 20px; margin: 10px; }
+            .btn-group { flex-direction: column; }
+        }
+        
+        /* Small phones */
+        @media (max-width: 480px) {
+            .login-box { padding: 25px 20px; }
+            .login-box h1 { font-size: 1.5rem; }
+            .header h1 { font-size: 1.5rem; }
+            .nav-tab { padding: 8px 12px; font-size: 0.85rem; }
+            .task-card { padding: 12px; }
+            .editor-toolbar button { font-size: 0.8rem; padding: 8px 10px; }
+        }
     </style>
 </head>
 <body>
@@ -170,7 +229,8 @@
         <!-- Docs View -->
         <div id="docsView" class="docs-view">
             <div class="docs-layout">
-                <div class="docs-sidebar">
+                <button class="docs-toggle" onclick="toggleDocsSidebar()" id="docsToggleBtn">📁 Show Documents</button>
+                <div class="docs-sidebar" id="docsSidebar">
                     <h3>📝 Documents</h3>
                     <div id="docList"></div>
                     <button class="add-btn" onclick="createDoc()">+ New Document</button>
@@ -312,7 +372,26 @@
             } else {
                 document.getElementById('boardView').style.display = 'none';
                 document.getElementById('docsView').classList.add('active');
+                // On mobile, hide sidebar by default when switching to docs
+                if (window.innerWidth <= 768) {
+                    document.getElementById('docsSidebar').classList.add('hidden');
+                    document.getElementById('docsToggleBtn').textContent = '📁 Show Documents';
+                }
                 if (!currentDocId && docs.length > 0) selectDoc(docs[0].id);
+            }
+        }
+
+        // Toggle Docs Sidebar (Mobile)
+        function toggleDocsSidebar() {
+            const sidebar = document.getElementById('docsSidebar');
+            const btn = document.getElementById('docsToggleBtn');
+            
+            if (sidebar.classList.contains('hidden')) {
+                sidebar.classList.remove('hidden');
+                btn.textContent = '📁 Hide Documents';
+            } else {
+                sidebar.classList.add('hidden');
+                btn.textContent = '📁 Show Documents';
             }
         }
 
