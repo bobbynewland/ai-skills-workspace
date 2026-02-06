@@ -8,7 +8,7 @@ import sys
 import json
 import argparse
 
-def call_gemini(prompt, model="gemini-1.5-flash", api_key=None):
+def call_gemini(prompt, model="gemini-2.0-flash", api_key=None):
     """Call Gemini API with prompt"""
     import requests
     
@@ -174,9 +174,8 @@ def main():
                        help='Action to perform')
     parser.add_argument('input', help='Input description or file path')
     parser.add_argument('--output', '-o', help='Output file path')
-    parser.add_argument('--model', default='gemini-1.5-flash',
-                       choices=['gemini-1.5-flash', 'gemini-1.5-pro'],
-                       help='Model to use (default: gemini-1.5-flash)')
+    parser.add_argument('--model', default='gemini-2.0-flash',
+                       help='Model to use (default: gemini-2.0-flash). Use gemini-2.5-pro for complex tasks')
     
     args = parser.parse_args()
     

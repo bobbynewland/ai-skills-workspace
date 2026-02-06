@@ -392,5 +392,5 @@ def affiliate_dashboard(affiliate_id):
 if __name__ == '__main__':
     init_db()
     print("✅ Affiliate System initialized!")
-    print("🚀 Starting server on http://localhost:5000")
-    app.run(debug=True, port=5000)
+    print("🚀 Starting server on http://0.0.0.0:5000")
+    app.run(host='0.0.0.0', debug=False, port=5000)

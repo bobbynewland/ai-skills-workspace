@@ -55,6 +55,7 @@
         /* Tasks */
         .task-card { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 16px; margin-bottom: 12px; cursor: grab; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.08); }
         .task-card:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .task-card.drag-over { border-color: #00d4ff; border-style: dashed; background: rgba(0,212,255,0.1); transform: scale(1.02); }
         .task-title { font-weight: 600; margin-bottom: 5px; }
         .task-desc { color: #888; font-size: 0.85rem; margin-bottom: 10px; }
         .task-meta { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -421,6 +422,7 @@
         let currentDocId = null;
         let draggedTask = null;
         let saveTimeout = null;
+        let dropTargetTask = null;  // Track which task we're dropping near
 
         // Toggle password visibility
         function togglePassword() {
@@ -606,16 +608,26 @@
 
         function renderTasks() {
             const cols = {todo: [], progress: [], review: [], done: []};
+            
+            // Sort tasks by order within each column
             tasks.forEach(t => { 
-                // Support both 'status' and 'column' field names
                 const status = t.status || t.column || 'todo';
                 if (cols[status]) cols[status].push(t); 
             });
             
+            // Sort each column by order (default to 0 if not set)
+            Object.keys(cols).forEach(status => {
+                cols[status].sort((a, b) => (a.order || 0) - (b.order || 0));
+            });
+            
             Object.keys(cols).forEach(status => {
                 const container = document.getElementById(`col-${status}`);
-                container.innerHTML = cols[status].map(t => `
-                    <div class="task-card" draggable="true" ondragstart="drag(event, '${t.id}')" onclick="editTask('${t.id}')">
+                container.innerHTML = cols[status].map((t, index) => `
+                    <div class="task-card" draggable="true" 
+                         ondragstart="drag(event, '${t.id}')" 
+                         ondragover="dragOverTask(event, '${t.id}')"
+                         ondragleave="dragLeaveTask(event)"
+                         onclick="editTask('${t.id}')">
                         <div class="task-title">${escapeHtml(t.title)}</div>
                         ${t.desc ? `<div class="task-desc">${escapeHtml(t.desc)}</div>` : ''}
                         <div class="task-meta">
@@ -628,18 +640,75 @@
             });
         }
 
-        function drag(e, id) { draggedTask = id; }
-        function allowDrop(e) { e.preventDefault(); }
+        function drag(e, id) { 
+            draggedTask = id; 
+            e.dataTransfer.effectAllowed = 'move';
+        }
+        
+        function allowDrop(e) { 
+            e.preventDefault(); 
+        }
+        
+        function dragOverTask(e, targetId) {
+            e.preventDefault();
+            if (targetId === draggedTask) return;
+            dropTargetTask = targetId;
+            const card = e.currentTarget;
+            card.classList.add('drag-over');
+        }
+        
+        function dragLeaveTask(e) {
+            e.currentTarget.classList.remove('drag-over');
+        }
         
         async function drop(e, newStatus) {
             e.preventDefault();
             if (!draggedTask) return;
+            
             const task = tasks.find(t => t.id === draggedTask);
             const currentStatus = task.status || task.column;
-            if (task && currentStatus !== newStatus) {
-                await tasksRef.child(draggedTask).update({status: newStatus, column: newStatus, updatedAt: Date.now()});
+            
+            // Remove drag-over styling from all cards
+            document.querySelectorAll('.task-card').forEach(card => card.classList.remove('drag-over'));
+            
+            if (currentStatus !== newStatus) {
+                // Moving to a different column - place at top by default
+                const targetColTasks = tasks.filter(t => (t.status || t.column) === newStatus);
+                const newOrder = targetColTasks.length > 0 
+                    ? Math.min(...targetColTasks.map(t => t.order || 0)) - 1 
+                    : 0;
+                await tasksRef.child(draggedTask).update({
+                    status: newStatus, 
+                    column: newStatus, 
+                    order: newOrder,
+                    updatedAt: Date.now()
+                });
+            } else if (dropTargetTask && dropTargetTask !== draggedTask) {
+                // Reordering within same column
+                const colTasks = tasks.filter(t => (t.status || t.column) === newStatus);
+                colTasks.sort((a, b) => (a.order || 0) - (b.order || 0));
+                
+                const draggedIndex = colTasks.findIndex(t => t.id === draggedTask);
+                const targetIndex = colTasks.findIndex(t => t.id === dropTargetTask);
+                
+                if (draggedIndex !== -1 && targetIndex !== -1) {
+                    // Remove dragged task from array
+                    const [movedTask] = colTasks.splice(draggedIndex, 1);
+                    // Insert at target position
+                    colTasks.splice(targetIndex, 0, movedTask);
+                    
+                    // Update order for all tasks in column
+                    const updates = {};
+                    colTasks.forEach((t, idx) => {
+                        updates[`${t.id}/order`] = idx;
+                        updates[`${t.id}/updatedAt`] = Date.now();
+                    });
+                    await tasksRef.update(updates);
+                }
             }
+            
             draggedTask = null;
+            dropTargetTask = null;
         }
 
         function openTaskModal() {
