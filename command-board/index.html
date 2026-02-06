@@ -167,10 +167,17 @@
     <div id="loginScreen" class="login-screen">
         <div class="login-box">
             <h1>🚀 AI Skills Studio</h1>
-            <p>Enter workspace ID to collaborate</p>
+            <p>Enter workspace credentials</p>
             <input type="text" id="syncIdInput" placeholder="Workspace ID (e.g., winslow-main)" value="winslow-main">
+            <input type="password" id="passwordInput" placeholder="Workspace Password" style="margin-bottom: 5px;">
+            <div style="text-align: left; margin-bottom: 15px;">
+                <label style="color: #888; font-size: 0.85rem; cursor: pointer;">
+                    <input type="checkbox" id="createWorkspace" style="margin-right: 8px;">
+                    Create new workspace (if doesn't exist)
+                </label>
+            </div>
             <button onclick="joinWorkspace()">Join Workspace</button>
-            <div class="hint">Use the same ID on all devices<br>Default: winslow-main</div>
+            <div class="hint">Need both ID and password<br>Keep credentials secure!</div>
         </div>
     </div>
 
@@ -306,48 +313,104 @@
         let draggedTask = null;
         let saveTimeout = null;
 
-        // Join Workspace
-        function joinWorkspace() {
+        // Hash password (simple hash for client-side)
+        async function hashPassword(password) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // Join Workspace with Password
+        async function joinWorkspace() {
             workspaceId = document.getElementById('syncIdInput').value.trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
-            if (!workspaceId) workspaceId = 'winslow-main';
+            const password = document.getElementById('passwordInput').value;
+            const createNew = document.getElementById('createWorkspace').checked;
             
-            document.getElementById('workspaceName').textContent = workspaceId;
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('mainApp').style.display = 'block';
+            if (!workspaceId) {
+                alert('Please enter a workspace ID');
+                return;
+            }
+            if (!password) {
+                alert('Please enter a password');
+                return;
+            }
             
-            // Open shared workspace (no auth required)
-            tasksRef = db.ref(`workspaces/${workspaceId}/tasks`);
-            docsRef = db.ref(`workspaces/${workspaceId}/docs`);
+            const passwordHash = await hashPassword(password);
+            const workspaceRef = db.ref(`workspaces/${workspaceId}`);
             
-            // Listen for tasks
-            tasksRef.on('value', (snap) => {
-                const data = snap.val();
-                tasks = data ? Object.entries(data).map(([id, t]) => ({id, ...t})) : [];
-                renderTasks();
-            }, (err) => {
-                console.error('Tasks error:', err);
-                document.getElementById('syncStatus').textContent = '🔴 Error';
-                document.getElementById('syncStatus').className = 'sync-status offline';
-            });
-            
-            // Listen for docs
-            docsRef.on('value', (snap) => {
-                const data = snap.val();
-                docs = data ? Object.entries(data).map(([id, d]) => ({id, ...d})) : [];
-                docs.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
-                renderDocsList();
-            });
-            
-            // Monitor connection
-            db.ref('.info/connected').on('value', (snap) => {
-                if (snap.val()) {
-                    document.getElementById('syncStatus').textContent = '🟢 Online';
-                    document.getElementById('syncStatus').className = 'sync-status online';
+            try {
+                const snapshot = await workspaceRef.once('value');
+                const workspace = snapshot.val();
+                
+                if (workspace) {
+                    // Workspace exists - check password
+                    if (workspace.passwordHash !== passwordHash) {
+                        alert('❌ Incorrect password!\n\nIf this is your workspace, enter the correct password.\nIf you want to create a new workspace, check "Create new workspace" and use a different ID.');
+                        return;
+                    }
+                    console.log('✅ Password verified');
                 } else {
-                    document.getElementById('syncStatus').textContent = '🟡 Connecting...';
-                    document.getElementById('syncStatus').className = 'sync-status syncing';
+                    // Workspace doesn't exist
+                    if (!createNew) {
+                        alert('❌ Workspace not found!\n\nCheck "Create new workspace" to create it with your password.');
+                        return;
+                    }
+                    // Create new workspace with password
+                    await workspaceRef.set({
+                        passwordHash: passwordHash,
+                        createdAt: Date.now()
+                    });
+                    console.log('✅ Workspace created');
                 }
-            });
+                
+                // Success - show app
+                document.getElementById('workspaceName').textContent = workspaceId;
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'block';
+                
+                // Clear password from input for security
+                document.getElementById('passwordInput').value = '';
+                
+                // Setup refs
+                tasksRef = workspaceRef.child('tasks');
+                docsRef = workspaceRef.child('docs');
+                
+                // Listen for tasks
+                tasksRef.on('value', (snap) => {
+                    const data = snap.val();
+                    tasks = data ? Object.entries(data).map(([id, t]) => ({id, ...t})) : [];
+                    renderTasks();
+                }, (err) => {
+                    console.error('Tasks error:', err);
+                    document.getElementById('syncStatus').textContent = '🔴 Error';
+                    document.getElementById('syncStatus').className = 'sync-status offline';
+                });
+                
+                // Listen for docs
+                docsRef.on('value', (snap) => {
+                    const data = snap.val();
+                    docs = data ? Object.entries(data).map(([id, d]) => ({id, ...d})) : [];
+                    docs.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+                    renderDocsList();
+                });
+                
+                // Monitor connection
+                db.ref('.info/connected').on('value', (snap) => {
+                    if (snap.val()) {
+                        document.getElementById('syncStatus').textContent = '🟢 Online';
+                        document.getElementById('syncStatus').className = 'sync-status online';
+                    } else {
+                        document.getElementById('syncStatus').textContent = '🟡 Connecting...';
+                        document.getElementById('syncStatus').className = 'sync-status syncing';
+                    }
+                });
+                
+            } catch (error) {
+                console.error('Join error:', error);
+                alert('Error: ' + error.message);
+            }
         }
 
         // Logout
