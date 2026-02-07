@@ -16,6 +16,7 @@ let currentDocId = null;
 let draggedTask = null;
 let saveTimeout = null;
 let dropTargetTask = null;
+let currentChecklist = [];
 
 // Toggle password visibility
 function togglePassword() {
@@ -313,7 +314,9 @@ function openTaskModal() {
     document.getElementById('taskPriority').value = 'medium';
     document.getElementById('taskColumn').value = 'todo';
     document.getElementById('columnGroup').style.display = 'none';
-    document.getElementById('checklistSection').style.display = 'none';
+    currentChecklist = [];
+    document.getElementById('checklistSection').style.display = 'block';
+    renderChecklist([]);
     document.getElementById('taskFilesSection').style.display = 'none';
     document.getElementById('modalTitle').textContent = 'New Task';
     document.getElementById('deleteTaskBtn').style.display = 'none';
@@ -333,8 +336,9 @@ function editTask(id) {
     document.getElementById('modalTitle').textContent = 'Edit Task';
     document.getElementById('deleteTaskBtn').style.display = 'block';
     
+    currentChecklist = t.checklist || [];
     document.getElementById('checklistSection').style.display = 'block';
-    renderChecklist(t.checklist || []);
+    renderChecklist(currentChecklist);
     
     document.getElementById('taskFilesSection').style.display = 'block';
     renderTaskFiles(t.files || {});
@@ -366,6 +370,7 @@ async function saveTask() {
         priority: document.getElementById('taskPriority').value,
         status,
         column,
+        checklist: currentChecklist,
         updatedAt: Date.now()
     };
     if (!id) data.createdAt = Date.now();
@@ -418,48 +423,50 @@ async function addChecklistItem() {
     const text = input.value.trim();
     if (!text) return;
     
+    currentChecklist.push({ text, checked: false });
+    
     const taskId = document.getElementById('taskId').value;
-    if (!taskId) {
-        alert('Please save the task first before adding checklist items.');
-        return;
+    if (taskId) {
+        await tasksRef.child(taskId).update({ checklist: currentChecklist, updatedAt: Date.now() });
     }
     
-    const task = tasks.find(t => t.id === taskId);
-    const checklist = task.checklist || [];
-    checklist.push({ text, checked: false });
-    
-    await tasksRef.child(taskId).update({ checklist, updatedAt: Date.now() });
     input.value = '';
-    renderChecklist(checklist);
+    renderChecklist(currentChecklist);
 }
 
 async function toggleChecklistItem(index) {
-    const taskId = document.getElementById('taskId').value;
-    const task = tasks.find(t => t.id === taskId);
-    if (!task || !task.checklist) return;
+    if (!currentChecklist[index]) return;
     
-    task.checklist[index].checked = !task.checklist[index].checked;
-    await tasksRef.child(taskId).update({ checklist: task.checklist, updatedAt: Date.now() });
-    renderChecklist(task.checklist);
+    currentChecklist[index].checked = !currentChecklist[index].checked;
+    
+    const taskId = document.getElementById('taskId').value;
+    if (taskId) {
+        await tasksRef.child(taskId).update({ checklist: currentChecklist, updatedAt: Date.now() });
+    }
+    
+    renderChecklist(currentChecklist);
 }
 
 async function updateChecklistItem(index, text) {
-    const taskId = document.getElementById('taskId').value;
-    const task = tasks.find(t => t.id === taskId);
-    if (!task || !task.checklist) return;
+    if (!currentChecklist[index]) return;
     
-    task.checklist[index].text = text.trim();
-    await tasksRef.child(taskId).update({ checklist: task.checklist, updatedAt: Date.now() });
+    currentChecklist[index].text = text.trim();
+    
+    const taskId = document.getElementById('taskId').value;
+    if (taskId) {
+        await tasksRef.child(taskId).update({ checklist: currentChecklist, updatedAt: Date.now() });
+    }
 }
 
 async function deleteChecklistItem(index) {
-    const taskId = document.getElementById('taskId').value;
-    const task = tasks.find(t => t.id === taskId);
-    if (!task || !task.checklist) return;
+    currentChecklist.splice(index, 1);
     
-    task.checklist.splice(index, 1);
-    await tasksRef.child(taskId).update({ checklist: task.checklist, updatedAt: Date.now() });
-    renderChecklist(task.checklist);
+    const taskId = document.getElementById('taskId').value;
+    if (taskId) {
+        await tasksRef.child(taskId).update({ checklist: currentChecklist, updatedAt: Date.now() });
+    }
+    
+    renderChecklist(currentChecklist);
 }
 
 // ==================== TASK FILES ====================
