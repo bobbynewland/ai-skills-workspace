@@ -138,6 +138,7 @@ function switchView(view) {
     document.getElementById('boardView').style.display = 'none';
     document.getElementById('docsView').classList.remove('active');
     document.getElementById('filesView').classList.remove('active');
+    document.getElementById('creditsView').classList.remove('active');
     
     if (view === 'board') {
         document.getElementById('boardView').style.display = 'grid';
@@ -151,6 +152,11 @@ function switchView(view) {
     } else if (view === 'files') {
         document.getElementById('filesView').classList.add('active');
         loadFilesList();
+    } else if (view === 'credits') {
+        document.getElementById('creditsView').classList.add('active');
+        if (typeof initCreditsMonitor === 'function') {
+            initCreditsMonitor();
+        }
     }
 }
 

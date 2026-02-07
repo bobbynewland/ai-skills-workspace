@@ -45,6 +45,7 @@
             <button class="nav-tab active" onclick="switchView('board')">📋 Tasks</button>
             <button class="nav-tab" onclick="switchView('docs')">📝 Docs</button>
             <button class="nav-tab" onclick="switchView('files')">📁 Files</button>
+            <button class="nav-tab" onclick="switchView('credits')">💳 Credits</button>
         </div>
 
         <!-- Tasks View -->
@@ -116,6 +117,22 @@
                     <h3 style="color: #00d4ff; margin-bottom: 15px;">📂 Uploaded Files</h3>
                     <div id="filesListContent">
                         <p style="color: #666; text-align: center; padding: 40px;">No files uploaded yet</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Credits View -->
+        <div id="creditsView" class="credits-view">
+            <div class="credits-container">
+                <div class="credits-header">
+                    <h2>💳 API Credit Monitor</h2>
+                    <p class="credits-subtitle">Track your NVIDIA free credits and Moonshot usage</p>
+                </div>
+                <div id="creditsContent">
+                    <div class="credits-loading">
+                        <div class="loading-spinner"></div>
+                        <p>Loading credit data...</p>
                     </div>
                 </div>
             </div>
@@ -201,5 +218,6 @@
     </div>
 
     <script src="app.js"></script>
+    <script src="credits-monitor.js"></script>
 </body>
 </html>
