@@ -1,11 +1,11 @@
 {
   "meta": {
     "lastTouchedVersion": "2026.2.1",
-    "lastTouchedAt": "2026-02-07T18:50:00.000Z"
+    "lastTouchedAt": "2026-02-07T19:18:00.000Z"
   },
   "env": {
     "MOONSHOT_API_KEY": "sk-0RZERFq1ExrhSbF4CVZKElJOhbEYcUOhwdXyg4SDs1pLj2xb",
-    "NVIDIA_API_KEY": "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",
+    "NVIDIA_API_KEY": "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",
     "GOOGLE_API_KEY": "AIzaSyCDHTGxm3wFtoNHCkl__k1YNvi_n9KxycA",
     "GOOGLE_CLOUD_PROJECT": "gen-lang-client-0916314573",
     "BRAVE_API_KEY": "BSAAnV6yEDmi7FX-iUac3fzSuBfLfr6"
@@ -147,10 +147,9 @@
         "model": {
           "primary": "cli/gemini",
           "fallbacks": [
+            "vertex/gemini-3-pro-preview",
             "nvidia/kimi-k2.5",
-            "moonshot/kimi-k2.5",
-            "google/gemini-2.5-pro",
-            "vertex/gemini-3-pro-preview"
+            "moonshot/kimi-k2.5"
           ]
         }
       }
