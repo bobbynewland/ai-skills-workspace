@@ -1,0 +1,197 @@
+{
+  "schema_version": "1.1",
+  "type": "template_pack",
+  "pack": {
+    "pack_id": "cinematic-luxury",
+    "pack_name": "Cinematic Luxury",
+    "pack_description": "Dark, moody, high-end aesthetic with neon accents. Perfect for premium brands, luxury automotive, fashion, and tech companies seeking cinematic editorial vibes.",
+    "category": "Luxury & Premium",
+    "tags": ["luxury", "cinematic", "dark", "neon", "premium", "editorial", "high-end", "automotive", "fashion", "tech"],
+    "drop_announcement": {
+      "headline": "New Drop: Cinematic Luxury",
+      "body": "Dark, moody aesthetics with neon accents. For brands that demand attention. 10 premium templates ready to elevate your visual game."
+    }
+  },
+  "templates": [
+    {
+      "template_id": "cinematic-luxury-instagram-post",
+      "template_name": "Instagram Post - Product Launch",
+      "template_description": "Square format product launch template with dramatic lighting and bold typography. Perfect for revealing new products with cinematic flair.",
+      "style_mode": "photorealistic",
+      "edit_mode": "reference_first",
+      "featured_image": "cinematic-luxury-instagram-post.png",
+      "seedream_prompt": "Cinematic luxury product photography, dramatic chiaroscuro lighting, deep black background with subtle texture, neon cyan and magenta accent glows reflecting on polished surface, premium product centered composition, bold sans-serif headline typography overlay, film grain texture, 8k resolution, ultra-detailed, cinematic color grading with crushed blacks, editorial photography style, moody atmosphere",
+      "aspect_ratios": ["1:1"],
+      "required_elements": ["headline", "product_image", "cta_button"],
+      "editable_fields": [
+        {"key": "headline", "label": "Headline", "default": "INTRODUCING THE NEW ERA"},
+        {"key": "subheadline", "label": "Subheadline", "default": "Luxury Redefined"},
+        {"key": "cta_text", "label": "Button Text", "default": "DISCOVER NOW"},
+        {"key": "accent_color", "label": "Accent Color", "default": "#00D4FF", "type": "color"},
+        {"key": "product_image", "label": "Product Image", "type": "image"}
+      ]
+    },
+    {
+      "template_id": "cinematic-luxury-instagram-story",
+      "template_name": "Instagram Story - Behind The Scenes",
+      "template_description": "Vertical 9:16 story format with gritty behind-the-scenes energy. Perfect for showing process, craftsmanship, and raw luxury moments.",
+      "style_mode": "photorealistic",
+      "edit_mode": "reference_first",
+      "featured_image": "cinematic-luxury-instagram-story.png",
+      "seedream_prompt": "Cinematic behind the scenes photography, vertical composition, dramatic side lighting with neon pink and gold accents, artisan hands working on luxury product, deep shadows, film grain overlay, smoke or haze atmosphere, golden hour mixed with neon lights, industrial luxury setting, shallow depth of field, cinematic color grading, moody editorial style, 8k resolution",
+      "aspect_ratios": ["9:16"],
+      "required_elements": ["title", "subtitle", "swipe_indicator"],
+      "editable_fields": [
+        {"key": "title", "label": "Title", "default": "THE CRAFT"},
+        {"key": "subtitle", "label": "Subtitle", "default": "Behind every masterpiece"},
+        {"key": "caption", "label": "Caption", "default": "Swipe to see the process →"},
+        {"key": "bts_image", "label": "Behind The Scenes Image", "type": "image"}
+      ]
+    },
+    {
+      "template_id": "cinematic-luxury-twitter",
+      "template_name": "Twitter/X Post - Hot Take",
+      "template_description": "Wide 16:9 format for bold announcements and hot takes. High contrast typography with cinematic background elements.",
+      "style_mode": "photorealistic",
+      "edit_mode": "reference_first",
+      "featured_image": "cinematic-luxury-twitter.png",
+      "seedream_prompt": "Cinematic wide format graphic design, dark charcoal background with subtle geometric patterns, bold condensed typography center, neon electric blue accent lines, film grain texture, smoke effects, dramatic lighting from one side, luxury car or product silhouette, high contrast black and gold color scheme, editorial poster style, 8k resolution, cinematic composition",
+      "aspect_ratios": ["16:9"],
+      "required_elements": ["headline", "subtext", "hashtags"],
+      "editable_fields": [
+        {"key": "headline", "label": "Headline", "default": "THE FUTURE IS HERE"},
+        {"key": "subtext", "label": "Subtext", "default": "And it looks absolutely stunning"},
+        {"key": "hashtags", "label": "Hashtags", "default": "#LuxuryLife #Cinematic"},
+        {"key": "background_image", "label": "Background Image", "type": "image"}
+      ]
+    },
+    {
+      "template_id": "cinematic-luxury-facebook-ad",
+      "template_name": "Facebook Ad - Lead Generation",
+      "template_description": "High-converting lead gen ad with luxury appeal. Dark aesthetic with clear value proposition and strong CTA.",
+      "style_mode": "photorealistic",
+      "edit_mode": "reference_first",
+      "featured_image": "cinematic-luxury-facebook-ad.png",
+      "seedream_prompt": "Luxury Facebook advertisement design, dark navy background with gold accents, premium product showcase left side, bold headline typography right side, neon glow effect on CTA button area, film grain texture overlay, professional studio lighting, exclusive VIP feeling, high-end magazine ad style, cinematic color grading, 8k resolution",
+      "aspect_ratios": ["1.91:1"],
+      "required_elements": ["headline", "benefits", "cta_button", "product_image"],
+      "editable_fields": [
+        {"key": "headline", "label": "Headline", "default": "EXCLUSIVE ACCESS"},
+        {"key": "benefit_1", "label": "Benefit 1", "default": "✓ Premium Quality"},
+        {"key": "benefit_2", "label": "Benefit 2", "default": "✓ Limited Edition"},
+        {"key": "benefit_3", "label": "Benefit 3", "default": "✓ Free Shipping"},
+        {"key": "cta_text", "label": "CTA Button", "default": "CLAIM YOUR SPOT"},
+        {"key": "product_image", "label": "Product Image", "type": "image"}
+      ]
+    },
+    {
+      "template_id": "cinematic-luxury-flyer",
+      "template_name": "Print Flyer - Event Promo",
+      "template_description": "8.5x11 print-ready flyer for luxury events, product launches, and exclusive experiences. Dramatic and bold.",
+      "style_mode": "photorealistic",
+      "edit_mode": "reference_first",
+      "featured_image": "cinematic-luxury-flyer.png",
+      "seedream_prompt": "Luxury event flyer design, portrait orientation, deep black background with gold and neon pink accents, large bold typography as focal point, event details in clean sans-serif, cinematic lighting effects, film grain texture, smoke and atmospheric haze, VIP exclusive event feeling, high contrast editorial layout, print-ready 300dpi, 8k resolution",
+      "aspect_ratios": ["8.5:11"],
+      "required_elements": ["event_title", "date_time", "location", "cta"],
+      "editable_fields": [
+        {"key": "event_title", "label": "Event Title", "default": "THE PREMIERE"},
+        {"key": "date", "label": "Date", "default": "DECEMBER 15"},
+        {"key": "time", "label": "Time", "default": "8PM - LATE"},
+        {"key": "location", "label": "Location", "default": "THE GRAND HALL"},
+        {"key": "description", "label": "Description", "default": "An exclusive evening of luxury and innovation."},
+        {"key": "cta_text", "label": "CTA", "default": "RESERVE YOUR SEAT"}
+      ]
+    },
+    {
+      "template_id": "cinematic-luxury-business-card",
+      "template_name": "Business Card - Premium",
+      "template_description": "Premium networking business card with cinematic dark aesthetic. Bold, memorable, and unmistakably luxury.",
+      "style_mode": "photorealistic",
+      "edit_mode": "reference_first",
+      "featured_image": "cinematic-luxury-business-card.png",
+      "seedream_prompt": "Premium business card design, dark matte black background, gold foil embossed text, neon blue accent line, minimalist layout, bold sans-serif typography, film grain texture, luxury brand identity, high-end print finish, spot UV coating effect, 3.5x2 inches, cinematic color grading, 8k resolution",
+      "aspect_ratios": ["3.5:2"],
+      "required_elements": ["name", "title", "contact_info", "logo"],
+      "editable_fields": [
+        {"key": "name", "label": "Name", "default": "ALEXANDER REED"},
+        {"key": "title", "label": "Title", "default": "Creative Director"},
+        {"key": "phone", "label": "Phone", "default": "+1 555 0199"},
+        {"key": "email", "label": "Email", "default": "alex@luxury.co"},
+        {"key": "website", "label": "Website", "default": "www.luxury.co"},
+        {"key": "tagline", "label": "Tagline", "default": "Redefining Excellence"}
+      ]
+    },
+    {
+      "template_id": "cinematic-luxury-youtube-thumb",
+      "template_name": "YouTube Thumbnail - Clickbait",
+      "template_description": "High-impact 16:9 thumbnail that demands clicks. Bold text, dramatic imagery, and undeniable stopping power.",
+      "style_mode": "photorealistic",
+      "edit_mode": "reference_first",
+      "featured_image": "cinematic-luxury-youtube-thumb.png",
+      "seedream_prompt": "Cinematic YouTube thumbnail, 16:9 format, dramatic lighting with neon pink and cyan, shocked or excited face on one side, bold 3D text on other side, dark background with smoke effects, high contrast, film grain texture, glowing edges, clickbait style composition, viral thumbnail design, 8k resolution, cinematic color grading",
+      "aspect_ratios": ["16:9"],
+      "required_elements": ["main_text", "sub_text", "face_or_product"],
+      "editable_fields": [
+        {"key": "main_text", "label": "Main Text", "default": "UNBELIEVABLE"},
+        {"key": "sub_text", "label": "Sub Text", "default": "You won't believe this..."},
+        {"key": "episode_number", "label": "Episode/Number", "default": "EP. 01"},
+        {"key": "thumbnail_image", "label": "Thumbnail Image", "type": "image"}
+      ]
+    },
+    {
+      "template_id": "cinematic-luxury-linkedin",
+      "template_name": "LinkedIn Post - Professional Bold",
+      "template_description": "LinkedIn-native format that balances professionalism with bold cinematic style. Stand out in the feed.",
+      "style_mode": "photorealistic",
+      "edit_mode": "reference_first",
+      "featured_image": "cinematic-luxury-linkedin.png",
+      "seedream_prompt": "LinkedIn professional post design, 1.91:1 aspect ratio, dark sophisticated background, clean bold typography, subtle gold accents, professional headshot silhouette or abstract luxury element, film grain texture, executive level aesthetic, cinematic lighting, premium business feel, 8k resolution",
+      "aspect_ratios": ["1.91:1"],
+      "required_elements": ["quote_or_headline", "author", "company"],
+      "editable_fields": [
+        {"key": "quote", "label": "Quote/Headline", "default": "Excellence is not an act, but a habit."},
+        {"key": "author", "label": "Author", "default": "Alexander Reed"},
+        {"key": "title", "label": "Title", "default": "CEO & Founder"},
+        {"key": "company", "label": "Company", "default": "Luxury Ventures"},
+        {"key": "background_image", "label": "Background", "type": "image"}
+      ]
+    },
+    {
+      "template_id": "cinematic-luxury-carousel",
+      "template_name": "Instagram Carousel - Storytelling",
+      "template_description": "Multi-slide Instagram carousel for storytelling. Dramatic sequence that builds anticipation and engagement.",
+      "style_mode": "photorealistic",
+      "edit_mode": "reference_first",
+      "featured_image": "cinematic-luxury-carousel.png",
+      "seedream_prompt": "Cinematic Instagram carousel template, square format, series of 3-5 connected frames, dark continuity background, neon accent progression from cyan to magenta to gold across slides, bold typography that builds story, film grain texture, cinematic transitions, editorial magazine spread feel, 8k resolution",
+      "aspect_ratios": ["1:1"],
+      "required_elements": ["slide_1", "slide_2", "slide_3", "swipe_cta"],
+      "editable_fields": [
+        {"key": "slide_1_title", "label": "Slide 1 Title", "default": "THE BEGINNING"},
+        {"key": "slide_1_text", "label": "Slide 1 Text", "default": "Every legend starts somewhere."},
+        {"key": "slide_2_title", "label": "Slide 2 Title", "default": "THE PROCESS"},
+        {"key": "slide_2_text", "label": "Slide 2 Text", "default": "Perfection takes time."},
+        {"key": "slide_3_title", "label": "Slide 3 Title", "default": "THE REVEAL"},
+        {"key": "slide_3_text", "label": "Slide 3 Text", "default": "This changes everything."}
+      ]
+    },
+    {
+      "template_id": "cinematic-luxury-billboard",
+      "template_name": "Billboard - Massive Impact",
+      "template_description": "Wide 3:1 billboard format for maximum street impact. Bold, readable from distance, unforgettable.",
+      "style_mode": "photorealistic",
+      "edit_mode": "reference_first",
+      "featured_image": "cinematic-luxury-billboard.png",
+      "seedream_prompt": "Cinematic billboard advertisement, ultra-wide 3:1 format, massive bold typography, dark moody background with city skyline silhouette, neon pink and electric blue light trails, luxury product hero shot, film grain texture, dramatic fog or rain, night scene, high contrast for outdoor visibility, iconic brand moment, 8k resolution",
+      "aspect_ratios": ["3:1"],
+      "required_elements": ["headline", "tagline", "logo", "product"],
+      "editable_fields": [
+        {"key": "headline", "label": "Headline", "default": "DREAM BIGGER"},
+        {"key": "tagline", "label": "Tagline", "default": "Luxury without limits"},
+        {"key": "cta_text", "label": "CTA", "default": "COMING SOON"},
+        {"key": "billboard_image", "label": "Hero Image", "type": "image"}
+      ]
+    }
+  ]
+}
