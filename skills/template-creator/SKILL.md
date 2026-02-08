@@ -91,18 +91,40 @@ Generate a JSON template with this structure:
 
 ### 4. Upload to Platform
 
-Upload both files to the platform:
+**Use the CLAWDBOT API module** for reliable uploads:
 
-**API Endpoint:** `POST https://ai-skills-bootcamp-portal.vercel.app/api/templates`
+```python
+from skills.template-creator.clawdbot_api import upload_pack
 
-**FormData:**
-- `image`: The generated template image file
-- `template`: The JSON template file
-- `status`: "draft"
+result = upload_pack(
+    pack_name="Pack Title",
+    templates=[
+        {
+            "title": "Template Title",
+            "prompt_text": "The AI prompt used to generate...",
+            "image_url": "https://preview-image-url.png"
+        }
+    ],
+    thumbnail_url="https://pack-thumbnail-url.png",
+    category="Fashion",
+    is_published=False  # Upload as draft
+)
 
-**Headers:**
-- `Authorization`: Bearer token (if required)
-- `Content-Type`: multipart/form-data
+if result["success"]:
+    print(f"Pack ID: {result['pack_id']}")
+    for t in result["results"]:
+        print(f"  ✅ {t['title']}: {t['id']}")
+else:
+    print(f"Error: {result['error']}")
+```
+
+**API Details:**
+- **Endpoint:** `POST /api/v1/clawdbot/upload-pack`
+- **Auth:** Header `x-api-key: <CLAWDBOT_API_KEY>`
+- **Schema:** See `clawdbot_api.py` for full request/response format
+
+**Manual Upload Alternative:**
+Go to: https://ai-skills-bootcamp-portal.vercel.app/admin
 
 ### 5. Confirm Upload
 
@@ -126,3 +148,4 @@ Verify the template was saved as a draft and provide the user with:
 - [API_REFERENCE.md](references/API_REFERENCE.md) - Platform API documentation
 - [TEMPLATE_SCHEMA.md](references/TEMPLATE_SCHEMA.md) - Full JSON schema for templates
 - [STYLE_GUIDE.md](references/STYLE_GUIDE.md) - Design guidelines by business niche
+- [clawdbot_api.py](clawdbot_api.py) - Upload module with helper functions
