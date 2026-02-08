@@ -88,6 +88,7 @@
 - Telegram gateway needs periodic restarts
 - seedream4k requires specific Fal API endpoint: `fal-ai/bytedance/seedream/v4.5/text-to-image`
 - Backup workspace regularly with `tar` excluding venv/node_modules
+- "run a back" = push to GitHub
 
 ---
 
