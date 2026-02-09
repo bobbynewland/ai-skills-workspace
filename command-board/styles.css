@@ -87,18 +87,19 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 .task-card {
     background: rgba(255,255,255,0.08);
     border-radius: 14px;
-    padding: 16px;
+    padding: 0;
     margin-bottom: 12px;
-    cursor: grab;
+    display: flex;
+    align-items: stretch;
     transition: all 0.2s ease;
     border: 1px solid rgba(255,255,255,0.1);
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
+    overflow: hidden;
 }
 
 .task-card:active {
     cursor: grabbing;
-    transform: scale(0.98);
 }
 
 .task-card.drag-over {
@@ -116,20 +117,39 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
     background: rgba(0,212,255,0.15);
 }
 
-/* Long press hint on task card */
-.task-card::after {
-    content: '⋯';
-    position: absolute;
-    top: 8px;
-    right: 10px;
-    color: rgba(255,255,255,0.3);
-    font-size: 1.2rem;
-    opacity: 0;
-    transition: opacity 0.2s;
+/* Task Card Content - Clickable Area */
+.task-card-content {
+    flex: 1;
+    padding: 16px;
+    cursor: pointer;
 }
 
-.task-card:active::after {
-    opacity: 1;
+/* Drag Handle - Right Side */
+.drag-handle {
+    width: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
+    background: rgba(255,255,255,0.03);
+    border-left: 1px solid rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.4);
+    font-size: 1.5rem;
+    transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+    background: rgba(0,212,255,0.15);
+    color: #00d4ff;
+}
+
+.drag-handle:hover {
+    color: rgba(255,255,255,0.6);
+    background: rgba(255,255,255,0.08);
 }
 
 /* Drop zone highlight */

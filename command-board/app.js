@@ -244,16 +244,23 @@ function renderTasks() {
                  ondragstart="drag(event, '${t.id}')" 
                  ondragover="dragOverTask(event, '${t.id}')"
                  ondragleave="dragLeaveTask(event)"
-                 ontouchstart="touchStart(event, '${t.id}')"
-                 ontouchmove="touchMove(event)"
-                 ontouchend="touchEnd(event, '${t.id}')">
-                <div class="task-title">${escapeHtml(t.title)}</div>
-                ${t.desc ? `<div class="task-desc">${escapeHtml(t.desc)}</div>` : ''}
-                <div class="task-meta">
-                    <span class="tag tag-${t.category}">${t.category}</span>
-                    <span class="priority-indicator priority-${t.priority}">${t.priority}</span>
+                 onclick="editTask('${t.id}')">
+                <div class="task-card-content">
+                    <div class="task-title">${escapeHtml(t.title)}</div>
+                    ${t.desc ? `<div class="task-desc">${escapeHtml(t.desc)}</div>` : ''}
+                    <div class="task-meta">
+                        <span class="tag tag-${t.category}">${t.category}</span>
+                        <span class="priority-indicator priority-${t.priority}">${t.priority}</span>
+                    </div>
+                    ${renderTaskExtras(t)}
                 </div>
-                ${renderTaskExtras(t)}
+                <div class="drag-handle" 
+                     ontouchstart="touchStart(event, '${t.id}')"
+                     ontouchmove="touchMove(event)"
+                     ontouchend="touchEnd(event, '${t.id}')"
+                     title="Long press to drag">
+                    ⠿
+                </div>
             </div>
         `).join('');
         document.getElementById(`count-${status}`).textContent = cols[status].length;
@@ -299,14 +306,12 @@ function renderTaskExtras(task) {
 }
 
 // ==================== TOUCH DRAG & DROP ====================
+// Touch drag ONLY works from the drag handle
 
 let touchDragElement = null;
 let touchDragId = null;
 let touchStartX = 0;
 let touchStartY = 0;
-let touchStartTime = 0;
-let longPressTimer = null;
-let LONG_PRESS_DURATION = 500; // ms to trigger drag
 
 function touchStart(e, taskId) {
     if (e.touches.length !== 1) return;
@@ -315,84 +320,46 @@ function touchStart(e, taskId) {
     touchStartX = touch.clientX;
     touchStartY = touch.clientY;
     touchDragId = taskId;
-    touchStartTime = Date.now();
     
-    // Get the task card element
+    // Get the handle element
     touchDragElement = e.currentTarget;
-    
-    // Start long press timer
-    longPressTimer = setTimeout(() => {
-        // Long press detected - prepare for drag
-        touchDragElement.classList.add('dragging');
-    }, LONG_PRESS_DURATION);
 }
 
 function touchMove(e) {
     if (!touchDragElement) return;
+    e.preventDefault(); // Prevent scrolling while dragging
     
     const touch = e.touches[0];
     const diffX = touch.clientX - touchStartX;
     const diffY = touch.clientY - touchStartY;
     
-    // If moved more than 10px, cancel long press and start drag
-    if (Math.abs(diffX) > 10 || Math.abs(diffY) > 10) {
-        clearTimeout(longPressTimer);
-        e.preventDefault();
-        
-        // Apply transform
-        const transform = `translate(${diffX}px, ${diffY}px) scale(0.95)`;
-        touchDragElement.style.transform = transform;
-        touchDragElement.style.position = 'fixed';
-        touchDragElement.style.left = '10px';
-        touchDragElement.style.right = '10px';
-        touchDragElement.style.zIndex = '1000';
-        touchDragElement.style.width = 'auto';
-        touchDragElement.style.opacity = '0.9';
-        
-        // Find drop target
-        const dropTarget = findDropTarget(touch.clientX, touch.clientY);
-        
-        // Highlight drop zones
-        document.querySelectorAll('.column').forEach(col => {
-            col.classList.remove('drag-over');
-        });
-        
-        if (dropTarget) {
-            dropTarget.classList.add('drag-over');
-        }
+    // Apply transform
+    const transform = `translate(${diffX}px, ${diffY}px) scale(0.95)`;
+    touchDragElement.style.transform = transform;
+    touchDragElement.style.position = 'fixed';
+    touchDragElement.style.left = '10px';
+    touchDragElement.style.right = '10px';
+    touchDragElement.style.zIndex = '1000';
+    touchDragElement.style.width = 'auto';
+    touchDragElement.style.opacity = '0.9';
+    
+    // Find drop target
+    const dropTarget = findDropTarget(touch.clientX, touch.clientY);
+    
+    // Highlight drop zones
+    document.querySelectorAll('.column').forEach(col => {
+        col.classList.remove('drag-over');
+    });
+    
+    if (dropTarget) {
+        dropTarget.classList.add('drag-over');
     }
 }
 
 function touchEnd(e, taskId) {
-    clearTimeout(longPressTimer);
-    
-    if (!touchDragElement) {
-        // Regular tap - edit task
-        editTask(taskId);
-        return;
-    }
+    if (!touchDragElement) return;
     
     const touch = e.changedTouches[0];
-    const diffX = touch.clientX - touchStartX;
-    const diffY = touch.clientY - touchStartY;
-    
-    // If not dragged far enough, treat as tap
-    if (Math.abs(diffX) < 20 && Math.abs(diffY) < 20) {
-        touchDragElement.classList.remove('dragging');
-        touchDragElement.style.transform = '';
-        touchDragElement.style.position = '';
-        touchDragElement.style.left = '';
-        touchDragElement.style.right = '';
-        touchDragElement.style.zIndex = '';
-        touchDragElement.style.width = '';
-        touchDragElement.style.opacity = '';
-        touchDragElement = null;
-        touchDragId = null;
-        editTask(taskId);
-        return;
-    }
-    
-    // Find drop target
     const dropTarget = findDropTarget(touch.clientX, touch.clientY);
     
     // Remove dragging styles
