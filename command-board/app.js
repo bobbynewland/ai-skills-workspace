@@ -136,27 +136,21 @@ function switchView(view) {
     event.target.classList.add('active');
     
     document.getElementById('boardView').style.display = 'none';
-    document.getElementById('docsView').classList.remove('active');
+    document.getElementById('notesView').classList.remove('active');
     document.getElementById('filesView').classList.remove('active');
-    document.getElementById('creditsView').classList.remove('active');
     
     if (view === 'board') {
         document.getElementById('boardView').style.display = 'grid';
-    } else if (view === 'docs') {
-        document.getElementById('docsView').classList.add('active');
+    } else if (view === 'notes') {
+        document.getElementById('notesView').classList.add('active');
         if (window.innerWidth <= 768) {
             document.getElementById('docsSidebar').classList.add('hidden');
-            document.getElementById('docsToggleBtn').textContent = '📁 Show Documents';
+            document.getElementById('docsToggleBtn').textContent = '📁 Show Notes';
         }
         if (!currentDocId && docs.length > 0) selectDoc(docs[0].id);
     } else if (view === 'files') {
         document.getElementById('filesView').classList.add('active');
-        loadFilesList();
-    } else if (view === 'credits') {
-        document.getElementById('creditsView').classList.add('active');
-        if (typeof initCreditsMonitor === 'function') {
-            initCreditsMonitor();
-        }
+        loadDriveLinks();
     }
 }
 
@@ -167,11 +161,66 @@ function toggleDocsSidebar() {
     
     if (sidebar.classList.contains('hidden')) {
         sidebar.classList.remove('hidden');
-        btn.textContent = '📁 Hide Documents';
+        btn.textContent = '📁 Hide Notes';
     } else {
         sidebar.classList.add('hidden');
-        btn.textContent = '📁 Show Documents';
+        btn.textContent = '📁 Show Notes';
     }
+}
+
+// ==================== DRIVE ====================
+
+function loadDriveLinks() {
+    const container = document.getElementById('driveLinks');
+    
+    // Drive folder links
+    const folders = [
+        { name: 'AI Skills Studio (Root)', url: 'https://drive.google.com/drive/folders/1hU2LW9fW0aht7x_-ki80a4f5MFifIeK7' },
+        { name: '📁 Template Packs', url: 'https://drive.google.com/drive/folders/1c2Avh-PNtg9tEpgZWpDJjE6WdqQB9Cyy' },
+        { name: '📁 Media Assets', url: 'https://drive.google.com/drive/folders/1SKqsnfGGc1hSW0hqA-SiOXmn1SI47z-K' },
+        { name: '📁 Exports', url: 'https://drive.google.com/drive/folders/1P5xl8qhO3yeK90m2XU_Hwp-Psw5S5D1h' },
+    ];
+    
+    const quickLinks = [
+        { name: '📝 Google Docs', url: 'https://docs.google.com/document/u/0/' },
+        { name: '📊 Google Sheets', url: 'https://docs.google.com/spreadsheets/u/0/' },
+        { name: '🎬 Google Slides', url: 'https://docs.google.com/presentation/u/0/' },
+        { name: '📋 Google Forms', url: 'https://docs.google.com/forms/u/0/' },
+    ];
+    
+    container.innerHTML = `
+        <div class="drive-section">
+            <div class="drive-section-title">🎯 Quick Access</div>
+            ${quickLinks.map(link => `
+                <div class="drive-item">
+                    <a href="${link.url}" target="_blank">
+                        <span class="drive-item-icon">${link.name.split(' ')[0]}</span>
+                        <span>${link.name.substring(2)}</span>
+                    </a>
+                </div>
+            `).join('')}
+        </div>
+        <div class="drive-section">
+            <div class="drive-section-title">📂 AI Skills Studio Folders</div>
+            ${folders.map(folder => `
+                <div class="drive-folder">
+                    <a href="${folder.url}" target="_blank">
+                        <span class="drive-folder-icon">${folder.name.startsWith('📁') ? '📁' : '🏠'}</span>
+                        <span class="drive-folder-name">${folder.name.replace('📁 ', '').replace('🏠 ', '')}</span>
+                    </a>
+                </div>
+            `).join('')}
+        </div>
+        <div class="drive-section">
+            <div class="drive-section-title">💡 Tips</div>
+            <div style="color: #888; font-size: 0.9rem; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px;">
+                • Click any folder to open in Google Drive<br>
+                • Upload templates to "Template Packs" folder<br>
+                • All files are automatically backed up<br>
+                • Share links are public for template images
+            </div>
+        </div>
+    `;
 }
 
 // ==================== TASKS ====================
@@ -560,12 +609,12 @@ async function deleteTaskFile(fileId) {
     renderTaskFiles(task.files);
 }
 
-// ==================== DOCS ====================
+// ==================== DOCS / NOTES ====================
 
 function renderDocsList() {
     const list = document.getElementById('docList');
     if (docs.length === 0) {
-        list.innerHTML = '<div style="color: #666; text-align: center; padding: 20px;">No documents yet</div>';
+        list.innerHTML = '<div style="color: #666; text-align: center; padding: 20px;">No notes yet - create your first one!</div>';
         return;
     }
     list.innerHTML = docs.map(d => `

@@ -42,10 +42,9 @@
         </div>
 
         <div class="nav-tabs">
-            <button class="nav-tab active" onclick="switchView('board')">📋 Tasks</button>
-            <button class="nav-tab" onclick="switchView('docs')">📝 Docs</button>
-            <button class="nav-tab" onclick="switchView('files')">📁 Files</button>
-            <button class="nav-tab" onclick="switchView('credits')">💳 Credits</button>
+            <button class="nav-tab active" onclick="switchView('board')">🏆 Tasks</button>
+            <button class="nav-tab" onclick="switchView('notes')">📝 Notes</button>
+            <button class="nav-tab" onclick="switchView('files')">💾 Drive</button>
         </div>
 
         <!-- Tasks View -->
@@ -81,12 +80,12 @@
             </div>
         </div>
 
-        <!-- Docs View -->
-        <div id="docsView" class="docs-view">
+        <!-- Notes View -->
+        <div id="notesView" class="docs-view">
             <div class="docs-layout">
                 <button class="docs-toggle" onclick="toggleDocsSidebar()" id="docsToggleBtn">📁 Show Documents</button>
                 <div class="docs-sidebar" id="docsSidebar">
-                    <h3>📝 Documents</h3>
+                    <h3>📝 Notes & Docs</h3>
                     <div id="docList"></div>
                     <button class="add-btn" onclick="createDoc()">+ New Document</button>
                 </div>
@@ -97,43 +96,24 @@
                         <button onclick="deleteDoc()" style="color: #ff6b6b;">🗑️ Delete</button>
                         <span id="saveStatus" style="margin-left: auto; color: #666;"></span>
                     </div>
-                    <input type="text" id="docTitle" class="doc-title" placeholder="Document Title" oninput="saveDoc()">
-                    <textarea id="docContent" class="doc-content" placeholder="Start typing... Real-time collaboration enabled!&#10;&#10;Perfect for:&#10;- Meeting notes&#10;- Content scripts&#10;- Ideas & brainstorming&#10;- Project documentation" oninput="saveDoc()"></textarea>
+                    <input type="text" id="docTitle" class="doc-title" placeholder="Note Title" oninput="saveDoc()">
+                    <textarea id="docContent" class="doc-content" placeholder="Start typing... Your brain dump space!&#10;&#10;Perfect for:&#10;- Meeting notes&#10;- Ideas & brainstorming&#10;- Quick captures&#10;- Project docs" oninput="saveDoc()"></textarea>
                 </div>
             </div>
         </div>
 
-        <!-- Files View -->
+        <!-- Drive View -->
         <div id="filesView" class="files-view">
             <div class="files-container">
-                <div class="upload-area" id="uploadArea" ondrop="dropFiles(event)" ondragover="allowDropFiles(event)">
-                    <div class="upload-icon">📁</div>
-                    <p>Drag & drop files here</p>
-                    <p style="color: #888; font-size: 0.9rem;">or</p>
-                    <input type="file" id="fileInput" multiple onchange="handleFiles(this.files)" style="display: none;">
-                    <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">Select Files</button>
+                <div class="drive-header">
+                    <h2 style="color: #00d4ff; margin-bottom: 20px;">💾 Google Drive</h2>
+                    <a href="https://drive.google.com" target="_blank" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px;">
+                        🚀 Open Drive
+                    </a>
                 </div>
-                <div class="file-list" id="fileList">
-                    <h3 style="color: #00d4ff; margin-bottom: 15px;">📂 Uploaded Files</h3>
-                    <div id="filesListContent">
-                        <p style="color: #666; text-align: center; padding: 40px;">No files uploaded yet</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Credits View -->
-        <div id="creditsView" class="credits-view">
-            <div class="credits-container">
-                <div class="credits-header">
-                    <h2>💳 API Credit Monitor</h2>
-                    <p class="credits-subtitle">Track your NVIDIA free credits and Moonshot usage</p>
-                </div>
-                <div id="creditsContent">
-                    <div class="credits-loading">
-                        <div class="loading-spinner"></div>
-                        <p>Loading credit data...</p>
-                    </div>
+                <div class="drive-links" id="driveLinks">
+                    <div class="loading-spinner"></div>
+                    <p>Loading Drive files...</p>
                 </div>
             </div>
         </div>

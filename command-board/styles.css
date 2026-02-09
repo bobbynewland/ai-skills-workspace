@@ -207,51 +207,65 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
     .editor-toolbar button { font-size: 0.8rem; padding: 8px 10px; }
 }
 
-/* Files View */
+/* Drive View */
 .files-view { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: none; }
 .files-view.active { display: block; }
-.files-container { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
-.upload-area { 
-    background: rgba(255,255,255,0.03); 
-    border: 2px dashed rgba(0,212,255,0.3); 
-    border-radius: 16px; 
-    padding: 40px; 
-    text-align: center;
-    transition: all 0.3s;
-}
-.upload-area:hover, .upload-area.dragover { 
-    background: rgba(0,212,255,0.05); 
-    border-color: #00d4ff; 
-}
-.upload-icon { font-size: 3rem; margin-bottom: 15px; }
-.file-list { background: rgba(255,255,255,0.03); border-radius: 16px; padding: 20px; }
-.file-item { 
+.files-container { display: block; }
+.drive-header { 
     display: flex; 
+    justify-content: space-between; 
     align-items: center; 
-    justify-content: space-between;
-    padding: 12px; 
+    margin-bottom: 20px;
+}
+.drive-links { 
+    background: rgba(255,255,255,0.03); 
+    border-radius: 16px; 
+    padding: 20px; 
+}
+.drive-folder { 
+    padding: 15px; 
     background: rgba(255,255,255,0.05); 
     border-radius: 8px; 
-    margin-bottom: 8px;
+    margin-bottom: 10px;
+    transition: all 0.2s;
 }
-.file-info { display: flex; align-items: center; gap: 10px; }
-.file-icon { font-size: 1.5rem; }
-.file-name { font-weight: 500; }
-.file-meta { color: #888; font-size: 0.8rem; }
-.file-actions { display: flex; gap: 8px; }
-.file-actions button { 
-    padding: 6px 12px; 
-    background: rgba(255,255,255,0.1); 
-    border: none; 
-    color: #fff; 
-    border-radius: 6px; 
-    cursor: pointer;
-    font-size: 0.85rem;
+.drive-folder:hover { background: rgba(0,212,255,0.1); }
+.drive-folder a { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    text-decoration: none; 
+    color: #fff;
 }
-.file-actions button:hover { background: rgba(255,255,255,0.2); }
-
-@media (max-width: 768px) {
-    .files-container { grid-template-columns: 1fr; gap: 15px; }
+.drive-folder-icon { font-size: 1.5rem; }
+.drive-folder-name { font-weight: 500; }
+.drive-section { margin-bottom: 25px; }
+.drive-section-title { 
+    color: #00d4ff; 
+    font-size: 0.9rem; 
+    text-transform: uppercase; 
+    letter-spacing: 1px; 
+    margin-bottom: 12px; 
+}
+.drive-item {
+    padding: 10px 15px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.drive-item:hover { background: rgba(255,255,255,0.08); }
+.drive-item a {
+    text-decoration: none;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+}
+.drive-item-icon { font-size: 1.2rem; }
     .upload-area { padding: 30px 20px; }
     .upload-area p { font-size: 0.9rem; }
     .upload-icon { font-size: 2.5rem; }
