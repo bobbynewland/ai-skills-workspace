@@ -109,8 +109,27 @@ body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background
 }
 
 .task-card.dragging {
-    opacity: 0.5;
+    opacity: 0.9;
     transform: scale(0.95);
+    box-shadow: 0 20px 40px rgba(0,212,255,0.4);
+    border: 2px solid #00d4ff;
+    background: rgba(0,212,255,0.15);
+}
+
+/* Long press hint on task card */
+.task-card::after {
+    content: '⋯';
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    color: rgba(255,255,255,0.3);
+    font-size: 1.2rem;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.task-card:active::after {
+    opacity: 1;
 }
 
 /* Drop zone highlight */
