@@ -34,9 +34,9 @@
 2. Gemini 1.5 Flash (Fallback)
 
 **Coding:**
-1. Gemini CLI (Free tier) - First attempt
-2. Gemini API (Flash/Pro) - Fallback
-3. MiniMax M2.1 - Final
+1. Pony Alpha (OpenRouter - FREE!)
+2. Gemini CLI / Gemini API (Fallback)
+3. MiniMax M2.1 (Final)
 
 **General Tasks:**
 1. Gemini Flash (Speed)
@@ -47,6 +47,12 @@
 - `/root/.openclaw/workspace/.keys/google_ai_studio.key`
 - `/root/.openclaw/workspace/.keys/vertex_ai.json`
 - `/root/.openclaw/workspace/.keys/fal.key` (for seedream4k)
+- `/root/.openclaw/workspace/.keys/heygen.key` (for training videos)
+- `/root/.openclaw/workspace/.keys/openrouter.key` (for Pony Alpha)
+
+### Skills Created
+- `/root/.openclaw/workspace/skills/training-videos/heygen_skill.py` - Create AI avatar training videos
+- Commands: avatars, voices, create <script>, status <video_id>
 
 ---
 
@@ -75,6 +81,12 @@
 - **Vibes:** Fashion Nova/Fenty inspired
 - **Files:** v3-a.png, v3-b.png, v3-c.png, v3-thumb.png
 
+### YASIN AHMED Link in Bio Page (2026-02-09)
+- Created Link in Bio HTML page with phone mockup design
+- Purple & green botanical theme
+- Features: avatar, 8 social icons (Facebook, Instagram, Snapchat, LinkedIn, Behance, Dribbble, GitHub, Fiverr), links section, Book a Call button
+- File: `/root/.openclaw/workspace/link-in-bio-yasin.html`
+
 ### Design Feedback (2026-02-08)
 - Templates marked as "bland"
 - Need textured backgrounds
@@ -89,6 +101,8 @@
 - seedream4k requires specific Fal API endpoint: `fal-ai/bytedance/seedream/v4.5/text-to-image`
 - Backup workspace regularly with `tar` excluding venv/node_modules
 - "run a back" = push to GitHub
+- OpenRouter config requires `"api": "openai-completions"` format (not "openai-chat")
+- Google Slides scope (`https://www.googleapis.com/auth/slides`) is invalid for this OAuth token
 
 ---
 
@@ -98,3 +112,6 @@
 - [ ] Apply creative director research findings
 - [ ] Get Firebase/command board operational
 - [ ] Generate V4 templates with enhanced design elements
+- [x] Create HeyGen training video skill
+- [x] Configure OpenRouter Pony Alpha for free coding
+- [ ] Create Link in Bio page templates
