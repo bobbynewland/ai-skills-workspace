@@ -3,7 +3,7 @@
 🏆 EMPIRE COMMAND CENTER
 AI Skills Studio - Business Command Hub
 
-Usage: python3 command_center.py
+Usage: python3 command_center.py <command>
 """
 import sys
 import json
@@ -93,17 +93,54 @@ def cmd_calendar(days=7):
         time = e.get('start', {}).get('dateTime', 'TBD')[:16].replace('T', ' ')
         print(f"  📅 {time} | {e.get('summary', 'Untitled')}")
 
+# ============== DRIVE / NOTES ==============
+
 def cmd_drive(query=None):
-    """List Drive files"""
-    print_header("💾 DRIVE FILES")
-    files = drive_list(query, max_results=20)
-    for f in files:
-        icon = '📁' if 'folder' in f.get('mimeType') else '📄'
-        print(f"  {icon} {f.get('name')}")
+    """Access Google Drive"""
+    print_header("💾 GOOGLE DRIVE")
+    files = drive_list(query, max_results=30)
+    
+    # Group by type
+    folders = [f for f in files if 'folder' in f.get('mimeType')]
+    docs = [f for f in files if 'document' in f.get('mimeType')]
+    sheets = [f for f in files if 'spreadsheet' in f.get('mimeType')]
+    slides = [f for f in files if 'presentation' in f.get('mimeType')]
+    images = [f for f in files if 'image' in f.get('mimeType')]
+    other = [f for f in files if f not in folders + docs + sheets + slides + images]
+    
+    if folders:
+        print_sub("📁 Folders")
+        for f in folders[:10]:
+            print(f"  📁 {f.get('name')}")
+    
+    if docs:
+        print_sub("📝 Docs")
+        for f in docs[:10]:
+            print(f"  📝 {f.get('name')}")
+    
+    if sheets:
+        print_sub("📊 Sheets")
+        for f in sheets[:10]:
+            print(f"  📊 {f.get('name')}")
+    
+    if slides:
+        print_sub("🎬 Slides")
+        for f in slides[:10]:
+            print(f"  🎬 {f.get('name')}")
+    
+    if images:
+        print_sub("🖼️ Images")
+        for f in images[:10]:
+            print(f"  🖼️ {f.get('name')}")
+    
+    if other:
+        print_sub("📄 Other")
+        for f in other[:10]:
+            print(f"  📄 {f.get('name')}")
 
 def cmd_drive_upload(filename):
     """Upload file to Drive"""
-    folder = TEMPLATE_FOLDERS.get('exports')  # default to exports
+    folder = TEMPLATE_FOLDERS.get('exports')
     result = drive_upload(filename, None, folder)
     print_success(f"Uploaded {filename}")
 
@@ -121,46 +158,71 @@ def cmd_templates_public():
     subprocess.run(['python3', f'{WORKSPACE}/make_public.py'], check=True)
     print_success("Templates are now public!")
 
-def cmd_sheets_list():
-    """List recent Sheets"""
-    print_header("📊 SHEETS")
-    files = drive_list("mimeType='application/vnd.google-apps.spreadsheet'", max_results=10)
+# ============== NOTES ==============
+
+def cmd_notes_list():
+    """List Docs"""
+    print_header("📝 GOOGLE DOCS")
+    files = drive_list("mimeType='application/vnd.google-apps.document'", max_results=30)
     for f in files:
-        print(f"  📊 {f.get('name')} (https://docs.google.com/spreadsheets/d/{f.get('id')})")
+        print(f"  📝 {f.get('name')}")
+        print(f"     https://docs.google.com/document/d/{f.get('id')}/edit")
+
+def cmd_notes_create(title):
+    """Create new Doc"""
+    result = docs_create(title)
+    print_success(f"Created: https://docs.google.com/document/d/{result.get('documentId')}/edit")
+
+def cmd_notes_edit():
+    """Read brain dump notes"""
+    cmd_brain_dump()
+
+# ============== SHEETS ==============
+
+def cmd_sheets_list():
+    """List Sheets"""
+    print_header("📊 GOOGLE SHEETS")
+    files = drive_list("mimeType='application/vnd.google-apps.spreadsheet'", max_results=30)
+    for f in files:
+        print(f"  📊 {f.get('name')}")
+        print(f"     https://docs.google.com/spreadsheets/d/{f.get('id')}")
 
 def cmd_sheets_create(title):
     """Create new Sheet"""
     result = sheets_create(title)
     print_success(f"Created: https://docs.google.com/spreadsheets/d/{result.get('spreadsheetId')}/edit")
 
-def cmd_docs_list():
-    """List recent Docs"""
-    print_header("📝 DOCS")
-    files = drive_list("mimeType='application/vnd.google-apps.document'", max_results=10)
-    for f in files:
-        print(f"  📝 {f.get('name')} (https://docs.google.com/document/d/{f.get('id')}/edit)")
+# ============== SLIDES ==============
 
-def cmd_docs_create(title):
-    """Create new Doc"""
-    result = docs_create(title)
-    print_success(f"Created: https://docs.google.com/document/d/{result.get('documentId')}/edit")
+def cmd_slides_list():
+    """List Slides"""
+    print_header("🎬 GOOGLE SLIDES")
+    files = drive_list("mimeType='application/vnd.google-apps.presentation'", max_results=30)
+    for f in files:
+        print(f"  🎬 {f.get('name')}")
+        print(f"     https://docs.google.com/presentation/d/{f.get('id')}/edit")
 
 def cmd_slides_create(title):
-    """Create new Presentation"""
+    """Create new Slides"""
     result = slides_create(title)
     print_success(f"Created: https://docs.google.com/presentation/d/{result.get('presentationId')}/edit")
 
+# ============== FORMS ==============
+
 def cmd_forms_list():
-    """List forms"""
-    print_header("📋 FORMS")
-    files = drive_list("mimeType='application/vnd.google-apps.form'", max_results=10)
+    """List Forms"""
+    print_header("📋 GOOGLE FORMS")
+    files = drive_list("mimeType='application/vnd.google-apps.form'", max_results=30)
     for f in files:
-        print(f"  📋 {f.get('name')} (https://docs.google.com/forms/d/{f.get('id')}/viewform)")
+        print(f"  📋 {f.get('name')}")
+        print(f"     https://docs.google.com/forms/d/{f.get('id')}/viewform")
 
 def cmd_forms_create(title):
     """Create new Form"""
     result = forms_create(title)
     print_success(f"Created: https://docs.google.com/forms/d/{result.get('formId')}/viewform")
+
+# ============== CONTACTS ==============
 
 def cmd_contacts():
     """List contacts"""
@@ -170,6 +232,21 @@ def cmd_contacts():
         name = c.get('names', [{}])[0].get('displayName', 'Unknown')
         emails = [e.get('value') for e in c.get('emailAddresses', [])]
         print(f"  👤 {name}: {', '.join(emails[:2])}")
+
+# ============== COMMAND BOARD ==============
+
+def cmd_board(args=None):
+    """Command Board - Task Management"""
+    import subprocess
+    cmd = ['python3', f'{WORKSPACE}/command_board.py']
+    if args:
+        cmd.extend(args)
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    print(result.stdout)
+    if result.stderr:
+        print(result.stderr)
+
+# ============== BACKUP / SYSTEM ==============
 
 def cmd_backup():
     """Full backup routine"""
@@ -197,27 +274,14 @@ def cmd_git_status():
     print("Recent commits:")
     print(result.stdout)
 
-# ============== COMMAND BOARD ==============
-
-def cmd_board(args=None):
-    """Command Board - Task Management"""
-    import subprocess
-    cmd = ['python3', f'{WORKSPACE}/command_board.py']
-    if args:
-        cmd.extend(args)
-    result = subprocess.run(cmd, capture_output=True, text=True)
-    print(result.stdout)
-    if result.stderr:
-        print(result.stderr)
-
 def cmd_help():
     """Show all commands"""
     print("""
 🏆 EMPIRE COMMAND CENTER
 ========================
 
-📊 STATUS & OVERVIEW
-  status              Quick overview of empire
+📊 STATUS
+  status              Quick overview
   brain_dump          Read brain dump notes
 
 📧 EMAIL
@@ -227,48 +291,48 @@ def cmd_help():
   calendar [days]     Show upcoming events
 
 💾 DRIVE
-  drive [query]      List Drive files
-  upload <filename>  Upload file to Drive
-  templates          Upload templates to Drive
-  public             Make templates public
+  drive               List all Drive files
+  upload <filename>   Upload file to Drive
+  templates           Upload templates to Drive
+  public              Make templates public
+
+📝 NOTES
+  notes               List Google Docs
+  notes read          Read brain dump
+  notes create <title>   Create new Doc
 
 📊 SHEETS
-  sheets_list        List Sheets
-  sheets <title>     Create new Sheet
-
-📝 DOCS
-  docs_list          List Docs
-  docs <title>       Create new Doc
+  sheets              List Sheets
+  sheets <title>      Create new Sheet
 
 🎬 SLIDES
-  slides <title>    Create presentation
+  slides              List Slides
+  slides <title>      Create presentation
 
 📋 FORMS
-  forms_list        List Forms
-  forms <title>     Create new Form
+  forms               List Forms
+  forms <title>       Create new Form
 
 👥 CONTACTS
-  contacts          List contacts
+  contacts            List contacts
 
 🏆 COMMAND BOARD
-  board            List all tasks
-  board todo       Todo tasks only
-  board doing      Doing tasks
-  board done       Done tasks
+  board               List all tasks
+  board todo          Todo tasks only
   board add <title> <desc> [col] [prio]  Add task
-  board stats      Task statistics
+  board stats         Task statistics
 
 🔧 SYSTEM
-  backup            Full backup routine
-  git               Git status & recent commits
-  help              Show this help
+  backup              Full backup routine
+  git                 Git status
+  help                Show this help
 
 💡 EXAMPLES
   python3 command_center.py status
   python3 command_center.py email "Quick Update" "Meeting at 3pm"
   python3 command_center.py calendar 7
-  python3 command_center.py docs "Meeting Notes"
-  python3 command_center.py backup
+  python3 command_center.py notes create "Meeting Notes"
+  python3 command_center.py board
 """)
 
 # ============== MAIN ==============
@@ -291,13 +355,10 @@ def main():
         'upload': lambda: cmd_drive_upload(args[0]),
         'templates': cmd_templates_upload,
         'public': cmd_templates_public,
-        'sheets_list': cmd_sheets_list,
-        'sheets': lambda: cmd_sheets_create(args[0]),
-        'docs_list': cmd_docs_list,
-        'docs': lambda: cmd_docs_create(args[0]),
-        'slides': lambda: cmd_slides_create(args[0]),
-        'forms_list': cmd_forms_list,
-        'forms': lambda: cmd_forms_create(args[0]),
+        'notes': lambda: cmd_notes_edit() if args and args[0] == 'read' else (cmd_notes_create(args[0]) if args else cmd_notes_list()),
+        'sheets': lambda: cmd_sheets_create(args[0]) if args else cmd_sheets_list(),
+        'slides': lambda: cmd_slides_create(args[0]) if args else cmd_slides_list(),
+        'forms': lambda: cmd_forms_create(args[0]) if args else cmd_forms_list(),
         'contacts': cmd_contacts,
         'backup': cmd_backup,
         'board': lambda: cmd_board(args),
