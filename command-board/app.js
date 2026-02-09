@@ -244,12 +244,15 @@ function renderTasks() {
                  ondragstart="drag(event, '${t.id}')" 
                  ondragover="dragOverTask(event, '${t.id}')"
                  ondragleave="dragLeaveTask(event)"
+                 ontouchstart="touchStart(event, '${t.id}')"
+                 ontouchmove="touchMove(event)"
+                 ontouchend="touchEnd(event, '${t.id}')"
                  onclick="editTask('${t.id}')">
                 <div class="task-title">${escapeHtml(t.title)}</div>
                 ${t.desc ? `<div class="task-desc">${escapeHtml(t.desc)}</div>` : ''}
                 <div class="task-meta">
                     <span class="tag tag-${t.category}">${t.category}</span>
-                    <span class="priority-${t.priority}">${t.priority}</span>
+                    <span class="priority-indicator priority-${t.priority}">${t.priority}</span>
                 </div>
                 ${renderTaskExtras(t)}
             </div>
@@ -294,6 +297,107 @@ function renderTaskExtras(task) {
     }
     
     return html;
+}
+
+// ==================== TOUCH DRAG & DROP ====================
+
+let touchDragElement = null;
+let touchDragId = null;
+let touchStartX = 0;
+let touchStartY = 0;
+
+function touchStart(e, taskId) {
+    // Don't prevent default - we want the click to work too
+    if (e.touches.length !== 1) return;
+    
+    const touch = e.touches[0];
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+    touchDragId = taskId;
+    
+    // Get the task card element
+    touchDragElement = e.currentTarget;
+    
+    // Add visual feedback
+    touchDragElement.classList.add('dragging');
+    
+    // Store original position for revert
+    touchDragElement.dataset.originalPosition = '';
+}
+
+function touchMove(e) {
+    if (!touchDragElement) return;
+    e.preventDefault(); // Prevent scrolling while dragging
+    
+    const touch = e.touches[0];
+    const diffX = touch.clientX - touchStartX;
+    const diffY = touch.clientY - touchStartY;
+    
+    // Apply transform
+    const transform = `translate(${diffX}px, ${diffY}px) scale(0.95)`;
+    touchDragElement.style.transform = transform;
+    touchDragElement.style.position = 'fixed';
+    touchDragElement.style.left = '10px';
+    touchDragElement.style.right = '10px';
+    touchDragElement.style.zIndex = '1000';
+    touchDragElement.style.width = 'auto';
+    
+    // Find drop target
+    const dropTarget = findDropTarget(touch.clientX, touch.clientY);
+    
+    // Highlight drop zones
+    document.querySelectorAll('.column').forEach(col => {
+        col.classList.remove('drag-over');
+    });
+    
+    if (dropTarget) {
+        dropTarget.classList.add('drag-over');
+    }
+}
+
+function touchEnd(e, taskId) {
+    if (!touchDragElement) return;
+    
+    const touch = e.changedTouches[0];
+    const dropTarget = findDropTarget(touch.clientX, touch.clientY);
+    
+    // Remove dragging styles
+    touchDragElement.classList.remove('dragging');
+    touchDragElement.style.transform = '';
+    touchDragElement.style.position = '';
+    touchDragElement.style.left = '';
+    touchDragElement.style.right = '';
+    touchDragElement.style.zIndex = '';
+    touchDragElement.style.width = '';
+    
+    // Remove column highlights
+    document.querySelectorAll('.column').forEach(col => {
+        col.classList.remove('drag-over');
+    });
+    
+    // If dropped on a column, move the task
+    if (dropTarget) {
+        const column = dropTarget.id.replace('col-', '');
+        moveTask(taskId, column);
+    }
+    
+    // Reset
+    touchDragElement = null;
+    touchDragId = null;
+}
+
+function findDropTarget(x, y) {
+    // Find which column the touch point is over
+    const columns = document.querySelectorAll('.column');
+    
+    for (const col of columns) {
+        const rect = col.getBoundingClientRect();
+        if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+            return col;
+        }
+    }
+    
+    return null;
 }
 
 function drag(e, id) { 
