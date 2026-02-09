@@ -197,6 +197,19 @@ def cmd_git_status():
     print("Recent commits:")
     print(result.stdout)
 
+# ============== COMMAND BOARD ==============
+
+def cmd_board(args=None):
+    """Command Board - Task Management"""
+    import subprocess
+    cmd = ['python3', f'{WORKSPACE}/command_board.py']
+    if args:
+        cmd.extend(args)
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    print(result.stdout)
+    if result.stderr:
+        print(result.stderr)
+
 def cmd_help():
     """Show all commands"""
     print("""
@@ -236,6 +249,14 @@ def cmd_help():
 
 👥 CONTACTS
   contacts          List contacts
+
+🏆 COMMAND BOARD
+  board            List all tasks
+  board todo       Todo tasks only
+  board doing      Doing tasks
+  board done       Done tasks
+  board add <title> <desc> [col] [prio]  Add task
+  board stats      Task statistics
 
 🔧 SYSTEM
   backup            Full backup routine
@@ -279,6 +300,7 @@ def main():
         'forms': lambda: cmd_forms_create(args[0]),
         'contacts': cmd_contacts,
         'backup': cmd_backup,
+        'board': lambda: cmd_board(args),
         'git': cmd_git_status,
         'help': cmd_help,
         '--help': cmd_help,
