@@ -12,6 +12,7 @@
             color: #e5e5e5; 
             min-height: 100vh; 
             overflow-x: hidden;
+            padding-bottom: 80px;
         }
         
         /* Header */
@@ -30,6 +31,38 @@
             -webkit-text-fill-color: transparent;
         }
         .header p { color: #6b7280; font-size: 0.875rem; margin-top: 4px; }
+        
+        /* Tabs */
+        .tabs { 
+            display: flex; 
+            gap: 4px; 
+            padding: 0 20px 20px; 
+            overflow-x: auto; 
+            -webkit-overflow-scrolling: touch;
+        }
+        .tab { 
+            background: rgba(255,255,255,0.03); 
+            border: 1px solid rgba(255,255,255,0.06); 
+            border-radius: 10px; 
+            padding: 10px 16px; 
+            font-size: 0.85rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .tab.active { 
+            background: linear-gradient(135deg, rgba(167, 139, 250, 0.15) 0%, rgba(124, 58, 237, 0.15) 100%);
+            border-color: rgba(167, 139, 250, 0.3);
+        }
+        .tab span { opacity: 0.7; }
+        .tab.active span { opacity: 1; }
+        
+        /* Tab Content */
+        .tab-content { display: none; padding: 0 20px; }
+        .tab-content.active { display: block; }
         
         /* Stats Bar */
         .stats-bar { 
@@ -59,8 +92,8 @@
             padding-bottom: 120px;
         }
         .column { 
-            min-width: 300px; 
-            max-width: 300px; 
+            min-width: 280px; 
+            max-width: 280px; 
             flex-shrink: 0;
         }
         .column-header { 
@@ -134,11 +167,66 @@
         .priority-medium { background: #fbbf24; }
         .priority-low { background: #34d399; }
         
-        .file-indicator { 
-            margin-left: auto; 
-            color: #6b7280; 
-            font-size: 0.75rem;
+        /* Notes Tab */
+        .notes-list { display: flex; flex-direction: column; gap: 12px; padding-bottom: 120px; }
+        .note-card { 
+            background: rgba(255,255,255,0.03); 
+            border: 1px solid rgba(255,255,255,0.06); 
+            border-radius: 12px; 
+            padding: 16px;
         }
+        .note-title { font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .note-preview { color: #9ca3af; font-size: 0.9rem; line-height: 1.5; }
+        .note-meta { display: flex; gap: 12px; margin-top: 12px; font-size: 0.75rem; color: #6b7280; }
+        
+        /* Files Tab */
+        .files-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); 
+            gap: 12px; 
+            padding-bottom: 120px;
+        }
+        .file-card { 
+            background: rgba(255,255,255,0.03); 
+            border: 1px solid rgba(255,255,255,0.06); 
+            border-radius: 12px; 
+            padding: 16px; 
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .file-card:hover { background: rgba(255,255,255,0.05); }
+        .file-icon { font-size: 2.5rem; margin-bottom: 8px; }
+        .file-name { font-size: 0.85rem; font-weight: 500; word-break: break-word; }
+        .file-meta { font-size: 0.75rem; color: #6b7280; margin-top: 4px; }
+        
+        /* Google Tools Tab */
+        .tools-grid { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 12px; 
+            padding-bottom: 120px;
+        }
+        .tool-card { 
+            background: rgba(255,255,255,0.03); 
+            border: 1px solid rgba(255,255,255,0.06); 
+            border-radius: 16px; 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .tool-card:hover { 
+            background: rgba(255,255,255,0.05); 
+            border-color: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+        }
+        .tool-icon { font-size: 2rem; }
+        .tool-name { font-weight: 600; font-size: 0.9rem; }
+        .tool-desc { font-size: 0.75rem; color: #6b7280; text-align: center; }
         
         /* FAB */
         .fab { 
@@ -256,58 +344,11 @@
         }
         .btn:active { transform: scale(0.98); }
         
-        .btn-full { width: 100%; margin-top: 12px; }
-        
-        /* File Upload */
-        .file-upload { 
-            border: 2px dashed rgba(255,255,255,0.1); 
-            border-radius: 12px; 
-            padding: 24px; 
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .file-upload:active { background: rgba(255,255,255,0.05); }
-        .file-upload input { display: none; }
-        .file-upload-icon { font-size: 1.5rem; margin-bottom: 8px; }
-        .file-upload-text { color: #9ca3af; font-size: 0.85rem; }
-        
-        .file-list { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
-        .file-item { 
-            display: flex; align-items: center; gap: 10px; 
-            padding: 10px; 
-            background: rgba(255,255,255,0.03); 
-            border-radius: 8px;
-        }
-        .file-item-icon { font-size: 1.25rem; }
-        .file-item-name { flex: 1; font-size: 0.85rem; }
-        .file-item-remove { 
-            background: none; border: none; color: #6b7280; 
-            font-size: 1.25rem; cursor: pointer;
-        }
-        
-        /* Drag Handle */
-        .drag-handle { 
-            position: fixed; 
-            bottom: 100px; 
-            left: 50%; 
-            transform: translateX(-50%);
-            background: rgba(255,255,255,0.1); 
-            padding: 12px 24px; 
-            border-radius: 20px; 
-            color: #6b7280; 
-            font-size: 0.8rem;
-            display: none;
-            z-index: 99;
-        }
-        .card.dragging { opacity: 0.5; }
-        .column.drag-over { background: rgba(167, 139, 250, 0.1); border-radius: 12px; }
-        
         /* Responsive */
         @media (min-width: 768px) {
-            .board { gap: 20px; padding: 0 40px 100px; }
-            .column { min-width: 320px; max-width: 320px; }
+            .board, .tabs, .notes-list, .files-grid, .tools-grid { padding-left: 40px; padding-right: 40px; }
             .modal-content { margin: auto; border-radius: 24px; }
+            .column { min-width: 320px; max-width: 320px; }
         }
     </style>
 </head>
@@ -317,41 +358,161 @@
         <p>Your command center</p>
     </div>
     
-    <div class="stats-bar">
-        <div class="stat-pill">Total: <span id="stat-total">0</span></div>
-        <div class="stat-pill">To Do: <span id="stat-todo">0</span></div>
-        <div class="stat-pill">In Progress: <span id="stat-progress">0</span></div>
-        <div class="stat-pill">Done: <span id="stat-done">0</span></div>
+    <!-- Tabs -->
+    <div class="tabs">
+        <div class="tab active" data-tab="tasks"><span>📋 Tasks</span></div>
+        <div class="tab" data-tab="notes"><span>📝 Notes</span></div>
+        <div class="tab" data-tab="files"><span>📁 Files</span></div>
+        <div class="tab" data-tab="tools"><span>🔧 Google Tools</span></div>
     </div>
     
-    <div class="board">
-        <div class="column todo" data-column="todo">
-            <div class="column-header">
-                <div class="column-title">📋 To Do <span class="column-count">0</span></div>
-            </div>
-            <div class="cards" data-status="todo"></div>
+    <!-- Tasks Tab -->
+    <div class="tab-content active" id="tasks-tab">
+        <div class="stats-bar">
+            <div class="stat-pill">Total: <span id="stat-total">0</span></div>
+            <div class="stat-pill">To Do: <span id="stat-todo">0</span></div>
+            <div class="stat-pill">In Progress: <span id="stat-progress">0</span></div>
+            <div class="stat-pill">Done: <span id="stat-done">0</span></div>
         </div>
-        <div class="column progress" data-column="progress">
-            <div class="column-header">
-                <div class="column-title">🔥 In Progress <span class="column-count">0</span></div>
+        
+        <div class="board">
+            <div class="column todo" data-column="todo">
+                <div class="column-header">
+                    <div class="column-title">📋 To Do <span class="column-count">0</span></div>
+                </div>
+                <div class="cards" data-status="todo"></div>
             </div>
-            <div class="cards" data-status="progress"></div>
-        </div>
-        <div class="column review" data-column="review">
-            <div class="column-header">
-                <div class="column-title">👀 Review <span class="column-count">0</span></div>
+            <div class="column progress" data-column="progress">
+                <div class="column-header">
+                    <div class="column-title">🔥 In Progress <span class="column-count">0</span></div>
+                </div>
+                <div class="cards" data-status="progress"></div>
             </div>
-            <div class="cards" data-status="review"></div>
-        </div>
-        <div class="column done" data-column="done">
-            <div class="column-header">
-                <div class="column-title">✅ Done <span class="column-count">0</span></div>
+            <div class="column review" data-column="review">
+                <div class="column-header">
+                    <div class="column-title">👀 Review <span class="column-count">0</span></div>
+                </div>
+                <div class="cards" data-status="review"></div>
             </div>
-            <div class="cards" data-status="done"></div>
+            <div class="column done" data-column="done">
+                <div class="column-header">
+                    <div class="column-title">✅ Done <span class="column-count">0</span></div>
+                </div>
+                <div class="cards" data-status="done"></div>
+            </div>
         </div>
     </div>
     
-    <button class="fab" onclick="openAddModal()">+</button>
+    <!-- Notes Tab -->
+    <div class="tab-content" id="notes-tab">
+        <div class="notes-list">
+            <div class="note-card" onclick="openNote('brain-dump')">
+                <div class="note-title">🧠 Brain Dump</div>
+                <div class="note-preview">Capture all your ideas, thoughts, and notes in one place...</div>
+                <div class="note-meta">📄 Document • Last edited just now</div>
+            </div>
+            <div class="note-card" onclick="openNote('meeting-notes')">
+                <div class="note-title">📅 Meeting Notes</div>
+                <div class="note-preview">Meeting notes, action items, and decisions...</div>
+                <div class="note-meta">📄 Document • Last edited yesterday</div>
+            </div>
+            <div class="note-card" onclick="openNote('project-ideas')">
+                <div class="note-title">💡 Project Ideas</div>
+                <div class="note-preview">All your project ideas and proposals...</div>
+                <div class="note-meta">📄 Document • Last edited 3 days ago</div>
+            </div>
+            <div class="note-card" onclick="openNote('weekly-review')">
+                <div class="note-title">📊 Weekly Review</div>
+                <div class="note-preview">Weekly review and reflection notes...</div>
+                <div class="note-meta">📄 Document • Last edited last week</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Files Tab -->
+    <div class="tab-content" id="files-tab">
+        <div class="files-grid">
+            <div class="file-card" onclick="openFile('template-pack-v4')">
+                <div class="file-icon">🎨</div>
+                <div class="file-name">Template Pack V4</div>
+                <div class="file-meta">2.4 MB</div>
+            </div>
+            <div class="file-card" onclick="openFile('brand-assets')">
+                <div class="file-icon">🎯</div>
+                <div class="file-name">Brand Assets</div>
+                <div class="file-meta">15 MB</div>
+            </div>
+            <div class="file-card" onclick="openFile('training-videos')">
+                <div class="file-icon">🎬</div>
+                <div class="file-name">Training Videos</div>
+                <div class="file-meta">128 MB</div>
+            </div>
+            <div class="file-card" onclick="openFile('marketing-materials')">
+                <div class="file-icon">📢</div>
+                <div class="file-name">Marketing Materials</div>
+                <div class="file-meta">45 MB</div>
+            </div>
+            <div class="file-card" onclick="openFile('financials')">
+                <div class="file-icon">💰</div>
+                <div class="file-name">Financials Q1</div>
+                <div class="file-meta">234 KB</div>
+            </div>
+            <div class="file-card" onclick="openFile('analytics')">
+                <div class="file-icon">📈</div>
+                <div class="file-name">Analytics Report</div>
+                <div class="file-meta">1.2 MB</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Google Tools Tab -->
+    <div class="tab-content" id="tools-tab">
+        <div class="tools-grid">
+            <div class="tool-card" onclick="openTool('docs')">
+                <div class="tool-icon">📄</div>
+                <div class="tool-name">Google Docs</div>
+                <div class="tool-desc">Documents & notes</div>
+            </div>
+            <div class="tool-card" onclick="openTool('sheets')">
+                <div class="tool-icon">📊</div>
+                <div class="tool-name">Google Sheets</div>
+                <div class="tool-desc">Spreadsheets & data</div>
+            </div>
+            <div class="tool-card" onclick="openTool('slides')">
+                <div class="tool-icon">📽️</div>
+                <div class="tool-name">Google Slides</div>
+                <div class="tool-desc">Presentations</div>
+            </div>
+            <div class="tool-card" onclick="openTool('drive')">
+                <div class="tool-icon">☁️</div>
+                <div class="tool-name">Google Drive</div>
+                <div class="tool-desc">All files</div>
+            </div>
+            <div class="tool-card" onclick="openTool('calendar')">
+                <div class="tool-icon">📅</div>
+                <div class="tool-name">Calendar</div>
+                <div class="tool-desc">Schedule & events</div>
+            </div>
+            <div class="tool-card" onclick="openTool('gmail')">
+                <div class="tool-icon">✉️</div>
+                <div class="tool-name">Gmail</div>
+                <div class="tool-desc">Email & messages</div>
+            </div>
+            <div class="tool-card" onclick="openTool('photos')">
+                <div class="tool-icon">🖼️</div>
+                <div class="tool-name">Google Photos</div>
+                <div class="tool-desc">Images & media</div>
+            </div>
+            <div class="tool-card" onclick="openTool('forms')">
+                <div class="tool-icon">📋</div>
+                <div class="tool-name">Google Forms</div>
+                <div class="tool-desc">Surveys & quizzes</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- FAB for Tasks -->
+    <button class="fab" onclick="openAddModal()" id="taskFab">+</button>
     
     <!-- Add Task Modal -->
     <div class="modal" id="addModal">
@@ -439,21 +600,9 @@
                         <option value="low">🟢 Low</option>
                     </select>
                 </div>
-                
-                <!-- Files -->
-                <div class="form-group">
-                    <label>Files</label>
-                    <label class="file-upload">
-                        <input type="file" id="fileInput" onchange="addFile(this)">
-                        <div class="file-upload-icon">📎</div>
-                        <div class="file-upload-text">Tap to upload file</div>
-                    </label>
-                    <div class="file-list" id="fileList"></div>
-                </div>
-                
                 <div class="btn-group">
                     <button type="button" class="btn btn-danger" onclick="deleteTask()">Delete</button>
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
                 </div>
             </form>
         </div>
@@ -463,23 +612,43 @@
         // State
         let state = { tasks: [] };
         let currentTaskId = null;
-        let dragState = { card: null, preview: null };
         
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             loadState();
             renderBoard();
-            setupDragDrop();
+            setupTabs();
         });
         
+        // Tab Navigation
+        function setupTabs() {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabName = tab.dataset.tab;
+                    
+                    // Update tabs
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    // Update content
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    document.getElementById(`${tabName}-tab`).classList.add('active');
+                    
+                    // Show/hide FAB
+                    document.getElementById('taskFab').style.display = tabName === 'tasks' ? 'flex' : 'none';
+                });
+            });
+        }
+        
+        // Task Functions
         function loadState() {
             const raw = localStorage.getItem('mission_control_v1');
             if (raw) {
                 state = JSON.parse(raw);
             } else {
                 state.tasks = [
-                    { id: Date.now(), title: "Setup Mission Control", desc: "Board is live!", category: "ops", priority: "high", status: "done", files: [] },
-                    { id: Date.now()+1, title: "Create Templates", desc: "Need templates for launch", category: "content", priority: "high", status: "todo", files: [] }
+                    { id: Date.now(), title: "Setup Mission Control", desc: "Board is live!", category: "ops", priority: "high", status: "done" },
+                    { id: Date.now()+1, title: "Create Templates", desc: "Need templates for launch", category: "content", priority: "high", status: "todo" }
                 ];
                 saveState();
             }
@@ -510,20 +679,16 @@
             
             const tagClass = `tag-${task.category}`;
             const priorityClass = `priority-${task.priority}`;
-            const fileIcon = task.files?.length ? '📎' : '';
             
             div.innerHTML = `
                 <div class="card-title">${task.title}</div>
                 <div class="card-meta">
                     <span class="tag ${tagClass}">${getCategoryLabel(task.category)}</span>
                     <span class="priority-dot ${priorityClass}"></span>
-                    ${fileIcon ? `<span class="file-indicator">${fileIcon}</span>` : ''}
                 </div>
             `;
             
             div.addEventListener('click', () => openDetail(task.id));
-            div.addEventListener('touchstart', handleTouchStart, { passive: true });
-            
             return div;
         }
         
@@ -550,88 +715,6 @@
             });
         }
         
-        // Drag & Drop
-        function setupDragDrop() {
-            document.querySelectorAll('.column').forEach(col => {
-                col.addEventListener('dragover', e => {
-                    e.preventDefault();
-                    col.classList.add('drag-over');
-                });
-                col.addEventListener('dragleave', () => col.classList.remove('drag-over'));
-                col.addEventListener('drop', handleDrop);
-            });
-        }
-        
-        function handleTouchStart(e) {
-            const card = e.currentTarget;
-            const touch = e.changedTouches[0];
-            
-            dragState.card = card;
-            
-            card.style.opacity = '0.5';
-            card.classList.add('dragging');
-            
-            document.addEventListener('touchmove', handleTouchMove, { passive: false });
-            document.addEventListener('touchend', handleTouchEnd);
-        }
-        
-        function handleTouchMove(e) {
-            if (!dragState.card) return;
-            e.preventDefault();
-            
-            const touch = e.changedTouches[0];
-            const element = document.elementFromPoint(touch.clientX, touch.clientY);
-            const column = element?.closest('.column');
-            
-            document.querySelectorAll('.column').forEach(c => c.classList.remove('drag-over'));
-            if (column) column.classList.add('drag-over');
-        }
-        
-        function handleTouchEnd(e) {
-            if (!dragState.card) return;
-            
-            const touch = e.changedTouches[0];
-            const element = document.elementFromPoint(touch.clientX, touch.clientY);
-            const column = element?.closest('.column');
-            
-            if (column) {
-                const newStatus = column.dataset.column;
-                const taskId = dragState.card.dataset.id;
-                const task = state.tasks.find(t => t.id == taskId);
-                if (task && task.status !== newStatus) {
-                    task.status = newStatus;
-                    saveState();
-                    renderBoard();
-                }
-            }
-            
-            dragState.card.style.opacity = '';
-            dragState.card.classList.remove('dragging');
-            document.querySelectorAll('.column').forEach(c => c.classList.remove('drag-over'));
-            dragState.card = null;
-            
-            document.removeEventListener('touchmove', handleTouchMove);
-            document.removeEventListener('touchend', handleTouchEnd);
-        }
-        
-        function handleDrop(e) {
-            e.preventDefault();
-            const column = e.currentTarget;
-            const newStatus = column.dataset.column;
-            const taskId = dragState.card?.dataset.id;
-            
-            if (taskId && newStatus) {
-                const task = state.tasks.find(t => t.id == taskId);
-                if (task && task.status !== newStatus) {
-                    task.status = newStatus;
-                    saveState();
-                    renderBoard();
-                }
-            }
-            
-            column.classList.remove('drag-over');
-        }
-        
         // Modals
         function openAddModal() {
             document.getElementById('addModal').classList.add('active');
@@ -650,8 +733,6 @@
             document.getElementById('editCategory').value = task.category;
             document.getElementById('editPriority').value = task.priority;
             
-            renderFileList(task.files || []);
-            
             document.getElementById('detailModal').classList.add('active');
         }
         
@@ -660,7 +741,7 @@
             currentTaskId = null;
         }
         
-        // Tasks
+        // Task CRUD
         function submitNewTask(e) {
             e.preventDefault();
             
@@ -670,15 +751,13 @@
                 desc: document.getElementById('addDesc').value,
                 category: document.getElementById('addCategory').value,
                 priority: document.getElementById('addPriority').value,
-                status: 'todo',
-                files: []
+                status: 'todo'
             };
             
             state.tasks.push(newTask);
             saveState();
             renderBoard();
             closeModal('addModal');
-            
             e.target.reset();
         }
         
@@ -710,44 +789,27 @@
             closeModal('detailModal');
         }
         
-        // Files
-        function addFile(input) {
-            if (!currentTaskId || !input.files[0]) return;
-            
-            const task = state.tasks.find(t => t.id == currentTaskId);
-            if (!task) return;
-            
-            task.files = task.files || [];
-            task.files.push({
-                name: input.files[0].name,
-                type: input.files[0].type,
-                size: input.files[0].size
-            });
-            
-            saveState();
-            renderFileList(task.files);
-            input.value = '';
+        // Notes, Files, Tools
+        function openNote(noteId) {
+            alert(`Opening ${noteId}...\n\n(Connect Google Docs to enable this feature)`);
         }
         
-        function renderFileList(files) {
-            const list = document.getElementById('fileList');
-            list.innerHTML = files.map((f, i) => `
-                <div class="file-item">
-                    <span class="file-item-icon">📄</span>
-                    <span class="file-item-name">${f.name}</span>
-                    <button type="button" class="file-item-remove" onclick="removeFile(${i})">×</button>
-                </div>
-            `).join('');
+        function openFile(fileId) {
+            alert(`Opening ${fileId}...\n\n(Connect Google Drive to enable this feature)`);
         }
         
-        function removeFile(index) {
-            if (!currentTaskId) return;
-            const task = state.tasks.find(t => t.id == currentTaskId);
-            if (!task || !task.files) return;
-            
-            task.files.splice(index, 1);
-            saveState();
-            renderFileList(task.files);
+        function openTool(tool) {
+            const urls = {
+                docs: 'https://docs.google.com',
+                sheets: 'https://sheets.google.com',
+                slides: 'https://slides.google.com',
+                drive: 'https://drive.google.com',
+                calendar: 'https://calendar.google.com',
+                gmail: 'https://mail.google.com',
+                photos: 'https://photos.google.com',
+                forms: 'https://forms.google.com'
+            };
+            window.open(urls[tool], '_blank');
         }
         
         // Close modal on outside click
