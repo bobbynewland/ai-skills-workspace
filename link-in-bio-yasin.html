@@ -12,67 +12,97 @@
         }
         
         body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             min-height: 100vh;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+            background: #0a0a0f;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            color: #fff;
         }
         
         .phone-mockup {
             width: 100%;
-            max-width: 380px;
-            background: #fff;
-            border-radius: 40px;
+            max-width: 400px;
+            background: linear-gradient(180deg, #111118 0%, #1a1a24 100%);
+            border-radius: 48px;
             overflow: hidden;
-            box-shadow: 0 25px 80px rgba(0,0,0,0.15);
+            box-shadow: 0 0 60px rgba(124, 58, 237, 0.3), 0 0 100px rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(255,255,255,0.1);
         }
         
         .screen {
-            padding: 30px 20px;
-            background: linear-gradient(180deg, #f8f4f9 0%, #f0f8f4 100%);
+            padding: 40px 24px;
+            background: transparent;
         }
         
         .profile {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 32px;
         }
         
         .avatar {
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
             background: linear-gradient(135deg, #7c3aed 0%, #10b981 100%);
-            margin: 0 auto 15px;
+            margin: 0 auto 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 40px;
+            font-size: 36px;
             color: #fff;
-            border: 4px solid #fff;
-            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3);
+            border: 3px solid rgba(255,255,255,0.2);
+            box-shadow: 0 8px 32px rgba(124, 58, 237, 0.4);
+        }
+        
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(124, 58, 237, 0.2);
+            border: 1px solid rgba(124, 58, 237, 0.4);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #a78bfa;
+            margin-bottom: 16px;
+        }
+        
+        .badge svg {
+            width: 14px;
+            height: 14px;
         }
         
         .name {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 700;
-            color: #1f2937;
-            margin-bottom: 5px;
+            background: linear-gradient(135deg, #fff 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
         }
         
-        .title {
+        .tagline {
             font-size: 14px;
-            color: #6b7280;
-            margin-bottom: 20px;
+            color: #9ca3af;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+        
+        .tagline span {
+            color: #10b981;
+            font-weight: 500;
         }
         
         .social-row {
             display: flex;
             justify-content: center;
-            gap: 12px;
-            margin-bottom: 25px;
+            gap: 10px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
         }
         
         .social-icon {
@@ -82,14 +112,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 18px;
             text-decoration: none;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.3s ease;
+            font-weight: 600;
         }
         
         .social-icon:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            transform: translateY(-4px) scale(1.05);
         }
         
         .facebook { background: #1877f2; color: #fff; }
@@ -101,6 +131,21 @@
         .github { background: #24292e; color: #fff; }
         .fiverr { background: #1dbf73; color: #fff; }
         
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            margin: 24px 0;
+        }
+        
+        .section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #6b7280;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        
         .links {
             display: flex;
             flex-direction: column;
@@ -110,43 +155,45 @@
         .link-btn {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 16px;
             padding: 16px 20px;
-            background: #fff;
+            background: rgba(255,255,255,0.03);
             border-radius: 16px;
             text-decoration: none;
-            color: #1f2937;
+            color: #e5e7eb;
             font-weight: 500;
             font-size: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-            transition: all 0.2s;
-            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.06);
         }
         
         .link-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            background: rgba(124, 58, 237, 0.15);
+            border-color: rgba(124, 58, 237, 0.3);
+            transform: translateX(4px);
+            color: #fff;
         }
         
         .link-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 18px;
             flex-shrink: 0;
+            font-weight: 700;
         }
         
-        .linkedin-link { background: #e8f4fc; color: #0a66c2; }
-        .behance-link { background: #e8f0ff; color: #1769ff; }
-        .dribbble-link { background: #fef0f3; color: #ea4c89; }
-        .github-link { background: #f0f0f0; color: #24292e; }
-        .fiverr-link { background: #e8f8ef; color: #1dbf73; }
+        .linkedin-link { background: rgba(10, 102, 194, 0.15); color: #0a66c2; }
+        .behance-link { background: rgba(23, 105, 255, 0.15); color: #1769ff; }
+        .dribbble-link { background: rgba(234, 76, 137, 0.15); color: #ea4c89; }
+        .github-link { background: rgba(255,255,255,0.1); color: #fff; }
+        .fiverr-link { background: rgba(29, 191, 115, 0.15); color: #1dbf73; }
         
         .book-call {
-            margin-top: 20px;
+            margin-top: 28px;
             background: linear-gradient(135deg, #7c3aed 0%, #10b981 100%);
             color: #fff;
             border: none;
@@ -156,19 +203,67 @@
             font-weight: 600;
             cursor: pointer;
             width: 100%;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
         
         .book-call:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.4);
+            box-shadow: 0 12px 40px rgba(124, 58, 237, 0.4);
+        }
+        
+        .cta-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 28px;
+        }
+        
+        .cta-btn {
+            flex: 1;
+            padding: 14px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .cta-primary {
+            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+            color: #fff;
+            border: none;
+        }
+        
+        .cta-secondary {
+            background: rgba(255,255,255,0.05);
+            color: #e5e7eb;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .cta-btn:hover {
+            transform: translateY(-2px);
         }
         
         .footer {
             text-align: center;
-            margin-top: 25px;
+            margin-top: 32px;
             font-size: 12px;
-            color: #9ca3af;
+            color: #4b5563;
+        }
+        
+        .footer svg {
+            width: 14px;
+            height: 14px;
+            vertical-align: middle;
+            margin-right: 4px;
         }
     </style>
 </head>
@@ -177,20 +272,33 @@
         <div class="screen">
             <div class="profile">
                 <div class="avatar">👨‍💼</div>
+                <div class="badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                        <polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                    Available for Work
+                </div>
                 <h1 class="name">YASIN AHMED</h1>
-                <p class="title">Graphic & UX/UI Designer</p>
+                <p class="tagline">
+                    Creating <span>impactful digital experiences</span> through thoughtful design
+                </p>
                 
                 <div class="social-row">
-                    <a href="https://facebook.com" class="social-icon facebook">f</a>
-                    <a href="https://instagram.com" class="social-icon instagram">📷</a>
-                    <a href="https://snapchat.com" class="social-icon snapchat">👻</a>
-                    <a href="https://linkedin.com" class="social-icon linkedin">in</a>
-                    <a href="https://behance.net" class="social-icon behance">B</a>
-                    <a href="https://dribbble.com" class="social-icon dribbble">D</a>
-                    <a href="https://github.com" class="social-icon github">⌘</a>
-                    <a href="https://fiverr.com" class="social-icon fiverr">fi</a>
+                    <a href="https://facebook.com" class="social-icon facebook" title="Facebook">f</a>
+                    <a href="https://instagram.com" class="social-icon instagram" title="Instagram">📷</a>
+                    <a href="https://snapchat.com" class="social-icon snapchat" title="Snapchat">👻</a>
+                    <a href="https://linkedin.com" class="social-icon linkedin" title="LinkedIn">in</a>
+                    <a href="https://behance.net" class="social-icon behance" title="Behance">B</a>
+                    <a href="https://dribbble.com" class="social-icon dribbble" title="Dribbble">D</a>
+                    <a href="https://github.com" class="social-icon github" title="GitHub">⌘</a>
+                    <a href="https://fiverr.com" class="social-icon fiverr" title="Fiverr">fi</a>
                 </div>
             </div>
+            
+            <div class="divider"></div>
+            
+            <p class="section-title">Connect</p>
             
             <div class="links">
                 <a href="#" class="link-btn">
@@ -215,12 +323,30 @@
                 </a>
             </div>
             
-            <button class="book-call">
-                📅 Book a Call
-            </button>
+            <div class="cta-row">
+                <a href="#" class="cta-btn cta-primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                        <line x1="16" y1="2" x2="16" y2="6"/>
+                        <line x1="8" y1="2" x2="8" y2="6"/>
+                        <line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                    Book a Call
+                </a>
+                <a href="mailto:hello@yasin.design" class="cta-btn cta-secondary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                        <polyline points="22,6 12,13 2,6"/>
+                    </svg>
+                    Email Me
+                </a>
+            </div>
             
             <div class="footer">
-                ✨ Designed with passion
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+                Designed with passion
             </div>
         </div>
     </div>
