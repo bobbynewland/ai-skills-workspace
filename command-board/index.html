@@ -14,6 +14,8 @@
         .status-dot { width: 8px; height: 8px; border-radius: 50%; }
         .status-dot.connected { background: #34d399; }
         .status-dot.disconnected { background: #f87171; }
+        .status-dot.syncing { background: #fbbf24; animation: pulse 1s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
         .tabs { display: flex; gap: 4px; padding: 0 20px 20px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
         .tab { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 10px 16px; font-size: 0.85rem; cursor: pointer; white-space: nowrap; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
         .tab.active { background: linear-gradient(135deg, rgba(167, 139, 250, 0.15) 0%, rgba(124, 58, 237, 0.15) 100%); border-color: rgba(167, 139, 250, 0.3); }
@@ -49,13 +51,9 @@
         .priority-low { background: #34d399; }
         .notes-list { display: flex; flex-direction: column; gap: 12px; padding-bottom: 120px; }
         .note-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 16px; cursor: pointer; }
-        .note-card:hover { background: rgba(255,255,255,0.05); }
         .note-title { font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
         .note-preview { color: #9ca3af; font-size: 0.9rem; line-height: 1.5; }
         .note-meta { display: flex; gap: 12px; margin-top: 12px; font-size: 0.75rem; color: #6b7280; }
-        .note-status { margin-left: auto; padding: 4px 8px; border-radius: 6px; font-size: 0.7rem; }
-        .note-status.connected { background: rgba(52, 211, 153, 0.15); color: #34d399; }
-        .note-status.local { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
         .files-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; padding-bottom: 120px; }
         .file-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 16px; text-align: center; cursor: pointer; transition: all 0.2s; }
         .file-card:hover { background: rgba(255,255,255,0.05); }
@@ -83,20 +81,18 @@
         .form-group label { display: block; color: #9ca3af; font-size: 0.8rem; margin-bottom: 8px; font-weight: 500; }
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #fff; font-size: 1rem; -webkit-appearance: none; }
         .form-group textarea { min-height: 100px; resize: none; line-height: 1.5; }
-        .form-group select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%239ca3af' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
         .btn-group { display: flex; gap: 12px; margin-top: 20px; }
         .btn { flex: 1; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.2s; border: none; }
         .btn-primary { background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%); color: white; }
         .btn-secondary { background: rgba(255,255,255,0.05); color: #e5e5e5; border: 1px solid rgba(255,255,255,0.1); }
         .btn-danger { background: rgba(248, 113, 113, 0.15); color: #f87171; }
-        .btn-google { background: #4285f4; color: white; }
         .btn:active { transform: scale(0.98); }
         @media (min-width: 768px) { .board, .tabs, .notes-list, .files-grid, .tools-grid { padding-left: 40px; padding-right: 40px; } .modal-content { margin: auto; border-radius: 24px; } .column { min-width: 320px; max-width: 320px; } }
     </style>
 </head>
 <body>
     <div class="header"><h1>🚀 Mission Control</h1><p>Your command center</p></div>
-    <div class="connection-status"><span class="status-dot disconnected" id="googleStatus"></span><span id="googleStatusText">Google not connected</span></div>
+    <div class="connection-status"><span class="status-dot disconnected" id="googleStatus"></span><span id="googleStatusText">Firebase connecting...</span></div>
     <div class="tabs"><div class="tab active" data-tab="tasks"><span>📋 Tasks</span></div><div class="tab" data-tab="notes"><span>📝 Notes</span></div><div class="tab" data-tab="files"><span>📁 Files</span></div><div class="tab" data-tab="tools"><span>🔧 Google Tools</span></div></div>
     <div class="tab-content active" id="tasks-tab">
         <div class="stats-bar"><div class="stat-pill">Total: <span id="stat-total">0</span></div><div class="stat-pill">To Do: <span id="stat-todo">0</span></div><div class="stat-pill">In Progress: <span id="stat-progress">0</span></div><div class="stat-pill">Done: <span id="stat-done">0</span></div></div>
@@ -107,25 +103,9 @@
             <div class="column done" data-column="done"><div class="column-header"><div class="column-title">✅ Done <span class="column-count">0</span></div></div><div class="cards" data-status="done"></div></div>
         </div>
     </div>
-    <div class="tab-content" id="notes-tab">
-        <div class="google-connect"><h3>📝 Google Docs Integration</h3><p>Connect to access your Brain Dump and Notes from Google Docs</p><button class="btn btn-google" onclick="connectGoogle('notes')">🔗 Connect Google Docs</button></div>
-        <div class="notes-list" id="notesList"></div>
-    </div>
-    <div class="tab-content" id="files-tab">
-        <div class="google-connect"><h3>📁 Google Drive Integration</h3><p>Connect to access your files from Google Drive</p><button class="btn btn-google" onclick="connectGoogle('drive')">🔗 Connect Google Drive</button></div>
-        <div class="files-grid" id="filesGrid"></div>
-    </div>
-    <div class="tab-content" id="tools-tab">
-        <div class="google-connect"><h3>🔧 Google Workspace</h3><p>Connect to access all Google Workspace tools</p><button class="btn btn-google" onclick="connectGoogle('workspace')">🔗 Connect Google Workspace</button></div>
-        <div class="tools-grid">
-            <div class="tool-card" onclick="openTool('docs')"><div class="tool-icon">📄</div><div class="tool-name">Google Docs</div><div class="tool-desc">Documents & notes</div></div>
-            <div class="tool-card" onclick="openTool('sheets')"><div class="tool-icon">📊</div><div class="tool-name">Google Sheets</div><div class="tool-desc">Spreadsheets & data</div></div>
-            <div class="tool-card" onclick="openTool('slides')"><div class="tool-icon">📽️</div><div class="tool-name">Google Slides</div><div class="tool-desc">Presentations</div></div>
-            <div class="tool-card" onclick="openTool('drive')"><div class="tool-icon">☁️</div><div class="tool-name">Google Drive</div><div class="tool-desc">All files</div></div>
-            <div class="tool-card" onclick="openTool('calendar')"><div class="tool-icon">📅</div><div class="tool-name">Calendar</div><div class="tool-desc">Schedule & events</div></div>
-            <div class="tool-card" onclick="openTool('gmail')"><div class="tool-icon">✉️</div><div class="tool-name">Gmail</div><div class="tool-desc">Email & messages</div></div>
-        </div>
-    </div>
+    <div class="tab-content" id="notes-tab"><div class="google-connect"><h3>📝 Google Docs Integration</h3><p>Connect to access your Brain Dump and Notes from Google Docs</p></div><div class="notes-list"><div class="note-card" onclick="alert('Google Docs integration coming soon!')"><div class="note-title">🧠 Brain Dump</div><div class="note-preview">Your central note-taking space for ideas and thoughts...</div><div class="note-meta">📄 Google Docs • Coming soon</div></div><div class="note-card" onclick="alert('Google Docs integration coming soon!')"><div class="note-title">📅 Meeting Notes</div><div class="note-preview">Meeting notes with action items and decisions...</div><div class="note-meta">📄 Google Docs • Coming soon</div></div></div></div>
+    <div class="tab-content" id="files-tab"><div class="google-connect"><h3>📁 Firebase Storage</h3><p>Your files synced in real-time via Firebase</p></div><div class="files-grid"><div class="file-card" onclick="alert('File browser coming soon!')"><div class="file-icon">📁</div><div class="file-name">Browse Files</div><div class="file-meta">Click to view all files</div></div><div class="file-card" onclick="alert('File browser coming soon!')"><div class="file-icon">📤</div><div class="file-name">Upload File</div><div class="file-meta">Click to upload</div></div></div></div>
+    <div class="tab-content" id="tools-tab"><div class="google-connect"><h3>🔧 Google Workspace</h3><p>Quick access to all Google tools</p></div><div class="tools-grid"><div class="tool-card" onclick="openTool('docs')"><div class="tool-icon">📄</div><div class="tool-name">Google Docs</div><div class="tool-desc">Documents</div></div><div class="tool-card" onclick="openTool('sheets')"><div class="tool-icon">📊</div><div class="tool-name">Google Sheets</div><div class="tool-desc">Spreadsheets</div></div><div class="tool-card" onclick="openTool('drive')"><div class="tool-icon">☁️</div><div class="tool-name">Google Drive</div><div class="tool-desc">All files</div></div><div class="tool-card" onclick="openTool('calendar')"><div class="tool-icon">📅</div><div class="tool-name">Calendar</div><div class="tool-desc">Schedule</div></div><div class="tool-card" onclick="openTool('gmail')"><div class="tool-icon">✉️</div><div class="tool-name">Gmail</div><div class="tool-desc">Email</div></div><div class="tool-card" onclick="openTool('photos')"><div class="tool-icon">🖼️</div><div class="tool-name">Photos</div><div class="tool-desc">Images</div></div></div></div>
     <button class="fab" onclick="openAddModal()" id="taskFab">+</button>
     <div class="modal" id="addModal"><div class="modal-content"><div class="modal-header"><h2>New Task</h2><button class="close-btn" onclick="closeModal('addModal')">×</button></div>
         <form onsubmit="submitNewTask(event)"><div class="form-group"><label>Title</label><input type="text" id="addTitle" placeholder="What needs to be done?" required></div>
@@ -141,37 +121,148 @@
             <div class="form-group"><label>Category</label><select id="editCategory"><option value="dev">💻 Dev</option><option value="marketing">📣 Marketing</option><option value="content">🎨 Content</option><option value="ambassador">🤝 Ambassador</option><option value="ops">⚙️ Ops</option></select></div>
             <div class="form-group"><label>Priority</label><select id="editPriority"><option value="high">🔴 High</option><option value="medium">🟡 Medium</option><option value="low">🟢 Low</option></select></div>
             <div class="btn-group"><button type="button" class="btn btn-danger" onclick="deleteTask()">Delete</button><button type="submit" class="btn btn-primary">Save</button></div></form></div></div>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <script>
-        let state = { tasks: [], googleConnected: false, notes: [], files: [] };
-        let currentTaskId = null;
-        document.addEventListener('DOMContentLoaded', () => { loadState(); renderBoard(); renderNotes(); renderFiles(); checkGoogleConnection(); setupTabs(); });
-        function setupTabs() { document.querySelectorAll('.tab').forEach(tab => { tab.addEventListener('click', () => { const tabName = tab.dataset.tab; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); tab.classList.add('active'); document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); document.getElementById(`${tabName}-tab`).classList.add('active'); document.getElementById('taskFab').style.display = tabName === 'tasks' ? 'flex' : 'none'; }); }); }
-        function loadState() {
-            let raw = localStorage.getItem('mission_control_v2');
-            if (!raw) { raw = localStorage.getItem('mission_control_v1'); if (raw) { const oldState = JSON.parse(raw); state.tasks = oldState.tasks || []; saveState(); } }
-            if (!raw) { raw = localStorage.getItem('winslow_board_v2'); if (raw) { const oldState = JSON.parse(raw); state.tasks = oldState.tasks || []; saveState(); } }
-            if (raw) { const saved = JSON.parse(raw); state.tasks = saved.tasks || []; state.googleConnected = saved.googleConnected || false; state.notes = saved.notes || []; state.files = saved.files || []; }
-            else { state.tasks = [{ id: Date.now().toString(), title: "Setup Mission Control", desc: "Board is live!", category: "ops", priority: "high", status: "done" }, { id: (Date.now() + 1).toString(), title: "Create Templates", desc: "Need templates for launch", category: "content", priority: "high", status: "todo" }]; saveState(); }
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyB3Z1WDeqO4cEBMk5Q1j9H8c2-0Z1Y8X0",
+            authDomain: "winslow-756c3.firebaseapp.com",
+            databaseURL: "https://winslow-756c3-default-rtdb.firebaseio.com",
+            projectId: "winslow-756c3",
+            storageBucket: "winslow-756c3.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abc123"
+        };
+        
+        // Initialize Firebase
+        let db;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.database();
+            setConnectionStatus('syncing', 'Firebase connecting...');
+        } catch(e) {
+            console.log('Firebase not available, using localStorage');
+            setConnectionStatus('disconnected', 'Using localStorage');
         }
-        function saveState() { localStorage.setItem('mission_control_v2', JSON.stringify(state)); renderStats(); }
-        function checkGoogleConnection() { const statusEl = document.getElementById('googleStatus'); const textEl = document.getElementById('googleStatusText'); if (state.googleConnected) { statusEl.className = 'status-dot connected'; textEl.textContent = 'Google connected'; } else { statusEl.className = 'status-dot disconnected'; textEl.textContent = 'Google not connected'; } }
-        function connectGoogle(type) { alert('🔗 Google Connection\n\nTo connect Google Workspace:\n\n1. Open terminal on the server\n2. Run: python3 /root/.openclaw/workspace/google_workspace.py auth\n3. Complete OAuth flow\n\nThis will enable real-time sync with Google Docs, Drive, Sheets, and more!'); }
-        function renderBoard() { document.querySelectorAll('.cards').forEach(el => el.innerHTML = ''); state.tasks.forEach(task => { const card = createCardElement(task); const col = document.querySelector(`.cards[data-status="${task.status}"]`); if (col) col.appendChild(card); }); renderStats(); }
-        function createCardElement(task) { const div = document.createElement('div'); div.className = 'card'; div.dataset.id = task.id; div.dataset.status = task.status; const tagClass = `tag-${task.category}`; const priorityClass = `priority-${task.priority}`; div.innerHTML = `<div class="card-title">${task.title}</div><div class="card-meta"><span class="tag ${tagClass}">${getCategoryLabel(task.category)}</span><span class="priority-dot ${priorityClass}"></span></div>`; div.addEventListener('click', () => openDetail(task.id)); return div; }
+        
+        let state = { tasks: [] };
+        let currentTaskId = null;
+        let localTasks = [];
+        
+        document.addEventListener('DOMContentLoaded', () => { loadState(); setupTabs(); });
+        function setupTabs() { document.querySelectorAll('.tab').forEach(tab => { tab.addEventListener('click', () => { const tabName = tab.dataset.tab; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); tab.classList.add('active'); document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); document.getElementById(`${tabName}-tab`).classList.add('active'); document.getElementById('taskFab').style.display = tabName === 'tasks' ? 'flex' : 'none'; }); }); }
+        
+        function setConnectionStatus(status, text) {
+            const statusEl = document.getElementById('googleStatus');
+            const textEl = document.getElementById('googleStatusText');
+            statusEl.className = `status-dot ${status}`;
+            textEl.textContent = text;
+        }
+        
+        function loadState() {
+            if (db) {
+                // Try Firebase first
+                setConnectionStatus('syncing', 'Loading from Firebase...');
+                db.ref('workspaces/winslow_main/tasks').on('value', (snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        state.tasks = Object.entries(data).map(([id, task]) => ({ id, ...task }));
+                        renderBoard();
+                        setConnectionStatus('connected', 'Firebase connected ✓');
+                        localStorage.setItem('mission_control_firebase', JSON.stringify(state.tasks));
+                    } else {
+                        // Try local backup
+                        loadFromLocal();
+                    }
+                }, (error) => {
+                    console.log('Firebase read failed, using local');
+                    loadFromLocal();
+                });
+            } else {
+                loadFromLocal();
+            }
+        }
+        
+        function loadFromLocal() {
+            const firebaseBackup = localStorage.getItem('mission_control_firebase');
+            if (firebaseBackup) {
+                state.tasks = JSON.parse(firebaseBackup);
+            } else {
+                const oldLocal = localStorage.getItem('mission_control_v2') || localStorage.getItem('mission_control_v1') || localStorage.getItem('winslow_board_v2');
+                if (oldLocal) {
+                    const old = JSON.parse(oldLocal);
+                    state.tasks = old.tasks || [];
+                } else {
+                    state.tasks = [
+                        { id: Date.now().toString(), title: "Welcome to Mission Control", desc: "Your tasks are now synced with Firebase!", category: "ops", priority: "medium", status: "todo" }
+                    ];
+                }
+            }
+            renderBoard();
+            setConnectionStatus('disconnected', 'Local mode (Firebase offline)');
+        }
+        
+        function saveState() {
+            // Save to Firebase if available
+            if (db) {
+                const updates = {};
+                state.tasks.forEach(task => {
+                    updates[`tasks/${task.id}`] = task;
+                });
+                db.ref('workspaces/winslow_main').update({ tasks: null }).then(() => {
+                    db.ref('workspaces/winslow_main/tasks').set(state.tasks.reduce((acc, task) => {
+                        acc[task.id] = task;
+                        return acc;
+                    }, {}));
+                });
+            }
+            // Always backup locally
+            localStorage.setItem('mission_control_firebase', JSON.stringify(state.tasks));
+            renderStats();
+        }
+        
+        function renderBoard() {
+            document.querySelectorAll('.cards').forEach(el => el.innerHTML = '');
+            state.tasks.forEach(task => {
+                const card = createCardElement(task);
+                const col = document.querySelector(`.cards[data-status="${task.status}"]`);
+                if (col) col.appendChild(card);
+            });
+            renderStats();
+        }
+        
+        function createCardElement(task) {
+            const div = document.createElement('div');
+            div.className = 'card';
+            div.dataset.id = task.id;
+            div.dataset.status = task.status;
+            const tagClass = `tag-${task.category}`;
+            const priorityClass = `priority-${task.priority}`;
+            div.innerHTML = `<div class="card-title">${task.title}</div><div class="card-meta"><span class="tag ${tagClass}">${getCategoryLabel(task.category)}</span><span class="priority-dot ${priorityClass}"></span></div>`;
+            div.addEventListener('click', () => openDetail(task.id));
+            return div;
+        }
+        
         function getCategoryLabel(cat) { const labels = { dev: 'Dev', marketing: 'Marketing', content: 'Content', ambassador: 'Ambassador', ops: 'Ops' }; return labels[cat] || cat; }
-        function renderStats() { const counts = { total: 0, todo: 0, progress: 0, review: 0, done: 0 }; state.tasks.forEach(t => { counts.total++; counts[t.status]++; }); document.getElementById('stat-total').textContent = counts.total; document.getElementById('stat-todo').textContent = counts.todo; document.getElementById('stat-progress').textContent = counts.progress; document.getElementById('stat-done').textContent = counts.done; document.querySelectorAll('.column').forEach(col => { const status = col.dataset.column; const countEl = col.querySelector('.column-count'); if (countEl) countEl.textContent = counts[status] || 0; }); }
-        function renderNotes() { const list = document.getElementById('notesList'); if (state.googleConnected && state.notes.length > 0) { list.innerHTML = state.notes.map(note => `<div class="note-card" onclick="openNote('${note.id}')"><div class="note-title">📄 ${note.name} <span class="note-status connected">Connected</span></div><div class="note-preview">${note.preview || 'No preview'}</div><div class="note-meta">Modified: ${note.modified || 'Unknown'}</div></div>`).join(''); } else { list.innerHTML = `<div class="note-card" onclick="connectGoogle('notes')"><div class="note-title">🧠 Brain Dump <span class="note-status local">Local</span></div><div class="note-preview">Capture all your ideas, thoughts, and notes...</div><div class="note-meta">📄 Document • Click to connect Google Docs</div></div><div class="note-card" onclick="connectGoogle('notes')"><div class="note-title">📅 Meeting Notes <span class="note-status local">Local</span></div><div class="note-preview">Meeting notes, action items, and decisions...</div><div class="note-meta">📄 Document • Click to connect Google Docs</div></div>`; } }
-        function renderFiles() { const grid = document.getElementById('filesGrid'); if (state.googleConnected && state.files.length > 0) { grid.innerHTML = state.files.map(file => `<div class="file-card" onclick="openFile('${file.id}')"><div class="file-icon">📄</div><div class="file-name">${file.name}</div><div class="file-meta">${formatFileSize(file.size)}</div></div>`).join(''); } else { grid.innerHTML = `<div class="file-card" onclick="connectGoogle('drive')"><div class="file-icon">🎨</div><div class="file-name">Template Pack V4</div><div class="file-meta">Click to connect Drive</div></div><div class="file-card" onclick="connectGoogle('drive')"><div class="file-icon">🎯</div><div class="file-name">Brand Assets</div><div class="file-meta">Click to connect Drive</div></div>`; } }
-        function formatFileSize(bytes) { if (!bytes) return 'Unknown'; const sizes = ['B', 'KB', 'MB', 'GB']; const i = Math.floor(Math.log(bytes) / Math.log(1024)); return `${(bytes / Math.pow(1024, i)).toFixed(1)} ${sizes[i]}`; }
+        
+        function renderStats() {
+            const counts = { total: 0, todo: 0, progress: 0, review: 0, done: 0 };
+            state.tasks.forEach(t => { counts.total++; counts[t.status]++; });
+            document.getElementById('stat-total').textContent = counts.total;
+            document.getElementById('stat-todo').textContent = counts.todo;
+            document.getElementById('stat-progress').textContent = counts.progress;
+            document.getElementById('stat-done').textContent = counts.done;
+            document.querySelectorAll('.column').forEach(col => { const status = col.dataset.column; const countEl = col.querySelector('.column-count'); if (countEl) countEl.textContent = counts[status] || 0; });
+        }
+        
         function openAddModal() { document.getElementById('addModal').classList.add('active'); document.getElementById('addTitle').focus(); }
         function openDetail(id) { currentTaskId = id; const task = state.tasks.find(t => t.id == id); if (!task) return; document.getElementById('editId').value = id; document.getElementById('editTitle').value = task.title; document.getElementById('editDesc').value = task.desc || ''; document.getElementById('editStatus').value = task.status; document.getElementById('editCategory').value = task.category; document.getElementById('editPriority').value = task.priority; document.getElementById('detailModal').classList.add('active'); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); currentTaskId = null; }
-        function submitNewTask(e) { e.preventDefault(); const newTask = { id: Date.now().toString(), title: document.getElementById('addTitle').value, desc: document.getElementById('addDesc').value, category: document.getElementById('addCategory').value, priority: document.getElementById('addPriority').value, status: 'todo' }; state.tasks.push(newTask); saveState(); renderBoard(); closeModal('addModal'); e.target.reset(); }
-        function saveTask(e) { e.preventDefault(); if (!currentTaskId) return; const task = state.tasks.find(t => t.id == currentTaskId); if (!task) return; task.title = document.getElementById('editTitle').value; task.desc = document.getElementById('editDesc').value; task.status = document.getElementById('editStatus').value; task.category = document.getElementById('editCategory').value; task.priority = document.getElementById('editPriority').value; saveState(); renderBoard(); closeModal('detailModal'); }
+        function submitNewTask(e) { e.preventDefault(); const newTask = { id: Date.now().toString(), title: document.getElementById('addTitle').value, desc: document.getElementById('addDesc').value, category: document.getElementById('addCategory').value, priority: document.getElementById('addPriority').value, status: 'todo', createdAt: Date.now() }; state.tasks.push(newTask); saveState(); renderBoard(); closeModal('addModal'); e.target.reset(); }
+        function saveTask(e) { e.preventDefault(); if (!currentTaskId) return; const task = state.tasks.find(t => t.id == currentTaskId); if (!task) return; task.title = document.getElementById('editTitle').value; task.desc = document.getElementById('editDesc').value; task.status = document.getElementById('editStatus').value; task.category = document.getElementById('editCategory').value; task.priority = document.getElementById('editPriority').value; task.updatedAt = Date.now(); saveState(); renderBoard(); closeModal('detailModal'); }
         function deleteTask() { if (!currentTaskId) return; if (!confirm('Delete this task?')) return; state.tasks = state.tasks.filter(t => t.id != currentTaskId); saveState(); renderBoard(); closeModal('detailModal'); }
-        function openNote(noteId) { if (!state.googleConnected) { connectGoogle('notes'); return; } alert(`Opening note: ${noteId}`); }
-        function openFile(fileId) { if (!state.googleConnected) { connectGoogle('drive'); return; } alert(`Opening file: ${fileId}`); }
-        function openTool(tool) { const urls = { docs: 'https://docs.google.com', sheets: 'https://sheets.google.com', slides: 'https://slides.google.com', drive: 'https://drive.google.com', calendar: 'https://calendar.google.com', gmail: 'https://mail.google.com' }; window.open(urls[tool], '_blank'); }
+        function openTool(tool) { const urls = { docs: 'https://docs.google.com', sheets: 'https://sheets.google.com', slides: 'https://slides.google.com', drive: 'https://drive.google.com', calendar: 'https://calendar.google.com', gmail: 'https://mail.google.com', photos: 'https://photos.google.com' }; window.open(urls[tool], '_blank'); }
         document.querySelectorAll('.modal').forEach(modal => { modal.addEventListener('click', e => { if (e.target === modal) closeModal(modal.id); }); });
     </script>
 </body>
