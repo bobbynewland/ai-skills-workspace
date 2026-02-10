@@ -6,818 +6,173 @@
     <title>Mission Control</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
-            background: #0a0a0f; 
-            color: #e5e5e5; 
-            min-height: 100vh; 
-            overflow-x: hidden;
-            padding-bottom: 80px;
-        }
-        
-        /* Header */
-        .header { 
-            padding: 20px; 
-            background: linear-gradient(180deg, #0a0a0f 0%, transparent 100%);
-            position: sticky; 
-            top: 0; 
-            z-index: 100;
-        }
-        .header h1 { 
-            font-size: 1.5rem; 
-            font-weight: 600; 
-            background: linear-gradient(135deg, #fff 0%, #a78bfa 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0f; color: #e5e5e5; min-height: 100vh; overflow-x: hidden; padding-bottom: 80px; }
+        .header { padding: 20px; background: linear-gradient(180deg, #0a0a0f 0%, transparent 100%); position: sticky; top: 0; z-index: 100; }
+        .header h1 { font-size: 1.5rem; font-weight: 600; background: linear-gradient(135deg, #fff 0%, #a78bfa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .header p { color: #6b7280; font-size: 0.875rem; margin-top: 4px; }
-        
-        /* Tabs */
-        .tabs { 
-            display: flex; 
-            gap: 4px; 
-            padding: 0 20px 20px; 
-            overflow-x: auto; 
-            -webkit-overflow-scrolling: touch;
-        }
-        .tab { 
-            background: rgba(255,255,255,0.03); 
-            border: 1px solid rgba(255,255,255,0.06); 
-            border-radius: 10px; 
-            padding: 10px 16px; 
-            font-size: 0.85rem;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .tab.active { 
-            background: linear-gradient(135deg, rgba(167, 139, 250, 0.15) 0%, rgba(124, 58, 237, 0.15) 100%);
-            border-color: rgba(167, 139, 250, 0.3);
-        }
-        .tab span { opacity: 0.7; }
-        .tab.active span { opacity: 1; }
-        
-        /* Tab Content */
+        .connection-status { display: flex; align-items: center; gap: 8px; padding: 8px 20px; font-size: 0.8rem; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .status-dot.connected { background: #34d399; }
+        .status-dot.disconnected { background: #f87171; }
+        .tabs { display: flex; gap: 4px; padding: 0 20px 20px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .tab { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 10px 16px; font-size: 0.85rem; cursor: pointer; white-space: nowrap; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+        .tab.active { background: linear-gradient(135deg, rgba(167, 139, 250, 0.15) 0%, rgba(124, 58, 237, 0.15) 100%); border-color: rgba(167, 139, 250, 0.3); }
         .tab-content { display: none; padding: 0 20px; }
         .tab-content.active { display: block; }
-        
-        /* Stats Bar */
-        .stats-bar { 
-            display: flex; 
-            gap: 8px; 
-            padding: 0 20px 20px; 
-            overflow-x: auto; 
-            -webkit-overflow-scrolling: touch;
-        }
-        .stat-pill { 
-            background: rgba(255,255,255,0.05); 
-            border: 1px solid rgba(255,255,255,0.08); 
-            border-radius: 20px; 
-            padding: 8px 16px; 
-            font-size: 0.8rem; 
-            white-space: nowrap;
-        }
+        .stats-bar { display: flex; gap: 8px; padding: 0 20px 20px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .stat-pill { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 8px 16px; font-size: 0.8rem; white-space: nowrap; }
         .stat-pill span { color: #a78bfa; font-weight: 600; }
-        
-        /* Board */
-        .board { 
-            display: flex; 
-            gap: 12px; 
-            padding: 0 20px 100px; 
-            overflow-x: auto; 
-            -webkit-overflow-scrolling: touch;
-            padding-bottom: 120px;
-        }
-        .column { 
-            min-width: 280px; 
-            max-width: 280px; 
-            flex-shrink: 0;
-        }
-        .column-header { 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            margin-bottom: 16px; 
-            padding-bottom: 12px; 
-            border-bottom: 2px solid;
-        }
-        .column-title { 
-            display: flex; 
-            align-items: center; 
-            gap: 8px; 
-            font-weight: 600; 
-            font-size: 0.9rem;
-        }
-        .column-count { 
-            background: rgba(255,255,255,0.1); 
-            padding: 2px 8px; 
-            border-radius: 10px; 
-            font-size: 0.75rem; 
-            color: #9ca3af;
-        }
+        .board { display: flex; gap: 12px; padding: 0 20px 100px; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 120px; }
+        .column { min-width: 280px; max-width: 280px; flex-shrink: 0; }
+        .column-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid; }
+        .column-title { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 0.9rem; }
+        .column-count { background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; color: #9ca3af; }
         .todo .column-header { border-color: #f87171; }
         .progress .column-header { border-color: #fbbf24; }
         .review .column-header { border-color: #34d399; }
         .done .column-header { border-color: #60a5fa; }
-        
-        /* Cards */
         .cards { display: flex; flex-direction: column; gap: 10px; }
-        .card { 
-            background: rgba(255,255,255,0.03); 
-            border: 1px solid rgba(255,255,255,0.06); 
-            border-radius: 12px; 
-            padding: 16px; 
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
+        .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s ease; }
         .card:active { transform: scale(0.98); }
-        .card:hover { 
-            background: rgba(255,255,255,0.05); 
-            border-color: rgba(255,255,255,0.1);
-        }
-        .card-title { 
-            font-weight: 500; 
-            font-size: 0.95rem; 
-            margin-bottom: 8px; 
-            line-height: 1.4;
-        }
-        .card-meta { 
-            display: flex; 
-            align-items: center; 
-            gap: 8px; 
-            flex-wrap: wrap;
-        }
-        .tag { 
-            font-size: 0.7rem; 
-            padding: 4px 10px; 
-            border-radius: 6px; 
-            font-weight: 500;
-        }
+        .card:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); }
+        .card-title { font-weight: 500; font-size: 0.95rem; margin-bottom: 8px; line-height: 1.4; }
+        .card-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .tag { font-size: 0.7rem; padding: 4px 10px; border-radius: 6px; font-weight: 500; }
         .tag-dev { background: rgba(96, 165, 250, 0.15); color: #60a5fa; }
         .tag-marketing { background: rgba(248, 113, 113, 0.15); color: #f87171; }
         .tag-content { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
         .tag-ambassador { background: rgba(52, 211, 153, 0.15); color: #34d399; }
         .tag-ops { background: rgba(167, 139, 250, 0.15); color: #a78bfa; }
-        
         .priority-dot { width: 8px; height: 8px; border-radius: 50%; }
         .priority-high { background: #f87171; }
         .priority-medium { background: #fbbf24; }
         .priority-low { background: #34d399; }
-        
-        /* Notes Tab */
         .notes-list { display: flex; flex-direction: column; gap: 12px; padding-bottom: 120px; }
-        .note-card { 
-            background: rgba(255,255,255,0.03); 
-            border: 1px solid rgba(255,255,255,0.06); 
-            border-radius: 12px; 
-            padding: 16px;
-        }
+        .note-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 16px; cursor: pointer; }
+        .note-card:hover { background: rgba(255,255,255,0.05); }
         .note-title { font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
         .note-preview { color: #9ca3af; font-size: 0.9rem; line-height: 1.5; }
         .note-meta { display: flex; gap: 12px; margin-top: 12px; font-size: 0.75rem; color: #6b7280; }
-        
-        /* Files Tab */
-        .files-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); 
-            gap: 12px; 
-            padding-bottom: 120px;
-        }
-        .file-card { 
-            background: rgba(255,255,255,0.03); 
-            border: 1px solid rgba(255,255,255,0.06); 
-            border-radius: 12px; 
-            padding: 16px; 
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
+        .note-status { margin-left: auto; padding: 4px 8px; border-radius: 6px; font-size: 0.7rem; }
+        .note-status.connected { background: rgba(52, 211, 153, 0.15); color: #34d399; }
+        .note-status.local { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
+        .files-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; padding-bottom: 120px; }
+        .file-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 16px; text-align: center; cursor: pointer; transition: all 0.2s; }
         .file-card:hover { background: rgba(255,255,255,0.05); }
         .file-icon { font-size: 2.5rem; margin-bottom: 8px; }
         .file-name { font-size: 0.85rem; font-weight: 500; word-break: break-word; }
         .file-meta { font-size: 0.75rem; color: #6b7280; margin-top: 4px; }
-        
-        /* Google Tools Tab */
-        .tools-grid { 
-            display: grid; 
-            grid-template-columns: repeat(2, 1fr); 
-            gap: 12px; 
-            padding-bottom: 120px;
-        }
-        .tool-card { 
-            background: rgba(255,255,255,0.03); 
-            border: 1px solid rgba(255,255,255,0.06); 
-            border-radius: 16px; 
-            padding: 20px; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .tool-card:hover { 
-            background: rgba(255,255,255,0.05); 
-            border-color: rgba(255,255,255,0.1);
-            transform: translateY(-2px);
-        }
+        .tools-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding-bottom: 120px; }
+        .tool-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; cursor: pointer; transition: all 0.2s; }
+        .tool-card:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); transform: translateY(-2px); }
         .tool-icon { font-size: 2rem; }
         .tool-name { font-weight: 600; font-size: 0.9rem; }
         .tool-desc { font-size: 0.75rem; color: #6b7280; text-align: center; }
-        
-        /* FAB */
-        .fab { 
-            position: fixed; 
-            bottom: 24px; 
-            right: 24px; 
-            width: 56px; 
-            height: 56px; 
-            border-radius: 16px; 
-            background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);
-            border: none; 
-            color: white; 
-            font-size: 1.5rem; 
-            cursor: pointer;
-            box-shadow: 0 10px 40px rgba(124, 58, 237, 0.4);
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        /* Bottom Sheet Modal */
-        .modal { 
-            display: none; 
-            position: fixed; 
-            inset: 0; 
-            background: rgba(0,0,0,0.8); 
-            z-index: 1000;
-            align-items: flex-end;
-            justify-content: center;
-        }
+        .google-connect { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 24px; margin-bottom: 20px; text-align: center; }
+        .google-connect h3 { margin-bottom: 12px; }
+        .google-connect p { color: #9ca3af; font-size: 0.9rem; margin-bottom: 16px; }
+        .fab { position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; border-radius: 16px; background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%); border: none; color: white; font-size: 1.5rem; cursor: pointer; box-shadow: 0 10px 40px rgba(124, 58, 237, 0.4); z-index: 100; display: flex; align-items: center; justify-content: center; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: flex-end; justify-content: center; }
         .modal.active { display: flex; }
-        .modal-content { 
-            background: #16161c; 
-            width: 100%; 
-            max-width: 600px; 
-            border-radius: 24px 24px 0 0; 
-            padding: 24px;
-            max-height: 85vh;
-            overflow-y: auto;
-            animation: slideUp 0.3s ease;
-        }
-        @keyframes slideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
-        .modal-header { 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            margin-bottom: 20px;
-        }
+        .modal-content { background: #16161c; width: 100%; max-width: 600px; border-radius: 24px 24px 0 0; padding: 24px; max-height: 85vh; overflow-y: auto; animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
         .modal-header h2 { font-size: 1.25rem; font-weight: 600; }
-        .close-btn { 
-            width: 36px; 
-            height: 36px; 
-            border-radius: 10px; 
-            background: rgba(255,255,255,0.05); 
-            border: none; 
-            color: #9ca3af; 
-            font-size: 1.25rem;
-            cursor: pointer;
-        }
-        
-        /* Form Elements */
+        .close-btn { width: 36px; height: 36px; border-radius: 10px; background: rgba(255,255,255,0.05); border: none; color: #9ca3af; font-size: 1.25rem; cursor: pointer; }
         .form-group { margin-bottom: 16px; }
-        .form-group label { 
-            display: block; 
-            color: #9ca3af; 
-            font-size: 0.8rem; 
-            margin-bottom: 8px; 
-            font-weight: 500;
-        }
-        .form-group input, .form-group select, .form-group textarea { 
-            width: 100%; 
-            padding: 14px; 
-            background: rgba(255,255,255,0.05); 
-            border: 1px solid rgba(255,255,255,0.1); 
-            border-radius: 12px; 
-            color: #fff; 
-            font-size: 1rem;
-            -webkit-appearance: none;
-        }
+        .form-group label { display: block; color: #9ca3af; font-size: 0.8rem; margin-bottom: 8px; font-weight: 500; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #fff; font-size: 1rem; -webkit-appearance: none; }
         .form-group textarea { min-height: 100px; resize: none; line-height: 1.5; }
-        .form-group select { 
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%239ca3af' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 12px center;
-        }
-        
-        /* Buttons */
+        .form-group select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%239ca3af' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
         .btn-group { display: flex; gap: 12px; margin-top: 20px; }
-        .btn { 
-            flex: 1; 
-            padding: 14px; 
-            border-radius: 12px; 
-            font-weight: 600; 
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: none;
-        }
-        .btn-primary { 
-            background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%); 
-            color: white;
-        }
-        .btn-secondary { 
-            background: rgba(255,255,255,0.05); 
-            color: #e5e5e5; 
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .btn-danger { 
-            background: rgba(248, 113, 113, 0.15); 
-            color: #f87171;
-        }
+        .btn { flex: 1; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.2s; border: none; }
+        .btn-primary { background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%); color: white; }
+        .btn-secondary { background: rgba(255,255,255,0.05); color: #e5e5e5; border: 1px solid rgba(255,255,255,0.1); }
+        .btn-danger { background: rgba(248, 113, 113, 0.15); color: #f87171; }
+        .btn-google { background: #4285f4; color: white; }
         .btn:active { transform: scale(0.98); }
-        
-        /* Responsive */
-        @media (min-width: 768px) {
-            .board, .tabs, .notes-list, .files-grid, .tools-grid { padding-left: 40px; padding-right: 40px; }
-            .modal-content { margin: auto; border-radius: 24px; }
-            .column { min-width: 320px; max-width: 320px; }
-        }
+        @media (min-width: 768px) { .board, .tabs, .notes-list, .files-grid, .tools-grid { padding-left: 40px; padding-right: 40px; } .modal-content { margin: auto; border-radius: 24px; } .column { min-width: 320px; max-width: 320px; } }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🚀 Mission Control</h1>
-        <p>Your command center</p>
-    </div>
-    
-    <!-- Tabs -->
-    <div class="tabs">
-        <div class="tab active" data-tab="tasks"><span>📋 Tasks</span></div>
-        <div class="tab" data-tab="notes"><span>📝 Notes</span></div>
-        <div class="tab" data-tab="files"><span>📁 Files</span></div>
-        <div class="tab" data-tab="tools"><span>🔧 Google Tools</span></div>
-    </div>
-    
-    <!-- Tasks Tab -->
+    <div class="header"><h1>🚀 Mission Control</h1><p>Your command center</p></div>
+    <div class="connection-status"><span class="status-dot disconnected" id="googleStatus"></span><span id="googleStatusText">Google not connected</span></div>
+    <div class="tabs"><div class="tab active" data-tab="tasks"><span>📋 Tasks</span></div><div class="tab" data-tab="notes"><span>📝 Notes</span></div><div class="tab" data-tab="files"><span>📁 Files</span></div><div class="tab" data-tab="tools"><span>🔧 Google Tools</span></div></div>
     <div class="tab-content active" id="tasks-tab">
-        <div class="stats-bar">
-            <div class="stat-pill">Total: <span id="stat-total">0</span></div>
-            <div class="stat-pill">To Do: <span id="stat-todo">0</span></div>
-            <div class="stat-pill">In Progress: <span id="stat-progress">0</span></div>
-            <div class="stat-pill">Done: <span id="stat-done">0</span></div>
-        </div>
-        
+        <div class="stats-bar"><div class="stat-pill">Total: <span id="stat-total">0</span></div><div class="stat-pill">To Do: <span id="stat-todo">0</span></div><div class="stat-pill">In Progress: <span id="stat-progress">0</span></div><div class="stat-pill">Done: <span id="stat-done">0</span></div></div>
         <div class="board">
-            <div class="column todo" data-column="todo">
-                <div class="column-header">
-                    <div class="column-title">📋 To Do <span class="column-count">0</span></div>
-                </div>
-                <div class="cards" data-status="todo"></div>
-            </div>
-            <div class="column progress" data-column="progress">
-                <div class="column-header">
-                    <div class="column-title">🔥 In Progress <span class="column-count">0</span></div>
-                </div>
-                <div class="cards" data-status="progress"></div>
-            </div>
-            <div class="column review" data-column="review">
-                <div class="column-header">
-                    <div class="column-title">👀 Review <span class="column-count">0</span></div>
-                </div>
-                <div class="cards" data-status="review"></div>
-            </div>
-            <div class="column done" data-column="done">
-                <div class="column-header">
-                    <div class="column-title">✅ Done <span class="column-count">0</span></div>
-                </div>
-                <div class="cards" data-status="done"></div>
-            </div>
+            <div class="column todo" data-column="todo"><div class="column-header"><div class="column-title">📋 To Do <span class="column-count">0</span></div></div><div class="cards" data-status="todo"></div></div>
+            <div class="column progress" data-column="progress"><div class="column-header"><div class="column-title">🔥 In Progress <span class="column-count">0</span></div></div><div class="cards" data-status="progress"></div></div>
+            <div class="column review" data-column="review"><div class="column-header"><div class="column-title">👀 Review <span class="column-count">0</span></div></div><div class="cards" data-status="review"></div></div>
+            <div class="column done" data-column="done"><div class="column-header"><div class="column-title">✅ Done <span class="column-count">0</span></div></div><div class="cards" data-status="done"></div></div>
         </div>
     </div>
-    
-    <!-- Notes Tab -->
     <div class="tab-content" id="notes-tab">
-        <div class="notes-list">
-            <div class="note-card" onclick="openNote('brain-dump')">
-                <div class="note-title">🧠 Brain Dump</div>
-                <div class="note-preview">Capture all your ideas, thoughts, and notes in one place...</div>
-                <div class="note-meta">📄 Document • Last edited just now</div>
-            </div>
-            <div class="note-card" onclick="openNote('meeting-notes')">
-                <div class="note-title">📅 Meeting Notes</div>
-                <div class="note-preview">Meeting notes, action items, and decisions...</div>
-                <div class="note-meta">📄 Document • Last edited yesterday</div>
-            </div>
-            <div class="note-card" onclick="openNote('project-ideas')">
-                <div class="note-title">💡 Project Ideas</div>
-                <div class="note-preview">All your project ideas and proposals...</div>
-                <div class="note-meta">📄 Document • Last edited 3 days ago</div>
-            </div>
-            <div class="note-card" onclick="openNote('weekly-review')">
-                <div class="note-title">📊 Weekly Review</div>
-                <div class="note-preview">Weekly review and reflection notes...</div>
-                <div class="note-meta">📄 Document • Last edited last week</div>
-            </div>
-        </div>
+        <div class="google-connect"><h3>📝 Google Docs Integration</h3><p>Connect to access your Brain Dump and Notes from Google Docs</p><button class="btn btn-google" onclick="connectGoogle('notes')">🔗 Connect Google Docs</button></div>
+        <div class="notes-list" id="notesList"></div>
     </div>
-    
-    <!-- Files Tab -->
     <div class="tab-content" id="files-tab">
-        <div class="files-grid">
-            <div class="file-card" onclick="openFile('template-pack-v4')">
-                <div class="file-icon">🎨</div>
-                <div class="file-name">Template Pack V4</div>
-                <div class="file-meta">2.4 MB</div>
-            </div>
-            <div class="file-card" onclick="openFile('brand-assets')">
-                <div class="file-icon">🎯</div>
-                <div class="file-name">Brand Assets</div>
-                <div class="file-meta">15 MB</div>
-            </div>
-            <div class="file-card" onclick="openFile('training-videos')">
-                <div class="file-icon">🎬</div>
-                <div class="file-name">Training Videos</div>
-                <div class="file-meta">128 MB</div>
-            </div>
-            <div class="file-card" onclick="openFile('marketing-materials')">
-                <div class="file-icon">📢</div>
-                <div class="file-name">Marketing Materials</div>
-                <div class="file-meta">45 MB</div>
-            </div>
-            <div class="file-card" onclick="openFile('financials')">
-                <div class="file-icon">💰</div>
-                <div class="file-name">Financials Q1</div>
-                <div class="file-meta">234 KB</div>
-            </div>
-            <div class="file-card" onclick="openFile('analytics')">
-                <div class="file-icon">📈</div>
-                <div class="file-name">Analytics Report</div>
-                <div class="file-meta">1.2 MB</div>
-            </div>
-        </div>
+        <div class="google-connect"><h3>📁 Google Drive Integration</h3><p>Connect to access your files from Google Drive</p><button class="btn btn-google" onclick="connectGoogle('drive')">🔗 Connect Google Drive</button></div>
+        <div class="files-grid" id="filesGrid"></div>
     </div>
-    
-    <!-- Google Tools Tab -->
     <div class="tab-content" id="tools-tab">
+        <div class="google-connect"><h3>🔧 Google Workspace</h3><p>Connect to access all Google Workspace tools</p><button class="btn btn-google" onclick="connectGoogle('workspace')">🔗 Connect Google Workspace</button></div>
         <div class="tools-grid">
-            <div class="tool-card" onclick="openTool('docs')">
-                <div class="tool-icon">📄</div>
-                <div class="tool-name">Google Docs</div>
-                <div class="tool-desc">Documents & notes</div>
-            </div>
-            <div class="tool-card" onclick="openTool('sheets')">
-                <div class="tool-icon">📊</div>
-                <div class="tool-name">Google Sheets</div>
-                <div class="tool-desc">Spreadsheets & data</div>
-            </div>
-            <div class="tool-card" onclick="openTool('slides')">
-                <div class="tool-icon">📽️</div>
-                <div class="tool-name">Google Slides</div>
-                <div class="tool-desc">Presentations</div>
-            </div>
-            <div class="tool-card" onclick="openTool('drive')">
-                <div class="tool-icon">☁️</div>
-                <div class="tool-name">Google Drive</div>
-                <div class="tool-desc">All files</div>
-            </div>
-            <div class="tool-card" onclick="openTool('calendar')">
-                <div class="tool-icon">📅</div>
-                <div class="tool-name">Calendar</div>
-                <div class="tool-desc">Schedule & events</div>
-            </div>
-            <div class="tool-card" onclick="openTool('gmail')">
-                <div class="tool-icon">✉️</div>
-                <div class="tool-name">Gmail</div>
-                <div class="tool-desc">Email & messages</div>
-            </div>
-            <div class="tool-card" onclick="openTool('photos')">
-                <div class="tool-icon">🖼️</div>
-                <div class="tool-name">Google Photos</div>
-                <div class="tool-desc">Images & media</div>
-            </div>
-            <div class="tool-card" onclick="openTool('forms')">
-                <div class="tool-icon">📋</div>
-                <div class="tool-name">Google Forms</div>
-                <div class="tool-desc">Surveys & quizzes</div>
-            </div>
+            <div class="tool-card" onclick="openTool('docs')"><div class="tool-icon">📄</div><div class="tool-name">Google Docs</div><div class="tool-desc">Documents & notes</div></div>
+            <div class="tool-card" onclick="openTool('sheets')"><div class="tool-icon">📊</div><div class="tool-name">Google Sheets</div><div class="tool-desc">Spreadsheets & data</div></div>
+            <div class="tool-card" onclick="openTool('slides')"><div class="tool-icon">📽️</div><div class="tool-name">Google Slides</div><div class="tool-desc">Presentations</div></div>
+            <div class="tool-card" onclick="openTool('drive')"><div class="tool-icon">☁️</div><div class="tool-name">Google Drive</div><div class="tool-desc">All files</div></div>
+            <div class="tool-card" onclick="openTool('calendar')"><div class="tool-icon">📅</div><div class="tool-name">Calendar</div><div class="tool-desc">Schedule & events</div></div>
+            <div class="tool-card" onclick="openTool('gmail')"><div class="tool-icon">✉️</div><div class="tool-name">Gmail</div><div class="tool-desc">Email & messages</div></div>
         </div>
     </div>
-    
-    <!-- FAB for Tasks -->
     <button class="fab" onclick="openAddModal()" id="taskFab">+</button>
-    
-    <!-- Add Task Modal -->
-    <div class="modal" id="addModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>New Task</h2>
-                <button class="close-btn" onclick="closeModal('addModal')">×</button>
-            </div>
-            <form onsubmit="submitNewTask(event)">
-                <div class="form-group">
-                    <label>Title</label>
-                    <input type="text" id="addTitle" placeholder="What needs to be done?" required>
-                </div>
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea id="addDesc" placeholder="Add details..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Category</label>
-                    <select id="addCategory">
-                        <option value="dev">💻 Dev</option>
-                        <option value="marketing">📣 Marketing</option>
-                        <option value="content">🎨 Content</option>
-                        <option value="ambassador">🤝 Ambassador</option>
-                        <option value="ops">⚙️ Ops</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Priority</label>
-                    <select id="addPriority">
-                        <option value="high">🔴 High</option>
-                        <option value="medium">🟡 Medium</option>
-                        <option value="low">🟢 Low</option>
-                    </select>
-                </div>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('addModal')">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Create Task</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    
-    <!-- Task Detail Modal -->
-    <div class="modal" id="detailModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Task Details</h2>
-                <button class="close-btn" onclick="closeModal('detailModal')">×</button>
-            </div>
-            <form onsubmit="saveTask(event)">
-                <input type="hidden" id="editId">
-                <div class="form-group">
-                    <label>Status</label>
-                    <select id="editStatus">
-                        <option value="todo">📋 To Do</option>
-                        <option value="progress">🔥 In Progress</option>
-                        <option value="review">👀 Review</option>
-                        <option value="done">✅ Done</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Title</label>
-                    <input type="text" id="editTitle" required>
-                </div>
-                <div class="form-group">
-                    <label>Description</label>
-                    <textarea id="editDesc"></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Category</label>
-                    <select id="editCategory">
-                        <option value="dev">💻 Dev</option>
-                        <option value="marketing">📣 Marketing</option>
-                        <option value="content">🎨 Content</option>
-                        <option value="ambassador">🤝 Ambassador</option>
-                        <option value="ops">⚙️ Ops</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Priority</label>
-                    <select id="editPriority">
-                        <option value="high">🔴 High</option>
-                        <option value="medium">🟡 Medium</option>
-                        <option value="low">🟢 Low</option>
-                    </select>
-                </div>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-danger" onclick="deleteTask()">Delete</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
-                </div>
-            </form>
-        </div>
-    </div>
-    
+    <div class="modal" id="addModal"><div class="modal-content"><div class="modal-header"><h2>New Task</h2><button class="close-btn" onclick="closeModal('addModal')">×</button></div>
+        <form onsubmit="submitNewTask(event)"><div class="form-group"><label>Title</label><input type="text" id="addTitle" placeholder="What needs to be done?" required></div>
+            <div class="form-group"><label>Description</label><textarea id="addDesc" placeholder="Add details..."></textarea></div>
+            <div class="form-group"><label>Category</label><select id="addCategory"><option value="dev">💻 Dev</option><option value="marketing">📣 Marketing</option><option value="content">🎨 Content</option><option value="ambassador">🤝 Ambassador</option><option value="ops">⚙️ Ops</option></select></div>
+            <div class="form-group"><label>Priority</label><select id="addPriority"><option value="high">🔴 High</option><option value="medium">🟡 Medium</option><option value="low">🟢 Low</option></select></div>
+            <div class="btn-group"><button type="button" class="btn btn-secondary" onclick="closeModal('addModal')">Cancel</button><button type="submit" class="btn btn-primary">Create Task</button></div></form></div></div>
+    <div class="modal" id="detailModal"><div class="modal-content"><div class="modal-header"><h2>Task Details</h2><button class="close-btn" onclick="closeModal('detailModal')">×</button></div>
+        <form onsubmit="saveTask(event)"><input type="hidden" id="editId">
+            <div class="form-group"><label>Status</label><select id="editStatus"><option value="todo">📋 To Do</option><option value="progress">🔥 In Progress</option><option value="review">👀 Review</option><option value="done">✅ Done</option></select></div>
+            <div class="form-group"><label>Title</label><input type="text" id="editTitle" required></div>
+            <div class="form-group"><label>Description</label><textarea id="editDesc"></textarea></div>
+            <div class="form-group"><label>Category</label><select id="editCategory"><option value="dev">💻 Dev</option><option value="marketing">📣 Marketing</option><option value="content">🎨 Content</option><option value="ambassador">🤝 Ambassador</option><option value="ops">⚙️ Ops</option></select></div>
+            <div class="form-group"><label>Priority</label><select id="editPriority"><option value="high">🔴 High</option><option value="medium">🟡 Medium</option><option value="low">🟢 Low</option></select></div>
+            <div class="btn-group"><button type="button" class="btn btn-danger" onclick="deleteTask()">Delete</button><button type="submit" class="btn btn-primary">Save</button></div></form></div></div>
     <script>
-        // State
-        let state = { tasks: [] };
+        let state = { tasks: [], googleConnected: false, notes: [], files: [] };
         let currentTaskId = null;
-        
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            loadState();
-            renderBoard();
-            setupTabs();
-        });
-        
-        // Tab Navigation
-        function setupTabs() {
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.addEventListener('click', () => {
-                    const tabName = tab.dataset.tab;
-                    
-                    // Update tabs
-                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    
-                    // Update content
-                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                    document.getElementById(`${tabName}-tab`).classList.add('active');
-                    
-                    // Show/hide FAB
-                    document.getElementById('taskFab').style.display = tabName === 'tasks' ? 'flex' : 'none';
-                });
-            });
-        }
-        
-        // Task Functions
+        document.addEventListener('DOMContentLoaded', () => { loadState(); renderBoard(); renderNotes(); renderFiles(); checkGoogleConnection(); setupTabs(); });
+        function setupTabs() { document.querySelectorAll('.tab').forEach(tab => { tab.addEventListener('click', () => { const tabName = tab.dataset.tab; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); tab.classList.add('active'); document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); document.getElementById(`${tabName}-tab`).classList.add('active'); document.getElementById('taskFab').style.display = tabName === 'tasks' ? 'flex' : 'none'; }); }); }
         function loadState() {
-            const raw = localStorage.getItem('mission_control_v1');
-            if (raw) {
-                state = JSON.parse(raw);
-            } else {
-                state.tasks = [
-                    { id: Date.now(), title: "Setup Mission Control", desc: "Board is live!", category: "ops", priority: "high", status: "done" },
-                    { id: Date.now()+1, title: "Create Templates", desc: "Need templates for launch", category: "content", priority: "high", status: "todo" }
-                ];
-                saveState();
-            }
+            let raw = localStorage.getItem('mission_control_v2');
+            if (!raw) { raw = localStorage.getItem('mission_control_v1'); if (raw) { const oldState = JSON.parse(raw); state.tasks = oldState.tasks || []; saveState(); } }
+            if (!raw) { raw = localStorage.getItem('winslow_board_v2'); if (raw) { const oldState = JSON.parse(raw); state.tasks = oldState.tasks || []; saveState(); } }
+            if (raw) { const saved = JSON.parse(raw); state.tasks = saved.tasks || []; state.googleConnected = saved.googleConnected || false; state.notes = saved.notes || []; state.files = saved.files || []; }
+            else { state.tasks = [{ id: Date.now().toString(), title: "Setup Mission Control", desc: "Board is live!", category: "ops", priority: "high", status: "done" }, { id: (Date.now() + 1).toString(), title: "Create Templates", desc: "Need templates for launch", category: "content", priority: "high", status: "todo" }]; saveState(); }
         }
-        
-        function saveState() {
-            localStorage.setItem('mission_control_v1', JSON.stringify(state));
-            renderStats();
-        }
-        
-        function renderBoard() {
-            document.querySelectorAll('.cards').forEach(el => el.innerHTML = '');
-            
-            state.tasks.forEach(task => {
-                const card = createCardElement(task);
-                const col = document.querySelector(`.cards[data-status="${task.status}"]`);
-                if (col) col.appendChild(card);
-            });
-            
-            renderStats();
-        }
-        
-        function createCardElement(task) {
-            const div = document.createElement('div');
-            div.className = 'card';
-            div.dataset.id = task.id;
-            div.dataset.status = task.status;
-            
-            const tagClass = `tag-${task.category}`;
-            const priorityClass = `priority-${task.priority}`;
-            
-            div.innerHTML = `
-                <div class="card-title">${task.title}</div>
-                <div class="card-meta">
-                    <span class="tag ${tagClass}">${getCategoryLabel(task.category)}</span>
-                    <span class="priority-dot ${priorityClass}"></span>
-                </div>
-            `;
-            
-            div.addEventListener('click', () => openDetail(task.id));
-            return div;
-        }
-        
-        function getCategoryLabel(cat) {
-            const labels = { dev: 'Dev', marketing: 'Marketing', content: 'Content', ambassador: 'Ambassador', ops: 'Ops' };
-            return labels[cat] || cat;
-        }
-        
-        function renderStats() {
-            const counts = { total: 0, todo: 0, progress: 0, review: 0, done: 0 };
-            state.tasks.forEach(t => {
-                counts.total++;
-                counts[t.status]++;
-            });
-            document.getElementById('stat-total').textContent = counts.total;
-            document.getElementById('stat-todo').textContent = counts.todo;
-            document.getElementById('stat-progress').textContent = counts.progress;
-            document.getElementById('stat-done').textContent = counts.done;
-            
-            document.querySelectorAll('.column').forEach(col => {
-                const status = col.dataset.column;
-                const countEl = col.querySelector('.column-count');
-                if (countEl) countEl.textContent = counts[status] || 0;
-            });
-        }
-        
-        // Modals
-        function openAddModal() {
-            document.getElementById('addModal').classList.add('active');
-            document.getElementById('addTitle').focus();
-        }
-        
-        function openDetail(id) {
-            currentTaskId = id;
-            const task = state.tasks.find(t => t.id == id);
-            if (!task) return;
-            
-            document.getElementById('editId').value = id;
-            document.getElementById('editTitle').value = task.title;
-            document.getElementById('editDesc').value = task.desc || '';
-            document.getElementById('editStatus').value = task.status;
-            document.getElementById('editCategory').value = task.category;
-            document.getElementById('editPriority').value = task.priority;
-            
-            document.getElementById('detailModal').classList.add('active');
-        }
-        
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
-            currentTaskId = null;
-        }
-        
-        // Task CRUD
-        function submitNewTask(e) {
-            e.preventDefault();
-            
-            const newTask = {
-                id: Date.now().toString(),
-                title: document.getElementById('addTitle').value,
-                desc: document.getElementById('addDesc').value,
-                category: document.getElementById('addCategory').value,
-                priority: document.getElementById('addPriority').value,
-                status: 'todo'
-            };
-            
-            state.tasks.push(newTask);
-            saveState();
-            renderBoard();
-            closeModal('addModal');
-            e.target.reset();
-        }
-        
-        function saveTask(e) {
-            e.preventDefault();
-            if (!currentTaskId) return;
-            
-            const task = state.tasks.find(t => t.id == currentTaskId);
-            if (!task) return;
-            
-            task.title = document.getElementById('editTitle').value;
-            task.desc = document.getElementById('editDesc').value;
-            task.status = document.getElementById('editStatus').value;
-            task.category = document.getElementById('editCategory').value;
-            task.priority = document.getElementById('editPriority').value;
-            
-            saveState();
-            renderBoard();
-            closeModal('detailModal');
-        }
-        
-        function deleteTask() {
-            if (!currentTaskId) return;
-            if (!confirm('Delete this task?')) return;
-            
-            state.tasks = state.tasks.filter(t => t.id != currentTaskId);
-            saveState();
-            renderBoard();
-            closeModal('detailModal');
-        }
-        
-        // Notes, Files, Tools
-        function openNote(noteId) {
-            alert(`Opening ${noteId}...\n\n(Connect Google Docs to enable this feature)`);
-        }
-        
-        function openFile(fileId) {
-            alert(`Opening ${fileId}...\n\n(Connect Google Drive to enable this feature)`);
-        }
-        
-        function openTool(tool) {
-            const urls = {
-                docs: 'https://docs.google.com',
-                sheets: 'https://sheets.google.com',
-                slides: 'https://slides.google.com',
-                drive: 'https://drive.google.com',
-                calendar: 'https://calendar.google.com',
-                gmail: 'https://mail.google.com',
-                photos: 'https://photos.google.com',
-                forms: 'https://forms.google.com'
-            };
-            window.open(urls[tool], '_blank');
-        }
-        
-        // Close modal on outside click
-        document.querySelectorAll('.modal').forEach(modal => {
-            modal.addEventListener('click', e => {
-                if (e.target === modal) closeModal(modal.id);
-            });
-        });
+        function saveState() { localStorage.setItem('mission_control_v2', JSON.stringify(state)); renderStats(); }
+        function checkGoogleConnection() { const statusEl = document.getElementById('googleStatus'); const textEl = document.getElementById('googleStatusText'); if (state.googleConnected) { statusEl.className = 'status-dot connected'; textEl.textContent = 'Google connected'; } else { statusEl.className = 'status-dot disconnected'; textEl.textContent = 'Google not connected'; } }
+        function connectGoogle(type) { alert('🔗 Google Connection\n\nTo connect Google Workspace:\n\n1. Open terminal on the server\n2. Run: python3 /root/.openclaw/workspace/google_workspace.py auth\n3. Complete OAuth flow\n\nThis will enable real-time sync with Google Docs, Drive, Sheets, and more!'); }
+        function renderBoard() { document.querySelectorAll('.cards').forEach(el => el.innerHTML = ''); state.tasks.forEach(task => { const card = createCardElement(task); const col = document.querySelector(`.cards[data-status="${task.status}"]`); if (col) col.appendChild(card); }); renderStats(); }
+        function createCardElement(task) { const div = document.createElement('div'); div.className = 'card'; div.dataset.id = task.id; div.dataset.status = task.status; const tagClass = `tag-${task.category}`; const priorityClass = `priority-${task.priority}`; div.innerHTML = `<div class="card-title">${task.title}</div><div class="card-meta"><span class="tag ${tagClass}">${getCategoryLabel(task.category)}</span><span class="priority-dot ${priorityClass}"></span></div>`; div.addEventListener('click', () => openDetail(task.id)); return div; }
+        function getCategoryLabel(cat) { const labels = { dev: 'Dev', marketing: 'Marketing', content: 'Content', ambassador: 'Ambassador', ops: 'Ops' }; return labels[cat] || cat; }
+        function renderStats() { const counts = { total: 0, todo: 0, progress: 0, review: 0, done: 0 }; state.tasks.forEach(t => { counts.total++; counts[t.status]++; }); document.getElementById('stat-total').textContent = counts.total; document.getElementById('stat-todo').textContent = counts.todo; document.getElementById('stat-progress').textContent = counts.progress; document.getElementById('stat-done').textContent = counts.done; document.querySelectorAll('.column').forEach(col => { const status = col.dataset.column; const countEl = col.querySelector('.column-count'); if (countEl) countEl.textContent = counts[status] || 0; }); }
+        function renderNotes() { const list = document.getElementById('notesList'); if (state.googleConnected && state.notes.length > 0) { list.innerHTML = state.notes.map(note => `<div class="note-card" onclick="openNote('${note.id}')"><div class="note-title">📄 ${note.name} <span class="note-status connected">Connected</span></div><div class="note-preview">${note.preview || 'No preview'}</div><div class="note-meta">Modified: ${note.modified || 'Unknown'}</div></div>`).join(''); } else { list.innerHTML = `<div class="note-card" onclick="connectGoogle('notes')"><div class="note-title">🧠 Brain Dump <span class="note-status local">Local</span></div><div class="note-preview">Capture all your ideas, thoughts, and notes...</div><div class="note-meta">📄 Document • Click to connect Google Docs</div></div><div class="note-card" onclick="connectGoogle('notes')"><div class="note-title">📅 Meeting Notes <span class="note-status local">Local</span></div><div class="note-preview">Meeting notes, action items, and decisions...</div><div class="note-meta">📄 Document • Click to connect Google Docs</div></div>`; } }
+        function renderFiles() { const grid = document.getElementById('filesGrid'); if (state.googleConnected && state.files.length > 0) { grid.innerHTML = state.files.map(file => `<div class="file-card" onclick="openFile('${file.id}')"><div class="file-icon">📄</div><div class="file-name">${file.name}</div><div class="file-meta">${formatFileSize(file.size)}</div></div>`).join(''); } else { grid.innerHTML = `<div class="file-card" onclick="connectGoogle('drive')"><div class="file-icon">🎨</div><div class="file-name">Template Pack V4</div><div class="file-meta">Click to connect Drive</div></div><div class="file-card" onclick="connectGoogle('drive')"><div class="file-icon">🎯</div><div class="file-name">Brand Assets</div><div class="file-meta">Click to connect Drive</div></div>`; } }
+        function formatFileSize(bytes) { if (!bytes) return 'Unknown'; const sizes = ['B', 'KB', 'MB', 'GB']; const i = Math.floor(Math.log(bytes) / Math.log(1024)); return `${(bytes / Math.pow(1024, i)).toFixed(1)} ${sizes[i]}`; }
+        function openAddModal() { document.getElementById('addModal').classList.add('active'); document.getElementById('addTitle').focus(); }
+        function openDetail(id) { currentTaskId = id; const task = state.tasks.find(t => t.id == id); if (!task) return; document.getElementById('editId').value = id; document.getElementById('editTitle').value = task.title; document.getElementById('editDesc').value = task.desc || ''; document.getElementById('editStatus').value = task.status; document.getElementById('editCategory').value = task.category; document.getElementById('editPriority').value = task.priority; document.getElementById('detailModal').classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); currentTaskId = null; }
+        function submitNewTask(e) { e.preventDefault(); const newTask = { id: Date.now().toString(), title: document.getElementById('addTitle').value, desc: document.getElementById('addDesc').value, category: document.getElementById('addCategory').value, priority: document.getElementById('addPriority').value, status: 'todo' }; state.tasks.push(newTask); saveState(); renderBoard(); closeModal('addModal'); e.target.reset(); }
+        function saveTask(e) { e.preventDefault(); if (!currentTaskId) return; const task = state.tasks.find(t => t.id == currentTaskId); if (!task) return; task.title = document.getElementById('editTitle').value; task.desc = document.getElementById('editDesc').value; task.status = document.getElementById('editStatus').value; task.category = document.getElementById('editCategory').value; task.priority = document.getElementById('editPriority').value; saveState(); renderBoard(); closeModal('detailModal'); }
+        function deleteTask() { if (!currentTaskId) return; if (!confirm('Delete this task?')) return; state.tasks = state.tasks.filter(t => t.id != currentTaskId); saveState(); renderBoard(); closeModal('detailModal'); }
+        function openNote(noteId) { if (!state.googleConnected) { connectGoogle('notes'); return; } alert(`Opening note: ${noteId}`); }
+        function openFile(fileId) { if (!state.googleConnected) { connectGoogle('drive'); return; } alert(`Opening file: ${fileId}`); }
+        function openTool(tool) { const urls = { docs: 'https://docs.google.com', sheets: 'https://sheets.google.com', slides: 'https://slides.google.com', drive: 'https://drive.google.com', calendar: 'https://calendar.google.com', gmail: 'https://mail.google.com' }; window.open(urls[tool], '_blank'); }
+        document.querySelectorAll('.modal').forEach(modal => { modal.addEventListener('click', e => { if (e.target === modal) closeModal(modal.id); }); });
     </script>
 </body>
 </html>
