@@ -2,564 +2,760 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Skills Studio - Command Board</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Mission Control</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: #fff; min-height: 100vh; padding: 20px; }
-        
-        /* Utility */
-        .hidden { display: none !important; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            background: #0a0a0f; 
+            color: #e5e5e5; 
+            min-height: 100vh; 
+            overflow-x: hidden;
+        }
         
         /* Header */
-        .header { text-align: center; margin-bottom: 30px; padding: 20px; }
-        .header h1 { font-size: 2.5rem; background: linear-gradient(90deg, #00d4ff, #7b2cbf); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px; }
-        .header p { color: #888; font-size: 1.1rem; }
+        .header { 
+            padding: 20px; 
+            background: linear-gradient(180deg, #0a0a0f 0%, transparent 100%);
+            position: sticky; 
+            top: 0; 
+            z-index: 100;
+        }
+        .header h1 { 
+            font-size: 1.5rem; 
+            font-weight: 600; 
+            background: linear-gradient(135deg, #fff 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header p { color: #6b7280; font-size: 0.875rem; margin-top: 4px; }
         
-        /* Stats */
-        .stats { display: flex; justify-content: center; gap: 30px; margin-bottom: 30px; flex-wrap: wrap; }
-        .stat-box { background: rgba(255,255,255,0.05); padding: 15px 30px; border-radius: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
-        .stat-number { font-size: 2rem; font-weight: bold; color: #00d4ff; }
-        .stat-label { color: #888; font-size: 0.9rem; }
-        
-        /* Revenue Tracker */
-        .money-tracker { background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(123,44,191,0.1)); padding: 20px; border-radius: 16px; margin-bottom: 30px; border: 1px solid rgba(0,212,255,0.2); }
-        .money-tracker h3 { color: #00d4ff; margin-bottom: 15px; }
-        .money-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        .money-item { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; }
-        .money-label { color: #888; font-size: 0.9rem; }
-        .money-value { font-size: 1.8rem; font-weight: bold; color: #00ff88; }
-        
-        /* Board Layout */
-        .board { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; max-width: 1400px; margin: 0 auto; }
-        .column { background: rgba(255,255,255,0.03); border-radius: 16px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; }
-        .column-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid; }
-        .column-title { font-size: 1.2rem; font-weight: 600; display: flex; align-items: center; gap: 10px; }
-        .column-count { background: rgba(255,255,255,0.1); padding: 4px 12px; border-radius: 20px; font-size: 0.9rem; }
-        
-        /* Column Colors */
-        .todo .column-header { border-color: #ff6b6b; }
-        .progress .column-header { border-color: #ffd93d; }
-        .review .column-header { border-color: #6bcf7f; }
-        .done .column-header { border-color: #00d4ff; }
-        
-        /* Tasks */
-        .tasks { min-height: 100px; flex-grow: 1; }
-        .task-card { 
+        /* Stats Bar */
+        .stats-bar { 
+            display: flex; 
+            gap: 8px; 
+            padding: 0 20px 20px; 
+            overflow-x: auto; 
+            -webkit-overflow-scrolling: touch;
+        }
+        .stat-pill { 
             background: rgba(255,255,255,0.05); 
+            border: 1px solid rgba(255,255,255,0.08); 
+            border-radius: 20px; 
+            padding: 8px 16px; 
+            font-size: 0.8rem; 
+            white-space: nowrap;
+        }
+        .stat-pill span { color: #a78bfa; font-weight: 600; }
+        
+        /* Board */
+        .board { 
+            display: flex; 
+            gap: 12px; 
+            padding: 0 20px 100px; 
+            overflow-x: auto; 
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 120px;
+        }
+        .column { 
+            min-width: 300px; 
+            max-width: 300px; 
+            flex-shrink: 0;
+        }
+        .column-header { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            margin-bottom: 16px; 
+            padding-bottom: 12px; 
+            border-bottom: 2px solid;
+        }
+        .column-title { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            font-weight: 600; 
+            font-size: 0.9rem;
+        }
+        .column-count { 
+            background: rgba(255,255,255,0.1); 
+            padding: 2px 8px; 
+            border-radius: 10px; 
+            font-size: 0.75rem; 
+            color: #9ca3af;
+        }
+        .todo .column-header { border-color: #f87171; }
+        .progress .column-header { border-color: #fbbf24; }
+        .review .column-header { border-color: #34d399; }
+        .done .column-header { border-color: #60a5fa; }
+        
+        /* Cards */
+        .cards { display: flex; flex-direction: column; gap: 10px; }
+        .card { 
+            background: rgba(255,255,255,0.03); 
+            border: 1px solid rgba(255,255,255,0.06); 
             border-radius: 12px; 
             padding: 16px; 
-            padding-left: 50px;
-            margin-bottom: 12px; 
-            cursor: pointer; 
-            transition: all 0.2s ease; 
-            border: 1px solid rgba(255,255,255,0.08); 
-            border-left: 3px solid transparent;
-            user-select: none;
-            -webkit-user-select: none;
-            touch-action: none;
-            position: relative;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
-        .task-card:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.2); }
-        .task-card.dragging { opacity: 0.5; }
-        .task-card.drag-over { border-color: #00d4ff; background: rgba(0,212,255,0.1); }
+        .card:active { transform: scale(0.98); }
+        .card:hover { 
+            background: rgba(255,255,255,0.05); 
+            border-color: rgba(255,255,255,0.1);
+        }
+        .card-title { 
+            font-weight: 500; 
+            font-size: 0.95rem; 
+            margin-bottom: 8px; 
+            line-height: 1.4;
+        }
+        .card-meta { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            flex-wrap: wrap;
+        }
+        .tag { 
+            font-size: 0.7rem; 
+            padding: 4px 10px; 
+            border-radius: 6px; 
+            font-weight: 500;
+        }
+        .tag-dev { background: rgba(96, 165, 250, 0.15); color: #60a5fa; }
+        .tag-marketing { background: rgba(248, 113, 113, 0.15); color: #f87171; }
+        .tag-content { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
+        .tag-ambassador { background: rgba(52, 211, 153, 0.15); color: #34d399; }
+        .tag-ops { background: rgba(167, 139, 250, 0.15); color: #a78bfa; }
         
-        /* Drag Handle */
-        .drag-handle {
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 35px;
+        .priority-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .priority-high { background: #f87171; }
+        .priority-medium { background: #fbbf24; }
+        .priority-low { background: #34d399; }
+        
+        .file-indicator { 
+            margin-left: auto; 
+            color: #6b7280; 
+            font-size: 0.75rem;
+        }
+        
+        /* FAB */
+        .fab { 
+            position: fixed; 
+            bottom: 24px; 
+            right: 24px; 
+            width: 56px; 
+            height: 56px; 
+            border-radius: 16px; 
+            background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);
+            border: none; 
+            color: white; 
+            font-size: 1.5rem; 
+            cursor: pointer;
+            box-shadow: 0 10px 40px rgba(124, 58, 237, 0.4);
+            z-index: 100;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: grab;
-            color: rgba(255,255,255,0.3);
-            font-size: 18px;
-            background: linear-gradient(90deg, rgba(255,255,255,0.05), transparent);
-            border-radius: 12px 0 0 12px;
         }
-        .drag-handle:active { cursor: grabbing; color: rgba(255,255,255,0.6); }
         
-        .task-title { font-weight: 600; margin-bottom: 8px; line-height: 1.4; pointer-events: none; }
-        .task-meta { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; pointer-events: none; }
-        .task-desc-preview { font-size: 0.8rem; color: #aaa; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 8px; pointer-events: none; }
+        /* Bottom Sheet Modal */
+        .modal { 
+            display: none; 
+            position: fixed; 
+            inset: 0; 
+            background: rgba(0,0,0,0.8); 
+            z-index: 1000;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        .modal.active { display: flex; }
+        .modal-content { 
+            background: #16161c; 
+            width: 100%; 
+            max-width: 600px; 
+            border-radius: 24px 24px 0 0; 
+            padding: 24px;
+            max-height: 85vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        .modal-header { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            margin-bottom: 20px;
+        }
+        .modal-header h2 { font-size: 1.25rem; font-weight: 600; }
+        .close-btn { 
+            width: 36px; 
+            height: 36px; 
+            border-radius: 10px; 
+            background: rgba(255,255,255,0.05); 
+            border: none; 
+            color: #9ca3af; 
+            font-size: 1.25rem;
+            cursor: pointer;
+        }
         
-        /* Tags & Priorities */
-        .tag { font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; font-weight: 500; }
-        .tag-marketing { background: rgba(255,107,107,0.2); color: #ff6b6b; }
-        .tag-dev { background: rgba(0,212,255,0.2); color: #00d4ff; }
-        .tag-content { background: rgba(255,217,61,0.2); color: #ffd93d; }
-        .tag-ambassador { background: rgba(107,207,127,0.2); color: #6bcf7f; }
-        .tag-urgent { background: rgba(255,0,0,0.2); color: #ff4444; }
-        .tag-ops { background: rgba(156, 39, 176, 0.2); color: #e040fb; }
+        /* Form Elements */
+        .form-group { margin-bottom: 16px; }
+        .form-group label { 
+            display: block; 
+            color: #9ca3af; 
+            font-size: 0.8rem; 
+            margin-bottom: 8px; 
+            font-weight: 500;
+        }
+        .form-group input, .form-group select, .form-group textarea { 
+            width: 100%; 
+            padding: 14px; 
+            background: rgba(255,255,255,0.05); 
+            border: 1px solid rgba(255,255,255,0.1); 
+            border-radius: 12px; 
+            color: #fff; 
+            font-size: 1rem;
+            -webkit-appearance: none;
+        }
+        .form-group textarea { min-height: 100px; resize: none; line-height: 1.5; }
+        .form-group select { 
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%239ca3af' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+        }
         
-        .priority { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
-        .priority-high { background: #ff4444; }
-        .priority-medium { background: #ffd93d; }
-        .priority-low { background: #6bcf7f; }
+        /* Buttons */
+        .btn-group { display: flex; gap: 12px; margin-top: 20px; }
+        .btn { 
+            flex: 1; 
+            padding: 14px; 
+            border-radius: 12px; 
+            font-weight: 600; 
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+        .btn-primary { 
+            background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%); 
+            color: white;
+        }
+        .btn-secondary { 
+            background: rgba(255,255,255,0.05); 
+            color: #e5e5e5; 
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .btn-danger { 
+            background: rgba(248, 113, 113, 0.15); 
+            color: #f87171;
+        }
+        .btn:active { transform: scale(0.98); }
         
-        .add-task-btn { width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 2px dashed rgba(255,255,255,0.2); border-radius: 8px; color: #888; cursor: pointer; transition: all 0.3s; margin-top: 10px; }
-        .add-task-btn:hover { background: rgba(255,255,255,0.1); color: #fff; border-color: rgba(255,255,255,0.4); }
+        .btn-full { width: 100%; margin-top: 12px; }
         
-        /* Modals */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center; }
-        .modal-content { background: #1a1a2e; padding: 30px; border-radius: 16px; width: 90%; max-width: 600px; border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; gap: 1rem; max-height: 90vh; overflow-y: auto; }
-        .modal h2 { color: #00d4ff; margin-bottom: 0; }
+        /* File Upload */
+        .file-upload { 
+            border: 2px dashed rgba(255,255,255,0.1); 
+            border-radius: 12px; 
+            padding: 24px; 
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .file-upload:active { background: rgba(255,255,255,0.05); }
+        .file-upload input { display: none; }
+        .file-upload-icon { font-size: 1.5rem; margin-bottom: 8px; }
+        .file-upload-text { color: #9ca3af; font-size: 0.85rem; }
         
-        .form-group label { display: block; margin-bottom: 5px; color: #888; font-size: 0.9rem; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-family: inherit; font-size: 1rem; }
-        .form-group textarea { min-height: 150px; resize: vertical; line-height: 1.5; }
+        .file-list { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+        .file-item { 
+            display: flex; align-items: center; gap: 10px; 
+            padding: 10px; 
+            background: rgba(255,255,255,0.03); 
+            border-radius: 8px;
+        }
+        .file-item-icon { font-size: 1.25rem; }
+        .file-item-name { flex: 1; font-size: 0.85rem; }
+        .file-item-remove { 
+            background: none; border: none; color: #6b7280; 
+            font-size: 1.25rem; cursor: pointer;
+        }
         
-        .btn-group { display: flex; gap: 10px; margin-top: 10px; }
-        .btn { flex: 1; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
-        .btn-primary { background: linear-gradient(90deg, #00d4ff, #7b2cbf); color: #fff; }
-        .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; }
-        .btn-danger { background: rgba(255, 68, 68, 0.2); color: #ff4444; }
-        .btn:hover { transform: translateY(-2px); filter: brightness(1.2); }
+        /* Drag Handle */
+        .drag-handle { 
+            position: fixed; 
+            bottom: 100px; 
+            left: 50%; 
+            transform: translateX(-50%);
+            background: rgba(255,255,255,0.1); 
+            padding: 12px 24px; 
+            border-radius: 20px; 
+            color: #6b7280; 
+            font-size: 0.8rem;
+            display: none;
+            z-index: 99;
+        }
+        .card.dragging { opacity: 0.5; }
+        .column.drag-over { background: rgba(167, 139, 250, 0.1); border-radius: 12px; }
         
-        /* Detail View Specifics */
-        .detail-meta { display: flex; gap: 1rem; margin-bottom: 1rem; }
-        .detail-meta > div { flex: 1; }
-        
-        /* Drag Preview */
-        .drag-preview {
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            opacity: 0.9;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            transform: rotate(2deg);
+        /* Responsive */
+        @media (min-width: 768px) {
+            .board { gap: 20px; padding: 0 40px 100px; }
+            .column { min-width: 320px; max-width: 320px; }
+            .modal-content { margin: auto; border-radius: 24px; }
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>🚀 AI Skills Studio</h1>
-        <p>Mission Control v2.0</p>
+        <h1>🚀 Mission Control</h1>
+        <p>Your command center</p>
     </div>
     
-    <div class="money-tracker">
-        <h3>💰 Revenue Tracker</h3>
-        <div class="money-grid">
-            <div class="money-item">
-                <div class="money-label">Ambassadors</div>
-                <div class="money-value" id="stat-ambassadors">0</div>
-            </div>
-            <div class="money-item">
-                <div class="money-label">Monthly Revenue</div>
-                <div class="money-value" id="stat-revenue">$0</div>
-            </div>
-            <div class="money-item">
-                <div class="money-label">Active Users</div>
-                <div class="money-value" id="stat-users">0</div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="stats">
-        <div class="stat-box"><div class="stat-number" id="total-tasks">0</div><div class="stat-label">Total</div></div>
-        <div class="stat-box"><div class="stat-number" id="count-todo-stat">0</div><div class="stat-label">To Do</div></div>
-        <div class="stat-box"><div class="stat-number" id="count-progress-stat">0</div><div class="stat-label">In Progress</div></div>
-        <div class="stat-box"><div class="stat-number" id="count-done-stat">0</div><div class="stat-label">Done</div></div>
+    <div class="stats-bar">
+        <div class="stat-pill">Total: <span id="stat-total">0</span></div>
+        <div class="stat-pill">To Do: <span id="stat-todo">0</span></div>
+        <div class="stat-pill">In Progress: <span id="stat-progress">0</span></div>
+        <div class="stat-pill">Done: <span id="stat-done">0</span></div>
     </div>
     
     <div class="board">
-        <!-- Columns generated by JS -->
-        <div class="column todo" id="col-todo">
-            <div class="column-header"><div class="column-title">📋 To Do</div><span class="column-count">0</span></div>
-            <div class="tasks" ondrop="drop(event)" ondragover="allowDrop(event)" data-status="todo"></div>
-            <button class="add-task-btn" onclick="openAddModal('todo')">+ Add Task</button>
+        <div class="column todo" data-column="todo">
+            <div class="column-header">
+                <div class="column-title">📋 To Do <span class="column-count">0</span></div>
+            </div>
+            <div class="cards" data-status="todo"></div>
         </div>
-        <div class="column progress" id="col-progress">
-            <div class="column-header"><div class="column-title">🔥 In Progress</div><span class="column-count">0</span></div>
-            <div class="tasks" ondrop="drop(event)" ondragover="allowDrop(event)" data-status="progress"></div>
-            <button class="add-task-btn" onclick="openAddModal('progress')">+ Add Task</button>
+        <div class="column progress" data-column="progress">
+            <div class="column-header">
+                <div class="column-title">🔥 In Progress <span class="column-count">0</span></div>
+            </div>
+            <div class="cards" data-status="progress"></div>
         </div>
-        <div class="column review" id="col-review">
-            <div class="column-header"><div class="column-title">👀 Review</div><span class="column-count">0</span></div>
-            <div class="tasks" ondrop="drop(event)" ondragover="allowDrop(event)" data-status="review"></div>
-            <button class="add-task-btn" onclick="openAddModal('review')">+ Add Task</button>
+        <div class="column review" data-column="review">
+            <div class="column-header">
+                <div class="column-title">👀 Review <span class="column-count">0</span></div>
+            </div>
+            <div class="cards" data-status="review"></div>
         </div>
-        <div class="column done" id="col-done">
-            <div class="column-header"><div class="column-title">✅ Done</div><span class="column-count">0</span></div>
-            <div class="tasks" ondrop="drop(event)" ondragover="allowDrop(event)" data-status="done"></div>
-            <button class="add-task-btn" onclick="openAddModal('done')">+ Add Task</button>
+        <div class="column done" data-column="done">
+            <div class="column-header">
+                <div class="column-title">✅ Done <span class="column-count">0</span></div>
+            </div>
+            <div class="cards" data-status="done"></div>
         </div>
     </div>
-
+    
+    <button class="fab" onclick="openAddModal()">+</button>
+    
     <!-- Add Task Modal -->
     <div class="modal" id="addModal">
         <div class="modal-content">
-            <h2>New Task</h2>
-            <div class="form-group"><label>Title</label><input type="text" id="addTitle" placeholder="Task name..."></div>
-            <div class="detail-meta">
+            <div class="modal-header">
+                <h2>New Task</h2>
+                <button class="close-btn" onclick="closeModal('addModal')">×</button>
+            </div>
+            <form onsubmit="submitNewTask(event)">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="addTitle" placeholder="What needs to be done?" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="addDesc" placeholder="Add details..."></textarea>
+                </div>
                 <div class="form-group">
                     <label>Category</label>
                     <select id="addCategory">
-                        <option value="dev">Dev</option>
-                        <option value="marketing">Marketing</option>
-                        <option value="content">Content</option>
-                        <option value="ambassador">Ambassador</option>
-                        <option value="ops">Ops</option>
+                        <option value="dev">💻 Dev</option>
+                        <option value="marketing">📣 Marketing</option>
+                        <option value="content">🎨 Content</option>
+                        <option value="ambassador">🤝 Ambassador</option>
+                        <option value="ops">⚙️ Ops</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label>Priority</label>
                     <select id="addPriority">
-                        <option value="high">High 🔴</option>
-                        <option value="medium">Medium 🟡</option>
-                        <option value="low">Low 🟢</option>
+                        <option value="high">🔴 High</option>
+                        <option value="medium">🟡 Medium</option>
+                        <option value="low">🟢 Low</option>
                     </select>
                 </div>
-            </div>
-            <div class="form-group"><label>Notes</label><textarea id="addDesc" placeholder="Details..."></textarea></div>
-            <div class="btn-group">
-                <button class="btn btn-secondary" onclick="closeModal('addModal')">Cancel</button>
-                <button class="btn btn-primary" onclick="submitNewTask()">Create</button>
-            </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Task</button>
+                </div>
+            </form>
         </div>
     </div>
-
-    <!-- Edit/Detail Modal -->
+    
+    <!-- Task Detail Modal -->
     <div class="modal" id="detailModal">
         <div class="modal-content">
-            <input type="hidden" id="editId">
-            <div class="form-group"><label>Title</label><input type="text" id="editTitle"></div>
-            <div class="detail-meta">
+            <div class="modal-header">
+                <h2>Task Details</h2>
+                <button class="close-btn" onclick="closeModal('detailModal')">×</button>
+            </div>
+            <form onsubmit="saveTask(event)">
+                <input type="hidden" id="editId">
                 <div class="form-group">
                     <label>Status</label>
                     <select id="editStatus">
-                        <option value="todo">To Do</option>
-                        <option value="progress">In Progress</option>
-                        <option value="review">Review</option>
-                        <option value="done">Done</option>
+                        <option value="todo">📋 To Do</option>
+                        <option value="progress">🔥 In Progress</option>
+                        <option value="review">👀 Review</option>
+                        <option value="done">✅ Done</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="editTitle" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="editDesc"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="editCategory">
+                        <option value="dev">💻 Dev</option>
+                        <option value="marketing">📣 Marketing</option>
+                        <option value="content">🎨 Content</option>
+                        <option value="ambassador">🤝 Ambassador</option>
+                        <option value="ops">⚙️ Ops</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label>Priority</label>
                     <select id="editPriority">
-                        <option value="high">High</option>
-                        <option value="medium">Medium</option>
-                        <option value="low">Low</option>
+                        <option value="high">🔴 High</option>
+                        <option value="medium">🟡 Medium</option>
+                        <option value="low">🟢 Low</option>
                     </select>
                 </div>
-            </div>
-            <div class="form-group"><label>Detailed Notes (Auto-saved locally)</label><textarea id="editDesc"></textarea></div>
-            <div class="btn-group">
-                <button class="btn btn-secondary" onclick="closeModal('detailModal')">Close</button>
-                <button class="btn btn-primary" onclick="saveEdit()">Save Changes</button>
-                <button class="btn btn-danger" onclick="deleteTask()">Delete</button>
-            </div>
+                
+                <!-- Files -->
+                <div class="form-group">
+                    <label>Files</label>
+                    <label class="file-upload">
+                        <input type="file" id="fileInput" onchange="addFile(this)">
+                        <div class="file-upload-icon">📎</div>
+                        <div class="file-upload-text">Tap to upload file</div>
+                    </label>
+                    <div class="file-list" id="fileList"></div>
+                </div>
+                
+                <div class="btn-group">
+                    <button type="button" class="btn btn-danger" onclick="deleteTask()">Delete</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
         </div>
     </div>
-
+    
     <script>
-        // Data Model
-        let state = {
-            tasks: [], // Array of objects: { id, title, desc, category, priority, status, created }
-            config: {
-                ambassadors: 0,
-                revenue: 0,
-                users: 0
-            }
-        };
-
-        // Init
+        // State
+        let state = { tasks: [] };
+        let currentTaskId = null;
+        let dragState = { card: null, preview: null };
+        
+        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             loadState();
             renderBoard();
+            setupDragDrop();
         });
-
-        // --- Core Functions ---
-
+        
         function loadState() {
-            const raw = localStorage.getItem('winslow_board_v2');
+            const raw = localStorage.getItem('mission_control_v1');
             if (raw) {
                 state = JSON.parse(raw);
             } else {
-                // Seed default data if empty
                 state.tasks = [
-                    { id: Date.now(), title: "Setup Mission Control", desc: "Board is live.", category: "ops", priority: "high", status: "done" },
-                    { id: Date.now()+1, title: "Create Kids Clothing Templates", desc: "Need 5-10 high quality templates for the launch.", category: "content", priority: "high", status: "todo" }
+                    { id: Date.now(), title: "Setup Mission Control", desc: "Board is live!", category: "ops", priority: "high", status: "done", files: [] },
+                    { id: Date.now()+1, title: "Create Templates", desc: "Need templates for launch", category: "content", priority: "high", status: "todo", files: [] }
                 ];
                 saveState();
             }
-            
-            // Restore stat values
-            document.getElementById('stat-ambassadors').textContent = state.config.ambassadors;
-            document.getElementById('stat-revenue').textContent = '$' + state.config.revenue;
-            document.getElementById('stat-users').textContent = state.config.users;
         }
-
+        
         function saveState() {
-            localStorage.setItem('winslow_board_v2', JSON.stringify(state));
+            localStorage.setItem('mission_control_v1', JSON.stringify(state));
             renderStats();
         }
-
+        
         function renderBoard() {
-            // Clear cols
-            document.querySelectorAll('.tasks').forEach(el => el.innerHTML = '');
+            document.querySelectorAll('.cards').forEach(el => el.innerHTML = '');
             
-            // Populate
             state.tasks.forEach(task => {
                 const card = createCardElement(task);
-                const col = document.querySelector(`.tasks[data-status="${task.status}"]`);
+                const col = document.querySelector(`.cards[data-status="${task.status}"]`);
                 if (col) col.appendChild(card);
             });
-
+            
             renderStats();
         }
-
+        
         function createCardElement(task) {
             const div = document.createElement('div');
-            div.className = 'task-card';
+            div.className = 'card';
             div.dataset.id = task.id;
             div.dataset.status = task.status;
-
-            const priorityClass = 'priority-' + task.priority;
-            const tagClass = 'tag-' + task.category;
             
-            // Preview desc (first 60 chars)
-            const descPreview = task.desc ? `<div class="task-desc-preview">${task.desc.substring(0, 60)}${task.desc.length > 60 ? '...' : ''}</div>` : '';
-
+            const tagClass = `tag-${task.category}`;
+            const priorityClass = `priority-${task.priority}`;
+            const fileIcon = task.files?.length ? '📎' : '';
+            
             div.innerHTML = `
-                <div class="drag-handle" data-id="${task.id}">☰</div>
-                <div class="task-title"><span class="priority ${priorityClass}"></span>${task.title}</div>
-                ${descPreview}
-                <div class="task-meta">
-                    <span class="tag ${tagClass}">${task.category.toUpperCase()}</span>
+                <div class="card-title">${task.title}</div>
+                <div class="card-meta">
+                    <span class="tag ${tagClass}">${getCategoryLabel(task.category)}</span>
+                    <span class="priority-dot ${priorityClass}"></span>
+                    ${fileIcon ? `<span class="file-indicator">${fileIcon}</span>` : ''}
                 </div>
             `;
-
-            // Add pointer event to handle for touch/mouse drag
-            const handle = div.querySelector('.drag-handle');
-            handle.addEventListener('pointerdown', handlePointerDown, { passive: false });
-
-            // Click elsewhere to open detail
-            div.addEventListener('click', (e) => {
-                if (!e.target.closest('.drag-handle')) {
-                    openDetail(task.id);
-                }
-            });
-
+            
+            div.addEventListener('click', () => openDetail(task.id));
+            div.addEventListener('touchstart', handleTouchStart, { passive: true });
+            
             return div;
         }
-
+        
+        function getCategoryLabel(cat) {
+            const labels = { dev: 'Dev', marketing: 'Marketing', content: 'Content', ambassador: 'Ambassador', ops: 'Ops' };
+            return labels[cat] || cat;
+        }
+        
         function renderStats() {
-            // Column Counts
-            ['todo', 'progress', 'review', 'done'].forEach(s => {
-                const count = state.tasks.filter(t => t.status === s).length;
-                const col = document.querySelector(`#col-${s} .column-count`);
-                if(col) col.innerText = count;
-                
-                // Header Stats
-                const statBox = document.getElementById(`count-${s}-stat`);
-                if(statBox) statBox.innerText = count;
+            const counts = { total: 0, todo: 0, progress: 0, review: 0, done: 0 };
+            state.tasks.forEach(t => {
+                counts.total++;
+                counts[t.status]++;
             });
-            document.getElementById('total-tasks').innerText = state.tasks.length;
-        }
-
-        // --- Interaction ---
-
-        let addTargetColumn = 'todo';
-
-        function openAddModal(status) {
-            addTargetColumn = status;
-            document.getElementById('addModal').style.display = 'flex';
-            document.getElementById('addTitle').focus();
-        }
-
-        function submitNewTask() {
-            const title = document.getElementById('addTitle').value;
-            if (!title) return;
-
-            const newTask = {
-                id: Date.now().toString(),
-                title: title,
-                desc: document.getElementById('addDesc').value,
-                category: document.getElementById('addCategory').value,
-                priority: document.getElementById('addPriority').value,
-                status: addTargetColumn,
-                created: Date.now()
-            };
-
-            state.tasks.push(newTask);
-            saveState();
-            renderBoard();
-            closeModal('addModal');
+            document.getElementById('stat-total').textContent = counts.total;
+            document.getElementById('stat-todo').textContent = counts.todo;
+            document.getElementById('stat-progress').textContent = counts.progress;
+            document.getElementById('stat-done').textContent = counts.done;
             
-            // Reset form
-            document.getElementById('addTitle').value = '';
-            document.getElementById('addDesc').value = '';
+            document.querySelectorAll('.column').forEach(col => {
+                const status = col.dataset.column;
+                const countEl = col.querySelector('.column-count');
+                if (countEl) countEl.textContent = counts[status] || 0;
+            });
         }
-
-        function openDetail(id) {
-            const task = state.tasks.find(t => t.id == id); // loose match for string/number id
-            if (!task) return;
-
-            document.getElementById('editId').value = task.id;
-            document.getElementById('editTitle').value = task.title;
-            document.getElementById('editDesc').value = task.desc || '';
-            document.getElementById('editStatus').value = task.status;
-            document.getElementById('editPriority').value = task.priority;
-
-            document.getElementById('detailModal').style.display = 'flex';
+        
+        // Drag & Drop
+        function setupDragDrop() {
+            document.querySelectorAll('.column').forEach(col => {
+                col.addEventListener('dragover', e => {
+                    e.preventDefault();
+                    col.classList.add('drag-over');
+                });
+                col.addEventListener('dragleave', () => col.classList.remove('drag-over'));
+                col.addEventListener('drop', handleDrop);
+            });
         }
-
-        function saveEdit() {
-            const id = document.getElementById('editId').value;
-            const task = state.tasks.find(t => t.id == id);
-            if (task) {
-                task.title = document.getElementById('editTitle').value;
-                task.desc = document.getElementById('editDesc').value;
-                task.status = document.getElementById('editStatus').value;
-                task.priority = document.getElementById('editPriority').value;
-                saveState();
-                renderBoard();
-                closeModal('detailModal');
-            }
-        }
-
-        function deleteTask() {
-            const id = document.getElementById('editId').value;
-            if (confirm('Delete this task?')) {
-                state.tasks = state.tasks.filter(t => t.id != id);
-                saveState();
-                renderBoard();
-                closeModal('detailModal');
-            }
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
-
-        // --- Pointer Drag & Drop (Touch + Mouse) ---
-
-        let dragState = {
-            card: null,
-            preview: null,
-            pointerId: null
-        };
-
-        function handlePointerDown(e) {
-            e.preventDefault();
-            const handle = e.target.closest('.drag-handle');
-            if (!handle) return;
-            
-            const card = handle.closest('.task-card');
-            if (!card) return;
-
-            // Capture pointer
-            card.setPointerCapture(e.pointerId);
+        
+        function handleTouchStart(e) {
+            const card = e.currentTarget;
+            const touch = e.changedTouches[0];
             
             dragState.card = card;
-            dragState.pointerId = e.pointerId;
-
-            // Create preview
-            dragState.preview = card.cloneNode(true);
-            dragState.preview.className = 'task-card drag-preview';
-            dragState.preview.style.width = card.offsetWidth + 'px';
-            dragState.preview.style.left = (e.clientX - card.offsetWidth/2) + 'px';
-            dragState.preview.style.top = (e.clientY - 20) + 'px';
-            document.body.appendChild(dragState.preview);
-
+            
+            card.style.opacity = '0.5';
             card.classList.add('dragging');
-
-            // Add move/end listeners
-            card.addEventListener('pointermove', handlePointerMove, { passive: false });
-            card.addEventListener('pointerup', handlePointerUp);
-            card.addEventListener('pointercancel', handlePointerUp);
+            
+            document.addEventListener('touchmove', handleTouchMove, { passive: false });
+            document.addEventListener('touchend', handleTouchEnd);
         }
-
-        function handlePointerMove(e) {
-            if (!dragState.preview) return;
-            e.preventDefault();
-
-            // Move preview
-            dragState.preview.style.left = (e.clientX - dragState.card.offsetWidth/2) + 'px';
-            dragState.preview.style.top = (e.clientY - 20) + 'px';
-
-            // Highlight column under
-            const columns = document.querySelectorAll('.tasks');
-            columns.forEach(col => {
-                const rect = col.getBoundingClientRect();
-                const isOver = e.clientX >= rect.left && e.clientX <= rect.right &&
-                              e.clientY >= rect.top && e.clientY <= rect.bottom;
-                col.classList.toggle('drag-over', isOver);
-            });
-        }
-
-        function handlePointerUp(e) {
+        
+        function handleTouchMove(e) {
             if (!dragState.card) return;
-
-            const card = dragState.card;
-
-            // Remove listeners
-            card.removeEventListener('pointermove', handlePointerMove);
-            card.removeEventListener('pointerup', handlePointerUp);
-            card.removeEventListener('pointercancel', handlePointerUp);
-            card.releasePointerCapture(dragState.pointerId);
-
-            // Find target column
-            let targetColumn = null;
-            const columns = document.querySelectorAll('.tasks');
-            columns.forEach(col => {
-                const rect = col.getBoundingClientRect();
-                if (e.clientX >= rect.left && e.clientX <= rect.right &&
-                    e.clientY >= rect.top && e.clientY <= rect.bottom) {
-                    targetColumn = col;
-                }
-                col.classList.remove('drag-over');
-            });
-
-            // Update status if dropped in different column
-            if (targetColumn) {
-                const newStatus = targetColumn.dataset.status;
-                const taskId = card.dataset.id;
-                const task = state.tasks.find(t => t.id == taskId);
-                if (task && task.status !== newStatus) {
-                    task.status = newStatus;
-                    saveState();
-                }
-            }
-
-            // Cleanup
-            card.classList.remove('dragging');
-            if (dragState.preview) dragState.preview.remove();
+            e.preventDefault();
             
-            dragState = { card: null, preview: null, pointerId: null };
-            renderBoard();
+            const touch = e.changedTouches[0];
+            const element = document.elementFromPoint(touch.clientX, touch.clientY);
+            const column = element?.closest('.column');
+            
+            document.querySelectorAll('.column').forEach(c => c.classList.remove('drag-over'));
+            if (column) column.classList.add('drag-over');
         }
-
-        // --- Legacy HTML5 Drag & Drop (fallback) ---
-
-        function allowDrop(ev) { ev.preventDefault(); }
-
-        function drop(ev) {
-            ev.preventDefault();
-            const id = ev.dataTransfer.getData("text");
-            const targetCol = ev.target.closest('.tasks');
+        
+        function handleTouchEnd(e) {
+            if (!dragState.card) return;
             
-            if (targetCol) {
-                const newStatus = targetCol.dataset.status;
-                const task = state.tasks.find(t => t.id == id);
+            const touch = e.changedTouches[0];
+            const element = document.elementFromPoint(touch.clientX, touch.clientY);
+            const column = element?.closest('.column');
+            
+            if (column) {
+                const newStatus = column.dataset.column;
+                const taskId = dragState.card.dataset.id;
+                const task = state.tasks.find(t => t.id == taskId);
                 if (task && task.status !== newStatus) {
                     task.status = newStatus;
                     saveState();
                     renderBoard();
                 }
             }
+            
+            dragState.card.style.opacity = '';
+            dragState.card.classList.remove('dragging');
+            document.querySelectorAll('.column').forEach(c => c.classList.remove('drag-over'));
+            dragState.card = null;
+            
+            document.removeEventListener('touchmove', handleTouchMove);
+            document.removeEventListener('touchend', handleTouchEnd);
         }
-
-        // Close details on outside click
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                event.target.style.display = "none";
+        
+        function handleDrop(e) {
+            e.preventDefault();
+            const column = e.currentTarget;
+            const newStatus = column.dataset.column;
+            const taskId = dragState.card?.dataset.id;
+            
+            if (taskId && newStatus) {
+                const task = state.tasks.find(t => t.id == taskId);
+                if (task && task.status !== newStatus) {
+                    task.status = newStatus;
+                    saveState();
+                    renderBoard();
+                }
             }
+            
+            column.classList.remove('drag-over');
         }
+        
+        // Modals
+        function openAddModal() {
+            document.getElementById('addModal').classList.add('active');
+            document.getElementById('addTitle').focus();
+        }
+        
+        function openDetail(id) {
+            currentTaskId = id;
+            const task = state.tasks.find(t => t.id == id);
+            if (!task) return;
+            
+            document.getElementById('editId').value = id;
+            document.getElementById('editTitle').value = task.title;
+            document.getElementById('editDesc').value = task.desc || '';
+            document.getElementById('editStatus').value = task.status;
+            document.getElementById('editCategory').value = task.category;
+            document.getElementById('editPriority').value = task.priority;
+            
+            renderFileList(task.files || []);
+            
+            document.getElementById('detailModal').classList.add('active');
+        }
+        
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+            currentTaskId = null;
+        }
+        
+        // Tasks
+        function submitNewTask(e) {
+            e.preventDefault();
+            
+            const newTask = {
+                id: Date.now().toString(),
+                title: document.getElementById('addTitle').value,
+                desc: document.getElementById('addDesc').value,
+                category: document.getElementById('addCategory').value,
+                priority: document.getElementById('addPriority').value,
+                status: 'todo',
+                files: []
+            };
+            
+            state.tasks.push(newTask);
+            saveState();
+            renderBoard();
+            closeModal('addModal');
+            
+            e.target.reset();
+        }
+        
+        function saveTask(e) {
+            e.preventDefault();
+            if (!currentTaskId) return;
+            
+            const task = state.tasks.find(t => t.id == currentTaskId);
+            if (!task) return;
+            
+            task.title = document.getElementById('editTitle').value;
+            task.desc = document.getElementById('editDesc').value;
+            task.status = document.getElementById('editStatus').value;
+            task.category = document.getElementById('editCategory').value;
+            task.priority = document.getElementById('editPriority').value;
+            
+            saveState();
+            renderBoard();
+            closeModal('detailModal');
+        }
+        
+        function deleteTask() {
+            if (!currentTaskId) return;
+            if (!confirm('Delete this task?')) return;
+            
+            state.tasks = state.tasks.filter(t => t.id != currentTaskId);
+            saveState();
+            renderBoard();
+            closeModal('detailModal');
+        }
+        
+        // Files
+        function addFile(input) {
+            if (!currentTaskId || !input.files[0]) return;
+            
+            const task = state.tasks.find(t => t.id == currentTaskId);
+            if (!task) return;
+            
+            task.files = task.files || [];
+            task.files.push({
+                name: input.files[0].name,
+                type: input.files[0].type,
+                size: input.files[0].size
+            });
+            
+            saveState();
+            renderFileList(task.files);
+            input.value = '';
+        }
+        
+        function renderFileList(files) {
+            const list = document.getElementById('fileList');
+            list.innerHTML = files.map((f, i) => `
+                <div class="file-item">
+                    <span class="file-item-icon">📄</span>
+                    <span class="file-item-name">${f.name}</span>
+                    <button type="button" class="file-item-remove" onclick="removeFile(${i})">×</button>
+                </div>
+            `).join('');
+        }
+        
+        function removeFile(index) {
+            if (!currentTaskId) return;
+            const task = state.tasks.find(t => t.id == currentTaskId);
+            if (!task || !task.files) return;
+            
+            task.files.splice(index, 1);
+            saveState();
+            renderFileList(task.files);
+        }
+        
+        // Close modal on outside click
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', e => {
+                if (e.target === modal) closeModal(modal.id);
+            });
+        });
     </script>
 </body>
 </html>
