@@ -394,10 +394,13 @@
 
         function handleTouchStart(e) {
             e.preventDefault();
-            const touch = e.changedTouches[0];
-            const card = touch.target.closest('.task-card');
+            const handle = e.target.closest('.drag-handle');
+            if (!handle) return;
+            
+            const card = handle.closest('.task-card');
             if (!card) return;
 
+            const touch = e.changedTouches[0];
             startDrag(card, touch.clientX, touch.clientY, touch.identifier);
         }
 
@@ -430,12 +433,6 @@
 
             card.classList.add('dragging');
             card.style.opacity = '0.3';
-
-            // Add move/end listeners
-            if (identifier === 'mouse') {
-                document.addEventListener('mousemove', handleMouseMove);
-                document.addEventListener('mouseup', handleMouseUp);
-            }
         }
 
         function handleTouchMove(e) {
@@ -507,12 +504,6 @@
                 });
             }
 
-            // Remove listeners
-            document.removeEventListener('mousemove', handleMouseMove);
-            document.removeEventListener('mouseup', handleMouseUp);
-            document.removeEventListener('touchmove', handleTouchMove);
-            document.removeEventListener('touchend', handleTouchEnd);
-
             // Update task status if dropped in different column
             if (targetColumn && targetColumn !== dragState.originalParent) {
                 const newStatus = targetColumn.dataset.status;
@@ -541,8 +532,13 @@
         }
 
         function setupColumnListeners() {
+            // Always have touch listeners active
             document.addEventListener('touchmove', handleTouchMove, { passive: false });
             document.addEventListener('touchend', handleTouchEnd, { passive: false });
+            
+            // Mouse listeners for desktop
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
         }
 
         // --- Stats & UI ---
