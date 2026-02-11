@@ -93,7 +93,7 @@ function TaskColumn({ status, tasks, columnIcons, columnLabels, onTaskClick }) {
   const columnColors = { todo: { border: '#f87171' }, progress: { border: '#fbbf24' }, review: { border: '#34d399' }, done: { border: '#60a5fa' } };
 
   return (
-    <div className="column-layout">
+    <div id={`column-${status}`} data-status={status} className="column-layout" style={{ minHeight: '150px' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', paddingBottom: '0.75rem', borderBottom: `2px solid ${columnColors[status].border}` }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <span style={{ fontSize: '1.125rem' }}>{columnIcons[status]}</span>
@@ -102,7 +102,7 @@ function TaskColumn({ status, tasks, columnIcons, columnLabels, onTaskClick }) {
         </div>
       </div>
       <SortableContext items={columnTasks.map(t => t.id)} strategy={verticalListSortingStrategy}>
-        <div className="cards-scroll">{columnTasks.map(task => <SortableTaskCard key={task.id} task={task} onClick={() => onTaskClick(task)} />)}</div>
+        <div className="cards-scroll" style={{ minHeight: '100px' }}>{columnTasks.map(task => <SortableTaskCard key={task.id} task={task} onClick={() => onTaskClick(task)} />)}</div>
       </SortableContext>
     </div>
   );
@@ -138,6 +138,16 @@ function Modal({ isOpen, onClose, title, children }) {
   );
 }
 
+function findColumnStatus(element) {
+  while (element && element !== document.body) {
+    if (element.id && element.id.startsWith('column-')) {
+      return element.dataset.status;
+    }
+    element = element.parentElement;
+  }
+  return null;
+}
+
 function App() {
   const [activeTab, setActiveTab] = useState('tasks');
   const [tasks, setTasks] = useState({});
@@ -149,11 +159,8 @@ function App() {
   const [editingTask, setEditingTask] = useState(null);
   const [activeId, setActiveId] = useState(null);
 
-  // 12px activation distance prevents accidental drags during scroll
   const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: { distance: 12 },
-    }),
+    useSensor(PointerSensor, { activationConstraint: { distance: 12 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
@@ -165,8 +172,9 @@ function App() {
       else {
         setTasks({
           '1': { id: '1', title: 'Welcome to Mission Control', category: 'ops', priority: 'medium', status: 'todo', order: 0 },
-          '2': { id: '2', title: 'Drag cards to reorder them', category: 'dev', priority: 'low', status: 'todo', order: 1 },
-          '3': { id: '3', title: 'Michigan Project Task', category: 'michigan', priority: 'high', status: 'progress', order: 0 }
+          '2': { id: '2', title: 'Drag cards between any columns', category: 'dev', priority: 'low', status: 'todo', order: 1 },
+          '3': { id: '3', title: 'Try moving to Progress or Review', category: 'michigan', priority: 'high', status: 'progress', order: 0 },
+          '4': { id: '4', title: 'Completed tasks go here', category: 'content', priority: 'medium', status: 'done', order: 0 }
         });
         setStatus({ text: 'Ready', type: 'saved' });
       }
@@ -192,22 +200,63 @@ function App() {
   }, []);
 
   const handleDragStart = useCallback((event) => { setActiveId(event.active.id); }, []);
+
   const handleDragEnd = useCallback((event) => {
-    const { active, over } = event;
+    const { active, over, activeRect } = event;
     setActiveId(null);
     if (!over) return;
+
     const activeTask = tasks[active.id];
     if (!activeTask) return;
-    let newStatus = activeTask.status;
-    const overEl = document.getElementById(`column-${over.id}`);
-    if (overEl) newStatus = overEl.dataset.status;
-    else if (tasks[over.id]) newStatus = tasks[over.id].status;
-    if (newStatus !== activeTask.status) {
+
+    let newStatus = null;
+
+    // Check if dropped on a column directly
+    if (over.id && over.id.toString().startsWith('column-')) {
+      newStatus = over.id.toString().replace('column-', '');
+    }
+    // Check if dropped on a task
+    else if (tasks[over.id]) {
+      newStatus = tasks[over.id].status;
+    }
+    // Fallback: check all columns for overlap
+    else if (activeRect) {
+      for (const status of ['todo', 'progress', 'review', 'done']) {
+        const columnEl = document.getElementById(`column-${status}`);
+        if (columnEl) {
+          const rect = columnEl.getBoundingClientRect();
+          const center = { x: activeRect.left + activeRect.width / 2, y: activeRect.top - 10 };
+          if (center.x >= rect.left && center.x <= rect.right && center.y >= rect.top && center.y <= rect.bottom) {
+            newStatus = status;
+            break;
+          }
+        }
+      }
+    }
+
+    if (newStatus && newStatus !== activeTask.status) {
       const newTasks = { ...tasks };
-      Object.values(newTasks).forEach(t => { if (t.status === activeTask.status && t.order > activeTask.order) newTasks[t.id] = { ...t, order: t.order - 1 }; });
+      
+      // Remove from old position
+      Object.values(newTasks).forEach(t => {
+        if (t.status === activeTask.status && t.order > activeTask.order) {
+          newTasks[t.id] = { ...t, order: t.order - 1 };
+        }
+      });
+      
+      // Add to new column
       const colTasks = Object.values(newTasks).filter(t => t.status === newStatus);
       let newOrder = colTasks.length;
-      if (tasks[over.id]?.status === newStatus) { newOrder = tasks[over.id].order; Object.values(newTasks).forEach(t => { if (t.status === newStatus && t.order >= newOrder && t.id !== active.id) newTasks[t.id] = { ...t, order: t.order + 1 }; }); }
+      
+      if (tasks[over.id]?.status === newStatus) {
+        newOrder = tasks[over.id].order;
+        Object.values(newTasks).forEach(t => {
+          if (t.status === newStatus && t.order >= newOrder && t.id !== active.id) {
+            newTasks[t.id] = { ...t, order: t.order + 1 };
+          }
+        });
+      }
+      
       newTasks[active.id] = { ...activeTask, status: newStatus, order: newOrder };
       setTasks(newTasks);
       saveTasks(newTasks);
@@ -271,7 +320,7 @@ function App() {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div>
               <h1 style={{ fontSize: '1.25rem', fontWeight: 700, background: 'linear-gradient(135deg, #fff 0%, #a78bfa 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>🚀 Mission Control</h1>
-              <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.125rem' }}>Your command center</p>
+              <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.125rem' }}>Drag cards to any column</p>
             </div>
             <div className={`status-badge ${status.type}`}><span className={`status-dot ${status.type}`}></span><span>{status.text}</span></div>
           </div>
@@ -290,7 +339,7 @@ function App() {
           </div>
           {activeTab === 'tasks' && (
             <div className="board-container">
-              {['todo', 'progress', 'review', 'done'].map(status => <div key={status} id={`column-${status}`} data-status={status}><TaskColumn status={status} tasks={tasks} columnIcons={columnIcons} columnLabels={columnLabels} onTaskClick={(task) => setEditingTask(task)} /></div>)}
+              {['todo', 'progress', 'review', 'done'].map(status => <TaskColumn key={status} status={status} tasks={tasks} columnIcons={columnIcons} columnLabels={columnLabels} onTaskClick={(task) => setEditingTask(task)} />)}
             </div>
           )}
           {activeTab === 'notes' && (
