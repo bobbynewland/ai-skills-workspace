@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   DndContext,
   closestCenter,
@@ -7,6 +7,7 @@ import {
   useSensor,
   useSensors,
   DragOverlay,
+  defaultDropAnimationSideEffects,
 } from '@dnd-kit/core';
 import {
   SortableContext,
@@ -53,6 +54,10 @@ const noteTypeColors = {
   meeting: { bg: 'rgba(96, 165, 250, 0.15)', text: '#60a5fa' },
   idea: { bg: 'rgba(52, 211, 153, 0.15)', text: '#34d399' },
   project: { bg: 'rgba(139, 92, 246, 0.15)', text: '#a78bfa' }
+};
+
+const dropAnimation = {
+  sideEffects: defaultDropAnimationSideEffects({ styles: { active: { opacity: '0.5' } } }),
 };
 
 function SortableTaskCard({ task, onClick }) {
@@ -138,16 +143,6 @@ function Modal({ isOpen, onClose, title, children }) {
   );
 }
 
-function findColumnStatus(element) {
-  while (element && element !== document.body) {
-    if (element.id && element.id.startsWith('column-')) {
-      return element.dataset.status;
-    }
-    element = element.parentElement;
-  }
-  return null;
-}
-
 function App() {
   const [activeTab, setActiveTab] = useState('tasks');
   const [tasks, setTasks] = useState({});
@@ -158,6 +153,8 @@ function App() {
   const [editingNote, setEditingNote] = useState(null);
   const [editingTask, setEditingTask] = useState(null);
   const [activeId, setActiveId] = useState(null);
+  const [overId, setOverId] = useState(null);
+  const dragItemRef = useRef(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 12 } }),
@@ -199,42 +196,39 @@ function App() {
     catch (e) { console.log('Notes save failed', e); }
   }, []);
 
-  const handleDragStart = useCallback((event) => { setActiveId(event.active.id); }, []);
+  const handleDragStart = useCallback((event) => {
+    setActiveId(event.active.id);
+    dragItemRef.current = event.active.id;
+  }, []);
+
+  const handleDragOver = useCallback((event) => {
+    const { over } = event;
+    setOverId(over?.id || null);
+  }, []);
 
   const handleDragEnd = useCallback((event) => {
-    const { active, over, activeRect } = event;
+    const { active, over } = event;
     setActiveId(null);
+    setOverId(null);
+
     if (!over) return;
 
-    const activeTask = tasks[active.id];
+    const activeId = active.id;
+    const activeTask = tasks[activeId];
     if (!activeTask) return;
 
-    let newStatus = null;
+    let newStatus = activeTask.status;
 
-    // Check if dropped on a column directly
-    if (over.id && over.id.toString().startsWith('column-')) {
+    // Check if dropped on a column
+    if (over.id.toString().startsWith('column-')) {
       newStatus = over.id.toString().replace('column-', '');
     }
     // Check if dropped on a task
     else if (tasks[over.id]) {
       newStatus = tasks[over.id].status;
     }
-    // Fallback: check all columns for overlap
-    else if (activeRect) {
-      for (const status of ['todo', 'progress', 'review', 'done']) {
-        const columnEl = document.getElementById(`column-${status}`);
-        if (columnEl) {
-          const rect = columnEl.getBoundingClientRect();
-          const center = { x: activeRect.left + activeRect.width / 2, y: activeRect.top - 10 };
-          if (center.x >= rect.left && center.x <= rect.right && center.y >= rect.top && center.y <= rect.bottom) {
-            newStatus = status;
-            break;
-          }
-        }
-      }
-    }
 
-    if (newStatus && newStatus !== activeTask.status) {
+    if (newStatus !== activeTask.status) {
       const newTasks = { ...tasks };
       
       // Remove from old position
@@ -244,20 +238,21 @@ function App() {
         }
       });
       
-      // Add to new column
+      // Add to new column at the end
       const colTasks = Object.values(newTasks).filter(t => t.status === newStatus);
       let newOrder = colTasks.length;
       
+      // If dropped on a task in the new column, insert before it
       if (tasks[over.id]?.status === newStatus) {
         newOrder = tasks[over.id].order;
         Object.values(newTasks).forEach(t => {
-          if (t.status === newStatus && t.order >= newOrder && t.id !== active.id) {
+          if (t.status === newStatus && t.order >= newOrder && t.id !== activeId) {
             newTasks[t.id] = { ...t, order: t.order + 1 };
           }
         });
       }
       
-      newTasks[active.id] = { ...activeTask, status: newStatus, order: newOrder };
+      newTasks[activeId] = { ...activeTask, status: newStatus, order: newOrder };
       setTasks(newTasks);
       saveTasks(newTasks);
     }
@@ -314,7 +309,7 @@ function App() {
   ];
 
   return (
-    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
       <div style={{ height: '100%', background: '#0a0a0f', color: '#e5e5e5', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', overflow: 'hidden', touchAction: 'none' }}>
         <header style={{ position: 'sticky', top: 0, zIndex: 40, background: 'rgba(10, 10, 15, 0.8)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(55, 65, 81, 0.3)', padding: '1rem 1.25rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -417,7 +412,7 @@ function App() {
             </form>
           )}
         </Modal>
-        <DragOverlay>{activeId && tasks[activeId] ? <DragOverlayCard task={tasks[activeId]} /> : null}</DragOverlay>
+        <DragOverlay dropAnimation={dropAnimation}>{activeId && tasks[activeId] ? <DragOverlayCard task={tasks[activeId]} /> : null}</DragOverlay>
       </div>
     </DndContext>
   );
