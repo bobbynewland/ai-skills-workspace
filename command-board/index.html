@@ -31,8 +31,10 @@
         .progress .column-header { border-color: #fbbf24; }
         .review .column-header { border-color: #34d399; }
         .done .column-header { border-color: #60a5fa; }
-        .cards-container { display: flex; flex-direction: column; gap: 10px; min-height: 100px; }
-        .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s; }
+        .cards-container { display: flex; flex-direction: column; gap: 10px; min-height: 100px; padding: 8px; border-radius: 8px; transition: background 0.2s; }
+        .cards-container.drag-over { background: rgba(167, 139, 250, 0.15); }
+        .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 16px; cursor: grab; transition: all 0.2s; }
+        .card:active { cursor: grabbing; }
         .card:hover { background: rgba(255,255,255,0.05); transform: translateY(-2px); }
         .card-title { font-weight: 500; font-size: 0.95rem; margin-bottom: 8px; }
         .card-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
@@ -325,11 +327,14 @@
             });
             
             renderStats();
+            setTimeout(setupDragDrop, 100); // Re-setup drag-drop
         }
         
         function createCard(task) {
             const div = document.createElement('div');
             div.className = 'card';
+            div.dataset.id = task.id;
+            div.draggable = true;
             div.innerHTML = '<div class="card-title">' + task.title + '</div>' +
                 '<div class="card-meta">' +
                 '<span class="tag tag-' + task.category + '">' + getCategoryLabel(task.category) + '</span>' +
@@ -429,8 +434,55 @@
             modal.onclick = function(e) { if (e.target === modal) closeModal(modal.id); };
         });
         
+        // Drag and Drop
+        let draggedCard = null;
+        
+        function setupDragDrop() {
+            const cards = document.querySelectorAll('.card');
+            const containers = document.querySelectorAll('.cards-container');
+            
+            cards.forEach(card => {
+                card.draggable = true;
+                card.addEventListener('dragstart', (e) => {
+                    draggedCard = card;
+                    card.style.opacity = '0.5';
+                    e.dataTransfer.effectAllowed = 'move';
+                });
+                card.addEventListener('dragend', () => {
+                    card.style.opacity = '1';
+                    draggedCard = null;
+                    containers.forEach(c => c.classList.remove('drag-over'));
+                });
+            });
+            
+            containers.forEach(container => {
+                container.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    container.classList.add('drag-over');
+                });
+                container.addEventListener('dragleave', () => {
+                    container.classList.remove('drag-over');
+                });
+                container.addEventListener('drop', async (e) => {
+                    e.preventDefault();
+                    container.classList.remove('drag-over');
+                    if (draggedCard) {
+                        const newStatus = container.id.replace('col-', '');
+                        const taskId = draggedCard.dataset.id;
+                        if (tasks[taskId] && tasks[taskId].status !== newStatus) {
+                            tasks[taskId].status = newStatus;
+                            tasks[taskId].updatedAt = Date.now();
+                            await saveTasks();
+                            renderBoard();
+                        }
+                    }
+                });
+            });
+        }
+        
         // Initialize
         window.loadTasks();
+        setTimeout(setupDragDrop, 100);
     </script>
 </body>
 </html>
