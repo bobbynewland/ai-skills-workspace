@@ -2,268 +2,414 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Mission Control</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0f; color: #e5e5e5; min-height: 100vh; overflow-x: hidden; padding-bottom: 80px; }
-        .header { padding: 20px; background: linear-gradient(180deg, #0a0a0f 0%, transparent 100%); position: sticky; top: 0; z-index: 100; }
-        .header h1 { font-size: 1.5rem; font-weight: 600; background: linear-gradient(135deg, #fff 0%, #a78bfa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .header p { color: #6b7280; font-size: 0.875rem; margin-top: 4px; }
-        .connection-status { display: flex; align-items: center; gap: 8px; padding: 8px 20px; font-size: 0.8rem; }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; }
-        .status-dot.connected { background: #34d399; }
-        .status-dot.disconnected { background: #f87171; }
-        .status-dot.syncing { background: #fbbf24; animation: pulse 1s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .tabs { display: flex; gap: 4px; padding: 0 20px 20px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        .tab { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 10px 16px; font-size: 0.85rem; cursor: pointer; white-space: nowrap; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
-        .tab.active { background: linear-gradient(135deg, rgba(167, 139, 250, 0.15) 0%, rgba(124, 58, 237, 0.15) 100%); border-color: rgba(167, 139, 250, 0.3); }
-        .tab-content { display: none; padding: 0 20px; }
-        .tab-content.active { display: block; }
-        .stats-bar { display: flex; gap: 8px; padding: 0 20px 20px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        .stat-pill { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 8px 16px; font-size: 0.8rem; white-space: nowrap; }
-        .stat-pill span { color: #a78bfa; font-weight: 600; }
-        .board { display: flex; gap: 12px; padding: 0 20px 100px; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 120px; }
-        .column { min-width: 280px; max-width: 280px; flex-shrink: 0; }
-        .column-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid; }
-        .column-title { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 0.9rem; }
-        .column-count { background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; color: #9ca3af; }
-        .todo .column-header { border-color: #f87171; }
-        .progress .column-header { border-color: #fbbf24; }
-        .review .column-header { border-color: #34d399; }
-        .done .column-header { border-color: #60a5fa; }
-        .cards { display: flex; flex-direction: column; gap: 10px; }
-        .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s ease; }
-        .card:active { transform: scale(0.98); }
-        .card:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); }
-        .card-title { font-weight: 500; font-size: 0.95rem; margin-bottom: 8px; line-height: 1.4; }
-        .card-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-        .tag { font-size: 0.7rem; padding: 4px 10px; border-radius: 6px; font-weight: 500; }
-        .tag-dev { background: rgba(96, 165, 250, 0.15); color: #60a5fa; }
-        .tag-marketing { background: rgba(248, 113, 113, 0.15); color: #f87171; }
-        .tag-content { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
-        .tag-ambassador { background: rgba(52, 211, 153, 0.15); color: #34d399; }
-        .tag-ops { background: rgba(167, 139, 250, 0.15); color: #a78bfa; }
-        .priority-dot { width: 8px; height: 8px; border-radius: 50%; }
-        .priority-high { background: #f87171; }
-        .priority-medium { background: #fbbf24; }
-        .priority-low { background: #34d399; }
-        .notes-list { display: flex; flex-direction: column; gap: 12px; padding-bottom: 120px; }
-        .note-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 16px; cursor: pointer; }
-        .note-title { font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-        .note-preview { color: #9ca3af; font-size: 0.9rem; line-height: 1.5; }
-        .note-meta { display: flex; gap: 12px; margin-top: 12px; font-size: 0.75rem; color: #6b7280; }
-        .files-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; padding-bottom: 120px; }
-        .file-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 16px; text-align: center; cursor: pointer; transition: all 0.2s; }
-        .file-card:hover { background: rgba(255,255,255,0.05); }
-        .file-icon { font-size: 2.5rem; margin-bottom: 8px; }
-        .file-name { font-size: 0.85rem; font-weight: 500; word-break: break-word; }
-        .file-meta { font-size: 0.75rem; color: #6b7280; margin-top: 4px; }
-        .tools-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding-bottom: 120px; }
-        .tool-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; cursor: pointer; transition: all 0.2s; }
-        .tool-card:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); transform: translateY(-2px); }
-        .tool-icon { font-size: 2rem; }
-        .tool-name { font-weight: 600; font-size: 0.9rem; }
-        .tool-desc { font-size: 0.75rem; color: #6b7280; text-align: center; }
-        .google-connect { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 24px; margin-bottom: 20px; text-align: center; }
-        .google-connect h3 { margin-bottom: 12px; }
-        .google-connect p { color: #9ca3af; font-size: 0.9rem; margin-bottom: 16px; }
-        .fab { position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; border-radius: 16px; background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%); border: none; color: white; font-size: 1.5rem; cursor: pointer; box-shadow: 0 10px 40px rgba(124, 58, 237, 0.4); z-index: 100; display: flex; align-items: center; justify-content: center; }
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: flex-end; justify-content: center; }
-        .modal.active { display: flex; }
-        .modal-content { background: #16161c; width: 100%; max-width: 600px; border-radius: 24px 24px 0 0; padding: 24px; max-height: 85vh; overflow-y: auto; animation: slideUp 0.3s ease; }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-        .modal-header h2 { font-size: 1.25rem; font-weight: 600; }
-        .close-btn { width: 36px; height: 36px; border-radius: 10px; background: rgba(255,255,255,0.05); border: none; color: #9ca3af; font-size: 1.25rem; cursor: pointer; }
-        .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; color: #9ca3af; font-size: 0.8rem; margin-bottom: 8px; font-weight: 500; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #fff; font-size: 1rem; -webkit-appearance: none; }
-        .form-group textarea { min-height: 100px; resize: none; line-height: 1.5; }
-        .btn-group { display: flex; gap: 12px; margin-top: 20px; }
-        .btn { flex: 1; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.2s; border: none; }
-        .btn-primary { background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%); color: white; }
-        .btn-secondary { background: rgba(255,255,255,0.05); color: #e5e5e5; border: 1px solid rgba(255,255,255,0.1); }
-        .btn-danger { background: rgba(248, 113, 113, 0.15); color: #f87171; }
-        .btn:active { transform: scale(0.98); }
-        @media (min-width: 768px) { .board, .tabs, .notes-list, .files-grid, .tools-grid { padding-left: 40px; padding-right: 40px; } .modal-content { margin: auto; border-radius: 24px; } .column { min-width: 320px; max-width: 320px; } }
-    </style>
-</head>
-<body>
-    <div class="header"><h1>🚀 Mission Control</h1><p>Your command center</p></div>
-    <div class="connection-status"><span class="status-dot disconnected" id="googleStatus"></span><span id="googleStatusText">Firebase connecting...</span></div>
-    <div class="tabs"><div class="tab active" data-tab="tasks"><span>📋 Tasks</span></div><div class="tab" data-tab="notes"><span>📝 Notes</span></div><div class="tab" data-tab="files"><span>📁 Files</span></div><div class="tab" data-tab="tools"><span>🔧 Google Tools</span></div></div>
-    <div class="tab-content active" id="tasks-tab">
-        <div class="stats-bar"><div class="stat-pill">Total: <span id="stat-total">0</span></div><div class="stat-pill">To Do: <span id="stat-todo">0</span></div><div class="stat-pill">In Progress: <span id="stat-progress">0</span></div><div class="stat-pill">Done: <span id="stat-done">0</span></div></div>
-        <div class="board">
-            <div class="column todo" data-column="todo"><div class="column-header"><div class="column-title">📋 To Do <span class="column-count">0</span></div></div><div class="cards" data-status="todo"></div></div>
-            <div class="column progress" data-column="progress"><div class="column-header"><div class="column-title">🔥 In Progress <span class="column-count">0</span></div></div><div class="cards" data-status="progress"></div></div>
-            <div class="column review" data-column="review"><div class="column-header"><div class="column-title">👀 Review <span class="column-count">0</span></div></div><div class="cards" data-status="review"></div></div>
-            <div class="column done" data-column="done"><div class="column-header"><div class="column-title">✅ Done <span class="column-count">0</span></div></div><div class="cards" data-status="done"></div></div>
-        </div>
-    </div>
-    <div class="tab-content" id="notes-tab"><div class="google-connect"><h3>📝 Google Docs Integration</h3><p>Connect to access your Brain Dump and Notes from Google Docs</p></div><div class="notes-list"><div class="note-card" onclick="alert('Google Docs integration coming soon!')"><div class="note-title">🧠 Brain Dump</div><div class="note-preview">Your central note-taking space for ideas and thoughts...</div><div class="note-meta">📄 Google Docs • Coming soon</div></div><div class="note-card" onclick="alert('Google Docs integration coming soon!')"><div class="note-title">📅 Meeting Notes</div><div class="note-preview">Meeting notes with action items and decisions...</div><div class="note-meta">📄 Google Docs • Coming soon</div></div></div></div>
-    <div class="tab-content" id="files-tab"><div class="google-connect"><h3>📁 Firebase Storage</h3><p>Your files synced in real-time via Firebase</p></div><div class="files-grid"><div class="file-card" onclick="alert('File browser coming soon!')"><div class="file-icon">📁</div><div class="file-name">Browse Files</div><div class="file-meta">Click to view all files</div></div><div class="file-card" onclick="alert('File browser coming soon!')"><div class="file-icon">📤</div><div class="file-name">Upload File</div><div class="file-meta">Click to upload</div></div></div></div>
-    <div class="tab-content" id="tools-tab"><div class="google-connect"><h3>🔧 Google Workspace</h3><p>Quick access to all Google tools</p></div><div class="tools-grid"><div class="tool-card" onclick="openTool('docs')"><div class="tool-icon">📄</div><div class="tool-name">Google Docs</div><div class="tool-desc">Documents</div></div><div class="tool-card" onclick="openTool('sheets')"><div class="tool-icon">📊</div><div class="tool-name">Google Sheets</div><div class="tool-desc">Spreadsheets</div></div><div class="tool-card" onclick="openTool('drive')"><div class="tool-icon">☁️</div><div class="tool-name">Google Drive</div><div class="tool-desc">All files</div></div><div class="tool-card" onclick="openTool('calendar')"><div class="tool-icon">📅</div><div class="tool-name">Calendar</div><div class="tool-desc">Schedule</div></div><div class="tool-card" onclick="openTool('gmail')"><div class="tool-icon">✉️</div><div class="tool-name">Gmail</div><div class="tool-desc">Email</div></div><div class="tool-card" onclick="openTool('photos')"><div class="tool-icon">🖼️</div><div class="tool-name">Photos</div><div class="tool-desc">Images</div></div></div></div>
-    <button class="fab" onclick="openAddModal()" id="taskFab">+</button>
-    <div class="modal" id="addModal"><div class="modal-content"><div class="modal-header"><h2>New Task</h2><button class="close-btn" onclick="closeModal('addModal')">×</button></div>
-        <form onsubmit="submitNewTask(event)"><div class="form-group"><label>Title</label><input type="text" id="addTitle" placeholder="What needs to be done?" required></div>
-            <div class="form-group"><label>Description</label><textarea id="addDesc" placeholder="Add details..."></textarea></div>
-            <div class="form-group"><label>Category</label><select id="addCategory"><option value="dev">💻 Dev</option><option value="marketing">📣 Marketing</option><option value="content">🎨 Content</option><option value="ambassador">🤝 Ambassador</option><option value="ops">⚙️ Ops</option></select></div>
-            <div class="form-group"><label>Priority</label><select id="addPriority"><option value="high">🔴 High</option><option value="medium">🟡 Medium</option><option value="low">🟢 Low</option></select></div>
-            <div class="btn-group"><button type="button" class="btn btn-secondary" onclick="closeModal('addModal')">Cancel</button><button type="submit" class="btn btn-primary">Create Task</button></div></form></div></div>
-    <div class="modal" id="detailModal"><div class="modal-content"><div class="modal-header"><h2>Task Details</h2><button class="close-btn" onclick="closeModal('detailModal')">×</button></div>
-        <form onsubmit="saveTask(event)"><input type="hidden" id="editId">
-            <div class="form-group"><label>Status</label><select id="editStatus"><option value="todo">📋 To Do</option><option value="progress">🔥 In Progress</option><option value="review">👀 Review</option><option value="done">✅ Done</option></select></div>
-            <div class="form-group"><label>Title</label><input type="text" id="editTitle" required></div>
-            <div class="form-group"><label>Description</label><textarea id="editDesc"></textarea></div>
-            <div class="form-group"><label>Category</label><select id="editCategory"><option value="dev">💻 Dev</option><option value="marketing">📣 Marketing</option><option value="content">🎨 Content</option><option value="ambassador">🤝 Ambassador</option><option value="ops">⚙️ Ops</option></select></div>
-            <div class="form-group"><label>Priority</label><select id="editPriority"><option value="high">🔴 High</option><option value="medium">🟡 Medium</option><option value="low">🟢 Low</option></select></div>
-            <div class="btn-group"><button type="button" class="btn btn-danger" onclick="deleteTask()">Delete</button><button type="submit" class="btn btn-primary">Save</button></div></form></div></div>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0a0a0f">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Mission Control">
+    <title>🚀 Mission Control</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        // Firebase config
-        const firebaseConfig = {
-            apiKey: "AIzaSyB3Z1WDeqO4cEBMk5Q1j9H8c2-0Z1Y8X0",
-            authDomain: "winslow-756c3.firebaseapp.com",
-            databaseURL: "https://winslow-756c3-default-rtdb.firebaseio.com",
-            projectId: "winslow-756c3",
-            storageBucket: "winslow-756c3.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "1:123456789:web:abc123"
-        };
-        
-        // Initialize Firebase
-        let db;
-        try {
-            firebase.initializeApp(firebaseConfig);
-            db = firebase.database();
-            setConnectionStatus('syncing', 'Firebase connecting...');
-        } catch(e) {
-            console.log('Firebase not available, using localStorage');
-            setConnectionStatus('disconnected', 'Using localStorage');
-        }
-        
-        let state = { tasks: [] };
-        let currentTaskId = null;
-        let localTasks = [];
-        
-        document.addEventListener('DOMContentLoaded', () => { loadState(); setupTabs(); });
-        function setupTabs() { document.querySelectorAll('.tab').forEach(tab => { tab.addEventListener('click', () => { const tabName = tab.dataset.tab; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); tab.classList.add('active'); document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); document.getElementById(`${tabName}-tab`).classList.add('active'); document.getElementById('taskFab').style.display = tabName === 'tasks' ? 'flex' : 'none'; }); }); }
-        
-        function setConnectionStatus(status, text) {
-            const statusEl = document.getElementById('googleStatus');
-            const textEl = document.getElementById('googleStatusText');
-            statusEl.className = `status-dot ${status}`;
-            textEl.textContent = text;
-        }
-        
-        function loadState() {
-            if (db) {
-                // Try Firebase first
-                setConnectionStatus('syncing', 'Loading from Firebase...');
-                db.ref('workspaces/winslow_main/tasks').on('value', (snapshot) => {
-                    const data = snapshot.val();
-                    if (data) {
-                        state.tasks = Object.entries(data).map(([id, task]) => ({ id, ...task }));
-                        renderBoard();
-                        setConnectionStatus('connected', 'Firebase connected ✓');
-                        localStorage.setItem('mission_control_firebase', JSON.stringify(state.tasks));
-                    } else {
-                        // Try local backup
-                        loadFromLocal();
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: { 50: '#f9fafb', 100: '#f3f 200: '#e5e7eb', 3004f6',: '#d1d5db', 400: '#9ca3af', 500: '#6b7280', 600: '#4b5563', 700: '#374151', 800: '#1f2937', 900: '#111827', 950: '#0a0a0f' },
+                        primary: { 400: '#a78bfa', 500: '#8b5cf6', 600: '#7c3aed', 700: '#6d28d9' }
                     }
-                }, (error) => {
-                    console.log('Firebase read failed, using local');
-                    loadFromLocal();
-                });
-            } else {
-                loadFromLocal();
-            }
-        }
-        
-        function loadFromLocal() {
-            const firebaseBackup = localStorage.getItem('mission_control_firebase');
-            if (firebaseBackup) {
-                state.tasks = JSON.parse(firebaseBackup);
-            } else {
-                const oldLocal = localStorage.getItem('mission_control_v2') || localStorage.getItem('mission_control_v1') || localStorage.getItem('winslow_board_v2');
-                if (oldLocal) {
-                    const old = JSON.parse(oldLocal);
-                    state.tasks = old.tasks || [];
-                } else {
-                    state.tasks = [
-                        { id: Date.now().toString(), title: "Welcome to Mission Control", desc: "Your tasks are now synced with Firebase!", category: "ops", priority: "medium", status: "todo" }
-                    ];
                 }
             }
-            renderBoard();
-            setConnectionStatus('disconnected', 'Local mode (Firebase offline)');
+        }
+    </script>
+    <style>
+        * { -webkit-tap-highlight-color: transparent; }
+        html, body { height: 100%; overscroll-behavior-y: none; }
+        .app-scroll { height: 100%; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .board-scroll { 
+            display: flex; gap: 0.75rem; 
+            overflow-x: auto; overflow-y: hidden; 
+            -webkit-overflow-scrolling: touch; 
+            padding: 0 1rem 6rem;
+            scroll-snap-type: x mandatory;
+        }
+        .board-scroll > * { scroll-snap-align: start; }
+        
+        .cards-scroll {
+            max-height: calc(100vh - 14rem);
+            overflow-y: auto; -webkit-overflow-scrolling: touch;
         }
         
-        function saveState() {
-            // Save to Firebase if available
-            if (db) {
-                const updates = {};
-                state.tasks.forEach(task => {
-                    updates[`tasks/${task.id}`] = task;
-                });
-                db.ref('workspaces/winslow_main').update({ tasks: null }).then(() => {
-                    db.ref('workspaces/winslow_main/tasks').set(state.tasks.reduce((acc, task) => {
-                        acc[task.id] = task;
-                        return acc;
-                    }, {}));
-                });
+        .dragging { opacity: 0.9; transform: scale(1.02); box-shadow: 0 25px 50px rgba(139, 92, 246, 0.3); z-index: 50; }
+        .drag-over { border: 2px solid #a78bfa; background: rgba(167, 139, 250, 0.1); }
+        .fab:active { transform: scale(0.95); }
+        .nav-item.active { color: #a78bfa; }
+        @keyframes slide-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .animate-slide-up { animation: slide-up 0.3s ease; }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 1rem); }
+    </style>
+</head>
+<body class="bg-dark-950 text-gray-200 font-sans">
+    <div id="app" class="app-scroll">
+        <header class="sticky top-0 z-40 bg-dark-950/80 backdrop-blur-lg border-b border-dark-800/50 px-5 py-4">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-xl font-bold bg-gradient-to-r from-white to-primary-400 bg-clip-text text-transparent">🚀 Mission Control</h1>
+                    <p class="text-xs text-gray-500 mt-0.5">Your command center</p>
+                </div>
+                <div id="statusIndicator" class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-dark-800/50">
+                    <span id="statusDot" class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                    <span id="statusText" class="text-xs text-gray-400">Loading...</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="sticky top-24 z-30 bg-dark-950/95 backdrop-blur-sm px-5 py-3 border-b border-dark-800/30">
+            <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+                <button onclick="switchTab('tasks')" class="tab-btn active px-4 py-2 rounded-xl text-sm font-medium bg-primary-500/15 text-primary-400 border border-primary-500/30 whitespace-nowrap transition-all" data-tab="tasks">📋 Tasks</button>
+                <button onclick="switchTab('notes')" class="tab-btn px-4 py-2 rounded-xl text-sm font-medium bg-dark-800/50 text-gray-400 border border-dark-700/50 whitespace-nowrap transition-all" data-tab="notes">📝 Notes</button>
+                <button onclick="switchTab('files')" class="tab-btn px-4 py-2 rounded-xl text-sm font-medium bg-dark-800/50 text-gray-400 border border-dark-700/50 whitespace-nowrap transition-all" data-tab="files">📁 Files</button>
+                <button onclick="switchTab('tools')" class="tab-btn px-4 py-2 rounded-xl text-sm font-medium bg-dark-800/50 text-gray-400 border border-dark-700/50 whitespace-nowrap transition-all" data-tab="tools">🔧 Tools</button>
+            </div>
+        </div>
+
+        <div id="stats-bar" class="px-5 py-3 flex gap-2 overflow-x-auto no-scrollbar">
+            <div class="stat-pill px-4 py-2 rounded-full bg-dark-800/40 border border-dark-700/50 text-xs whitespace-nowrap">Total: <span id="stat-total" class="text-primary-400 font-semibold">0</span></div>
+            <div class="stat-pill px-4 py-2 rounded-full bg-dark-800/40 border border-dark-700/50 text-xs whitespace-nowrap">To Do: <span id="stat-todo" class="text-red-400 font-semibold">0</span></div>
+            <div class="stat-pill px-4 py-2 rounded-full bg-dark-800/40 border border-dark-700/50 text-xs whitespace-nowrap">Progress: <span id="stat-progress" class="text-amber-400 font-semibold">0</span></div>
+            <div class="stat-pill px-4 py-2 rounded-full bg-dark-800/40 border border-dark-700/50 text-xs whitespace-nowrap">Done: <span id="stat-done" class="text-blue-400 font-semibold">0</span></div>
+        </div>
+
+        <div id="tasks-tab" class="tab-content block">
+            <div id="board" class="board-scroll">
+                <div class="column min-w-[17.5rem] max-w-[17.5rem] flex-shrink-0 flex flex-col">
+                    <div class="flex items-center justify-between mb-4 pb-3 border-b-2 border-red-400/50 px-1">
+                        <div class="flex items-center gap-2"><span class="text-lg">📋</span><span class="font-semibold text-sm">To Do</span><span id="count-todo" class="px-2 py-0.5 rounded-full bg-dark-700/50 text-xs">0</span></div>
+                    </div>
+                    <div id="col-todo" class="cards-scroll flex-1" data-status="todo"></div>
+                </div>
+                <div class="column min-w-[17.5rem] max-w-[17.5rem] flex-shrink-0 flex flex-col">
+                    <div class="flex items-center justify-between mb-4 pb-3 border-b-2 border-amber-400/50 px-1">
+                        <div class="flex items-center gap-2"><span class="text-lg">🔥</span><span class="font-semibold text-sm">In Progress</span><span id="count-progress" class="px-2 py-0.5 rounded-full bg-dark-700/50 text-xs">0</span></div>
+                    </div>
+                    <div id="col-progress" class="cards-scroll flex-1" data-status="progress"></div>
+                </div>
+                <div class="column min-w-[17.5rem] max-w-[17.5rem] flex-shrink-0 flex flex-col">
+                    <div class="flex items-center justify-between mb-4 pb-3 border-b-2 border-emerald-400/50 px-1">
+                        <div class="flex items-center gap-2"><span class="text-lg">👀</span><span class="font-semibold text-sm">Review</span><span id="count-review" class="px-2 py-0.5 rounded-full bg-dark-700/50 text-xs">0</span></div>
+                    </div>
+                    <div id="col-review" class="cards-scroll flex-1" data-status="review"></div>
+                </div>
+                <div class="column min-w-[17.5rem] max-w-[17.5rem] flex-shrink-0 flex flex-col">
+                    <div class="flex items-center justify-between mb-4 pb-3 border-b-2 border-blue-400/50 px-1">
+                        <div class="flex items-center gap-2"><span class="text-lg">✅</span><span class="font-semibold text-sm">Done</span><span id="count-done" class="px-2 py-0.5 rounded-full bg-dark-700/50 text-xs">0</span></div>
+                    </div>
+                    <div id="col-done" class="cards-scroll flex-1" data-status="done"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="notes-tab" class="tab-content hidden px-5 pb-24">
+            <div class="space-y-3">
+                <div onclick="alert('Coming soon!')" class="bg-dark-800/40 border border-dark-700/50 rounded-xl p-4 cursor-pointer active:bg-dark-800/60 transition">
+                    <div class="flex items-center gap-2 font-semibold text-sm mb-2"><span class="text-lg">🧠</span> Brain Dump</div>
+                    <p class="text-xs text-gray-500">Capture all your ideas, thoughts, and notes...</p>
+                </div>
+                <div onclick="alert('Coming soon!')" class="bg-dark-800/40 border border-dark-700/50 rounded-xl p-4 cursor-pointer active:bg-dark-800/60 transition">
+                    <div class="flex items-center gap-2 font-semibold text-sm mb-2"><span class="text-lg">📅</span> Meeting Notes</div>
+                    <p class="text-xs text-gray-500">Meeting notes, action items, and decisions...</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="files-tab" class="tab-content hidden px-5 pb-24">
+            <div class="grid grid-cols-2 gap-3">
+                <div onclick="alert('Coming soon!')" class="bg-dark-800/40 border border-dark-700/50 rounded-xl p-4 text-center cursor-pointer active:bg-dark-800/60 transition"><div class="text-3xl mb-2">📁</div><div class="text-xs font-medium">Template Pack V4</div></div>
+                <div onclick="alert('Coming soon!')" class="bg-dark-800/40 border border-dark-700/50 rounded-xl p-4 text-center cursor-pointer active:bg-dark-800/60 transition"><div class="text-3xl mb-2">🎨</div><div class="text-xs font-medium">Brand Assets</div></div>
+            </div>
+        </div>
+
+        <div id="tools-tab" class="tab-content hidden px-5 pb-24">
+            <div class="grid grid-cols-2 gap-3">
+                <div onclick="openTool('docs')" class="bg-dark-800/40 border border-dark-700/50 rounded-2xl p-5 text-center cursor-pointer active:bg-dark-800/60 transition"><div class="text-3xl mb-2">📄</div><div class="text-sm font-semibold">Docs</div></div>
+                <div onclick="openTool('sheets')" class="bg-dark-800/40 border border-dark-700/50 rounded-2xl p-5 text-center cursor-pointer active:bg-dark-800/60 transition"><div class="text-3xl mb-2">📊</div><div class="text-sm font-semibold">Sheets</div></div>
+                <div onclick="openTool('drive')" class="bg-dark-800/40 border border-dark-700/50 rounded-2xl p-5 text-center cursor-pointer active:bg-dark-800/60 transition"><div class="text-3xl mb-2">☁️</div><div class="text-sm font-semibold">Drive</div></div>
+                <div onclick="openTool('calendar')" class="bg-dark-800/40 border border-dark-700/50 rounded-2xl p-5 text-center cursor-pointer active:bg-dark-800/60 transition"><div class="text-3xl mb-2">📅</div><div class="text-sm font-semibold">Calendar</div></div>
+                <div onclick="openTool('gmail')" class="bg-dark-800/40 border border-dark-700/50 rounded-2xl p-5 text-center cursor-pointer active:bg-dark-800/60 transition"><div class="text-3xl mb-2">✉️</div><div class="text-sm font-semibold">Gmail</div></div>
+                <div onclick="openTool('photos')" class="bg-dark-800/40 border border-dark-700/50 rounded-2xl p-5 text-center cursor-pointer active:bg-dark-800/60 transition"><div class="text-3xl mb-2">🖼️</div><div class="text-sm font-semibold">Photos</div></div>
+            </div>
+        </div>
+    </div>
+
+    <button id="taskFab" onclick="openAddModal()" class="fab fixed bottom-6 right-6 w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-400 to-primary-600 text-white text-2xl shadow-lg shadow-primary-500/30 z-50 flex items-center justify-center active:scale-95 transition-transform">+</button>
+
+    <nav class="fixed bottom-0 left-0 right-0 bg-dark-900/95 backdrop-blur-lg border-t border-dark-800/50 z-40 pb-safe">
+        <div class="flex justify-around py-2 px-2">
+            <button onclick="switchTab('tasks')" class="nav-item flex-1 py-3 px-4 text-center text-gray-400 active:text-primary-400 transition-colors"><div class="text-xl mb-0.5">📋</div><div class="text-xs font-medium">Tasks</div></button>
+            <button onclick="switchTab('notes')" class="nav-item flex-1 py-3 px-4 text-center text-gray-400 active:text-primary-400 transition-colors"><div class="text-xl mb-0.5">📝</div><div class="text-xs font-medium">Notes</div></button>
+            <button onclick="switchTab('files')" class="nav-item flex-1 py-3 px-4 text-center text-gray-400 active:text-primary-400 transition-colors"><div class="text-xl mb-0.5">📁</div><div class="text-xs font-medium">Files</div></button>
+            <button onclick="switchTab('tools')" class="nav-item flex-1 py-3 px-4 text-center text-gray-400 active:text-primary-400 transition-colors"><div class="text-xl mb-0.5">🔧</div><div class="text-xs font-medium">Tools</div></button>
+        </div>
+    </nav>
+
+    <div id="addModal" class="modal fixed inset-0 bg-black/80 z-[100] hidden items-end justify-center sm:items-center">
+        <div class="bg-dark-800 w-full max-w-lg rounded-t-3xl sm:rounded-3xl p-6 animate-slide-up max-h-[85vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-6"><h2 class="text-xl font-bold">New Task</h2><button onclick="closeModal('addModal')" class="w-10 h-10 rounded-xl bg-dark-700/50 text-gray-400 text-xl">×</button></div>
+            <form onsubmit="submitNewTask(event)">
+                <div class="space-y-4">
+                    <div><label class="block text-xs text-gray-500 mb-2">Title</label><input type="text" id="addTitle" required class="w-full px-4 py-3 rounded-xl bg-dark-700/50 border border-dark-600 text-white text-base focus:outline-none focus:border-primary-500" placeholder="Task title..."></div>
+                    <div><label class="block text-xs text-gray-500 mb-2">Description</label><textarea id="addDesc" rows="3" class="w-full px-4 py-3 rounded-xl bg-dark-700/50 border border-dark-600 text-white text-base focus:outline-none focus:border-primary-500 resize-none" placeholder="Add details..."></textarea></div>
+                    <div><label class="block text-xs text-gray-500 mb-2">Category</label><select id="addCategory" class="w-full px-4 py-3 rounded-xl bg-dark-700/50 border border-dark-600 text-white text-base focus:outline-none focus:border-primary-500"><option value="dev">💻 Dev</option><option value="marketing">📣 Marketing</option><option value="content">🎨 Content</option><option value="ambassador">🤝 Ambassador</option><option value="ops">⚙️ Ops</option></select></div>
+                    <div><label class="block text-xs text-gray-500 mb-2">Priority</label><select id="addPriority" class="w-full px-4 py-3 rounded-xl bg-dark-700/50 border border-dark-600 text-white text-base focus:outline-none focus:border-primary-500"><option value="high">🔴 High</option><option value="medium">🟡 Medium</option><option value="low">🟢 Low</option></select></div>
+                </div>
+                <div class="flex gap-3 mt-6"><button type="button" onclick="closeModal('addModal')" class="flex-1 py-3.5 rounded-xl bg-dark-700/50 text-gray-300 font-semibold">Cancel</button><button type="submit" class="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-primary-500 to-primary-600 text-white font-semibold">Create</button></div>
+            </form>
+        </div>
+    </div>
+
+    <div id="editModal" class="modal fixed inset-0 bg-black/80 z-[100] hidden items-end justify-center sm:items-center">
+        <div class="bg-dark-800 w-full max-w-lg rounded-t-3xl sm:rounded-3xl p-6 animate-slide-up max-h-[85vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-6"><h2 class="text-xl font-bold">Task Details</h2><button onclick="closeModal('editModal')" class="w-10 h-10 rounded-xl bg-dark-700/50 text-gray-400 text-xl">×</button></div>
+            <form onsubmit="saveTask(event)">
+                <input type="hidden" id="editId">
+                <div class="space-y-4">
+                    <div><label class="block text-xs text-gray-500 mb-2">Status</label><select id="editStatus" class="w-full px-4 py-3 rounded-xl bg-dark-700/50 border border-dark-600 text-white text-base focus:outline-none focus:border-primary-500"><option value="todo">📋 To Do</option><option value="progress">🔥 In Progress</option><option value="review">👀 Review</option><option value="done">✅ Done</option></select></div>
+                    <div><label class="block text-xs text-gray-500 mb-2">Title</label><input type="text" id="editTitle" required class="w-full px-4 py-3 rounded-xl bg-dark-700/50 border border-dark-600 text-white text-base focus:outline-none focus:border-primary-500"></div>
+                    <div><label class="block text-xs text-gray-500 mb-2">Description</label><textarea id="editDesc" rows="3" class="w-full px-4 py-3 rounded-xl bg-dark-700/50 border border-dark-600 text-white text-base focus:outline-none focus:border-primary-500 resize-none"></textarea></div>
+                    <div><label class="block text-xs text-gray-500 mb-2">Category</label><select id="editCategory" class="w-full px-4 py-3 rounded-xl bg-dark-700/50 border border-dark-600 text-white text-base focus:outline-none focus:border-primary-500"><option value="dev">💻 Dev</option><option value="marketing">📣 Marketing</option><option value="content">🎨 Content</option><option value="ambassador">🤝 Ambassador</option><option value="ops">⚙️ Ops</option></select></div>
+                    <div><label class="block text-xs text-gray-500 mb-2">Priority</label><select id="editPriority" class="w-full px-4 py-3 rounded-xl bg-dark-700/50 border border-dark-600 text-white text-base focus:outline-none focus:border-primary-500"><option value="high">🔴 High</option><option value="medium">🟡 Medium</option><option value="low">🟢 Low</option></select></div>
+                </div>
+                <div class="flex gap-3 mt-6"><button type="button" onclick="deleteTask()" class="flex-1 py-3.5 rounded-xl bg-red-500/15 text-red-400 font-semibold">Delete</button><button type="submit" class="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-primary-500 to-primary-600 text-white font-semibold">Save</button></div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getDatabase, ref, set, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+        const firebaseConfig = { apiKey: "AIzaSyB3Z1WDeqO4cEBMk5Q1j9H8c2-0Z1Y8X0", authDomain: "winslow-756c3.firebaseapp.com", databaseURL: "https://winslow-756c3-default-rtdb.firebaseio.com", projectId: "winslow-756c3", storageBucket: "winslow-756c3.appspot.com", messagingSenderId: "123456789", appId: "1:123456789:web:abc123" };
+
+        let db = null, tasks = {}, isFirebaseReady = false, draggedTaskId = null, touchCard = null, touchOffset = { x: 0, y: 0 };
+
+        function setStatus(status, text) {
+            const el = document.getElementById('statusIndicator'), dot = el.querySelector('#statusDot'), txt = el.querySelector('#statusText');
+            el.className = 'flex items-center gap-2 px-3 py-1.5 rounded-full ' + (status === 'saving' ? 'bg-amber-500/20' : 'bg-dark-800/50');
+            dot.className = 'w-1.5 h-1.5 rounded-full ' + (status === 'saving' ? 'bg-amber-400 animate-pulse' : 'bg-emerald-400');
+            txt.textContent = text;
+            txt.className = 'text-xs ' + (status === 'saving' ? 'text-amber-400' : 'text-gray-400');
+        }
+
+        try {
+            const app = initializeApp(firebaseConfig);
+            db = getDatabase(app);
+            setStatus('saved', 'Firebase connected ✓');
+            isFirebaseReady = true;
+        } catch(e) { setStatus('saved', 'Local mode'); isFirebaseReady = false; }
+
+        window.loadTasks = function() {
+            if (isFirebaseReady && db) {
+                onValue(ref(db, 'workspaces/winslow_main/tasks'), (snap) => {
+                    if (snap.val()) { tasks = snap.val(); saveToLocal(); renderBoard(); setStatus('saved', 'Synced ✓'); }
+                    else loadFromLocal();
+                }, () => loadFromLocal());
+            } else loadFromLocal();
+        };
+
+        function saveToLocal() { localStorage.setItem('mission_tasks_backup', JSON.stringify(tasks)); }
+
+        function loadFromLocal() {
+            const saved = localStorage.getItem('mission_tasks_backup');
+            if (saved) tasks = JSON.parse(saved);
+            else {
+                tasks = {
+                    '1': { id: '1', title: "Welcome to Mission Control", desc: "Swipe to see all columns!", category: "ops", priority: "medium", status: "todo", order: 0 },
+                    '2': { id: '2', title: "Try drag & drop", desc: "Touch and hold cards to move them", category: "dev", priority: "low", status: "todo", order: 1 },
+                    '3': { id: '3', title: "Switch tabs below", desc: "Notes, Files, and Tools coming soon", category: "marketing", priority: "high", status: "progress", order: 0 }
+                };
             }
-            // Always backup locally
-            localStorage.setItem('mission_control_firebase', JSON.stringify(state.tasks));
-            renderStats();
+            renderBoard();
+            setStatus('saved', 'Ready');
         }
-        
-        function renderBoard() {
-            document.querySelectorAll('.cards').forEach(el => el.innerHTML = '');
-            state.tasks.forEach(task => {
-                const card = createCardElement(task);
-                const col = document.querySelector(`.cards[data-status="${task.status}"]`);
-                if (col) col.appendChild(card);
+
+        async function saveTasks() {
+            saveToLocal();
+            if (isFirebaseReady && db) {
+                try {
+                    setStatus('saving', 'Saving...');
+                    await set(ref(db, 'workspaces/winslow_main/tasks'), tasks);
+                    setStatus('saved', 'Saved ✓');
+                } catch(e) { setStatus('saved', 'Local only'); }
+            }
+        }
+
+        window.renderBoard = function() {
+            ['todo', 'progress', 'review', 'done'].forEach(s => {
+                const sts = Object.values(tasks).filter(t => t.status === s).sort((a,b) => (a.order||0) - (b.order||0));
+                sts.forEach((t,i) => { if ((t.order||0) !== i) { t.order = i; tasks[t.id].order = i; } });
+            });
+
+            ['todo', 'progress', 'review', 'done'].forEach(s => {
+                const container = document.getElementById('col-' + s);
+                container.innerHTML = '';
+                Object.values(tasks).filter(t => t.status === s).sort((a,b) => (a.order||0) - (b.order||0)).forEach(t => container.appendChild(createCard(t)));
             });
             renderStats();
         }
-        
-        function createCardElement(task) {
+
+        function createCard(task) {
             const div = document.createElement('div');
-            div.className = 'card';
+            const categoryColors = { dev: 'blue', marketing: 'red', content: 'amber', ambassador: 'emerald', ops: 'primary' };
+            const priorityColors = { high: 'bg-red-500', medium: 'bg-amber-400', low: 'bg-emerald-400' };
+            const categoryIcons = { dev: '💻', marketing: '📣', content: '🎨', ambassador: '🤝', ops: '⚙️' };
+
+            div.className = 'bg-dark-800/40 border border-dark-700/50 rounded-xl p-4 cursor-grab active:cursor-grabbing touch-none transition-all duration-150 flex-shrink-0';
             div.dataset.id = task.id;
-            div.dataset.status = task.status;
-            const tagClass = `tag-${task.category}`;
-            const priorityClass = `priority-${task.priority}`;
-            div.innerHTML = `<div class="card-title">${task.title}</div><div class="card-meta"><span class="tag ${tagClass}">${getCategoryLabel(task.category)}</span><span class="priority-dot ${priorityClass}"></span></div>`;
-            div.addEventListener('click', () => openDetail(task.id));
+            div.draggable = true;
+            div.innerHTML = `
+                <div class="flex items-start justify-between mb-2">
+                    <div class="font-medium text-sm leading-snug">${task.title}</div>
+                    <span class="priority-dot ${priorityColors[task.priority]} w-2 h-2 rounded-full flex-shrink-0 ml-2"></span>
+                </div>
+                <div class="flex items-center gap-2 flex-wrap">
+                    <span class="px-2 py-0.5 rounded-lg text-xs font-medium bg-${categoryColors[task.category]}-500/15 text-${categoryColors[task.category]}-400">${categoryIcons[task.category]} ${task.category.charAt(0).toUpperCase() + task.category.slice(1)}</span>
+                </div>
+            `;
+
+            div.ondragstart = (e) => { draggedTaskId = task.id; div.classList.add('dragging'); };
+            div.ondragend = () => { div.classList.remove('dragging'); draggedTaskId = null; };
+            div.onclick = () => openEditModal(task.id);
+
+            div.ontouchstart = (e) => {
+                if (e.touches.length > 1) return;
+                touchCard = div;
+                const rect = div.getBoundingClientRect();
+                touchOffset.x = e.touches[0].clientX - rect.left;
+                touchOffset.y = e.touches[0].clientY - rect.top;
+
+                div.style.position = 'fixed';
+                div.style.zIndex = '9999';
+                div.style.width = rect.width + 'px';
+                div.style.transform = 'scale(1.05)';
+                div.style.boxShadow = '0 20px 40px rgba(0,0,0,0.5)';
+                div.style.opacity = '0.9';
+                div.classList.add('dragging');
+                draggedTaskId = task.id;
+                e.preventDefault();
+            };
+
+            div.ontouchmove = (e) => {
+                if (!touchCard) return;
+                e.preventDefault();
+                const touch = e.touches[0];
+                touchCard.style.left = (touch.clientX - touchOffset.x) + 'px';
+                touchCard.style.top = (touch.clientY - touchOffset.y) + 'px';
+            };
+
+            div.ontouchend = async (e) => {
+                if (!touchCard) return;
+                const touch = e.changedTouches[0];
+                const elem = document.elementFromPoint(touch.clientX, touch.clientY);
+                const container = elem?.closest('.cards-scroll');
+
+                touchCard.style.position = '';
+                touchCard.style.zIndex = '';
+                touchCard.style.left = '';
+                touchCard.style.top = '';
+                touchCard.style.width = '';
+                touchCard.style.transform = '';
+                touchCard.style.boxShadow = '';
+                touchCard.style.opacity = '';
+                touchCard.classList.remove('dragging');
+
+                if (container && draggedTaskId) {
+                    const newStatus = container.dataset.status;
+                    tasks[draggedTaskId].status = newStatus;
+                    await saveTasks();
+                    renderBoard();
+                }
+
+                touchCard = null;
+                draggedTaskId = null;
+            };
+
             return div;
         }
-        
-        function getCategoryLabel(cat) { const labels = { dev: 'Dev', marketing: 'Marketing', content: 'Content', ambassador: 'Ambassador', ops: 'Ops' }; return labels[cat] || cat; }
-        
-        function renderStats() {
-            const counts = { total: 0, todo: 0, progress: 0, review: 0, done: 0 };
-            state.tasks.forEach(t => { counts.total++; counts[t.status]++; });
+
+        window.renderStats = function() {
+            const counts = { total: Object.keys(tasks).length, todo: 0, progress: 0, review: 0, done: 0 };
+            Object.values(tasks).forEach(t => { if (counts[t.status] !== undefined) counts[t.status]++; });
+            ['todo', 'progress', 'review', 'done'].forEach(s => {
+                document.getElementById('stat-' + s).textContent = counts[s];
+                document.getElementById('count-' + s).textContent = counts[s];
+            });
             document.getElementById('stat-total').textContent = counts.total;
-            document.getElementById('stat-todo').textContent = counts.todo;
-            document.getElementById('stat-progress').textContent = counts.progress;
-            document.getElementById('stat-done').textContent = counts.done;
-            document.querySelectorAll('.column').forEach(col => { const status = col.dataset.column; const countEl = col.querySelector('.column-count'); if (countEl) countEl.textContent = counts[status] || 0; });
         }
-        
-        function openAddModal() { document.getElementById('addModal').classList.add('active'); document.getElementById('addTitle').focus(); }
-        function openDetail(id) { currentTaskId = id; const task = state.tasks.find(t => t.id == id); if (!task) return; document.getElementById('editId').value = id; document.getElementById('editTitle').value = task.title; document.getElementById('editDesc').value = task.desc || ''; document.getElementById('editStatus').value = task.status; document.getElementById('editCategory').value = task.category; document.getElementById('editPriority').value = task.priority; document.getElementById('detailModal').classList.add('active'); }
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); currentTaskId = null; }
-        function submitNewTask(e) { e.preventDefault(); const newTask = { id: Date.now().toString(), title: document.getElementById('addTitle').value, desc: document.getElementById('addDesc').value, category: document.getElementById('addCategory').value, priority: document.getElementById('addPriority').value, status: 'todo', createdAt: Date.now() }; state.tasks.push(newTask); saveState(); renderBoard(); closeModal('addModal'); e.target.reset(); }
-        function saveTask(e) { e.preventDefault(); if (!currentTaskId) return; const task = state.tasks.find(t => t.id == currentTaskId); if (!task) return; task.title = document.getElementById('editTitle').value; task.desc = document.getElementById('editDesc').value; task.status = document.getElementById('editStatus').value; task.category = document.getElementById('editCategory').value; task.priority = document.getElementById('editPriority').value; task.updatedAt = Date.now(); saveState(); renderBoard(); closeModal('detailModal'); }
-        function deleteTask() { if (!currentTaskId) return; if (!confirm('Delete this task?')) return; state.tasks = state.tasks.filter(t => t.id != currentTaskId); saveState(); renderBoard(); closeModal('detailModal'); }
-        function openTool(tool) { const urls = { docs: 'https://docs.google.com', sheets: 'https://sheets.google.com', slides: 'https://slides.google.com', drive: 'https://drive.google.com', calendar: 'https://calendar.google.com', gmail: 'https://mail.google.com', photos: 'https://photos.google.com' }; window.open(urls[tool], '_blank'); }
-        document.querySelectorAll('.modal').forEach(modal => { modal.addEventListener('click', e => { if (e.target === modal) closeModal(modal.id); }); });
+
+        window.switchTab = function(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                if (b.dataset.tab === tab) {
+                    b.className = 'px-4 py-2 rounded-xl text-sm font-medium bg-primary-500/15 text-primary-400 border border-primary-500/30 whitespace-nowrap transition-all';
+                } else {
+                    b.className = 'px-4 py-2 rounded-xl text-sm font-medium bg-dark-800/50 text-gray-400 border border-dark-700/50 whitespace-nowrap transition-all';
+                }
+            });
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            document.getElementById(tab + '-tab').classList.remove('hidden');
+            document.getElementById('taskFab').style.display = tab === 'tasks' ? 'flex' : 'none';
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.querySelector(`.nav-item[onclick="switchTab('${tab}')"]`)?.classList.add('active');
+        }
+
+        window.openAddModal = function() { document.getElementById('addModal').classList.remove('hidden'); document.getElementById('addModal').classList.add('flex'); document.getElementById('addTitle').focus(); }
+        window.openEditModal = function(id) {
+            const t = tasks[id];
+            document.getElementById('editId').value = id;
+            document.getElementById('editTitle').value = t.title;
+            document.getElementById('editDesc').value = t.desc || '';
+            document.getElementById('editStatus').value = t.status;
+            document.getElementById('editCategory').value = t.category;
+            document.getElementById('editPriority').value = t.priority;
+            document.getElementById('editModal').classList.remove('hidden');
+            document.getElementById('editModal').classList.add('flex');
+        }
+        window.closeModal = function(id) { document.getElementById(id).classList.add('hidden'); document.getElementById(id).classList.remove('flex'); }
+        window.submitNewTask = async function(e) {
+            e.preventDefault();
+            const id = Date.now().toString();
+            const status = 'todo';
+            tasks[id] = { id, title: document.getElementById('addTitle').value, desc: document.getElementById('addDesc').value, category: document.getElementById('addCategory').value, priority: document.getElementById('addPriority').value, status, order: Object.values(tasks).filter(t => t.status === status).length };
+            await saveTasks();
+            renderBoard();
+            closeModal('addModal');
+            e.target.reset();
+        }
+        window.saveTask = async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('editId').value;
+            if (!tasks[id]) return;
+            tasks[id].title = document.getElementById('editTitle').value;
+            tasks[id].desc = document.getElementById('editDesc').value;
+            tasks[id].status = document.getElementById('editStatus').value;
+            tasks[id].category = document.getElementById('editCategory').value;
+            tasks[id].priority = document.getElementById('editPriority').value;
+            await saveTasks();
+            renderBoard();
+            closeModal('editModal');
+        }
+        window.deleteTask = async function() {
+            const id = document.getElementById('editId').value;
+            if (id && confirm('Delete?')) { delete tasks[id]; await saveTasks(); renderBoard(); closeModal('editModal'); }
+        }
+        window.openTool = function(tool) {
+            const urls = { docs: 'https://docs.google.com', sheets: 'https://sheets.google.com', drive: 'https://drive.google.com', calendar: 'https://calendar.google.com', gmail: 'https://mail.google.com', photos: 'https://photos.google.com' };
+            window.open(urls[tool], '_blank');
+        }
+        document.querySelectorAll('.modal').forEach(m => m.onclick = e => { if (e.target === m) closeModal(m.id); });
+        window.loadTasks();
+        switchTab('tasks');
     </script>
 </body>
 </html>
