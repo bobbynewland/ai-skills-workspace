@@ -537,7 +537,7 @@ function App() {
       </div>
 
       {/* Content */}
-      <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', touchAction: 'pan-y' }}>
+      <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden' }}>
         {/* Stats */}
         <div className="stats-scroll">
           <div className="stat-pill">Total: <span>{stats.total}</span></div>
@@ -548,7 +548,7 @@ function App() {
 
         {/* Tasks Board */}
         {activeTab === 'tasks' && (
-          <div className="board-container" style={{ touchAction: 'pan-y' }}>
+          <div className="board-container" style={{ touchAction: 'pan-x' }}>
             {['todo', 'progress', 'review', 'done'].map(status => (
               <TaskColumn
                 key={status}
