@@ -112,16 +112,12 @@
         </div>
 
         <div id="notes-tab" class="tab-content hidden px-5 pb-24">
-            <div class="space-y-3">
-                <div onclick="alert('Coming soon!')" class="bg-dark-800/40 border border-dark-700/50 rounded-xl p-4 cursor-pointer active:bg-dark-800/60 transition">
-                    <div class="flex items-center gap-2 font-semibold text-sm mb-2"><span class="text-lg">🧠</span> Brain Dump</div>
-                    <p class="text-xs text-gray-500">Capture all your ideas, thoughts, and notes...</p>
-                </div>
-                <div onclick="alert('Coming soon!')" class="bg-dark-800/40 border border-dark-700/50 rounded-xl p-4 cursor-pointer active:bg-dark-800/60 transition">
-                    <div class="flex items-center gap-2 font-semibold text-sm mb-2"><span class="text-lg">📅</span> Meeting Notes</div>
-                    <p class="text-xs text-gray-500">Meeting notes, action items, and decisions...</p>
-                </div>
+            <div id="notes-list" class="space-y-3">
+                <!-- Notes loaded from Firebase -->
             </div>
+            <button onclick="openNoteModal()" class="mt-4 w-full py-4 rounded-xl bg-dark-800/40 border border-dark-700/50 text-gray-400 text-sm font-medium active:bg-dark-800/60 transition">
+                + New Note
+            </button>
         </div>
 
         <div id="files-tab" class="tab-content hidden px-5 pb-24">
@@ -161,7 +157,7 @@
                 <div class="space-y-4">
                     <div><label class="block text-xs text-gray-500 mb-2">Title</label><input type="text" id="addTitle" required class="w-full px-4 py-3 rounded-xl bg-dark-700/50 border border-dark-600 text-white text-base focus:outline-none focus:border-primary-500" placeholder="Task title..."></div>
                     <div><label class="block text-xs text-gray-500 mb-2">Description</label><textarea id="addDesc" rows="3" class="w-full px-4 py-3 rounded-xl bg-dark-700/50 border border-dark-600 text-white text-base focus:outline-none focus:border-primary-500 resize-none" placeholder="Add details..."></textarea></div>
-                    <div><label class="block text-xs text-gray-500 mb-2">Category</label><select id="addCategory" class="w-full px-4 py-3 rounded-xl bg-dark-700/50 border border-dark-600 text-white text-base focus:outline-none focus:border-primary-500"><option value="dev">💻 Dev</option><option value="marketing">📣 Marketing</option><option value="content">🎨 Content</option><option value="ambassador">🤝 Ambassador</option><option value="ops">⚙️ Ops</option></select></div>
+                    <div><label class="block text-xs text-gray-500 mb-2">Category</label><select id="addCategory" class="w-full px-4 py-3 rounded-xl bg-dark-700/50 border border-dark-600 text-white text-base focus:outline-none focus:border-primary-500"><option value="dev">💻 Dev</option><option value="marketing">📣 Marketing</option><option value="content">🎨 Content</option><option value="ambassador">🤝 Ambassador</option><option value="ops">⚙️ Ops</option><option value="michigan">🏔️ Michigan Project</option><option value="internal">🏠 Internal</option></select></div>
                     <div><label class="block text-xs text-gray-500 mb-2">Priority</label><select id="addPriority" class="w-full px-4 py-3 rounded-xl bg-dark-700/50 border border-dark-600 text-white text-base focus:outline-none focus:border-primary-500"><option value="high">🔴 High</option><option value="medium">🟡 Medium</option><option value="low">🟢 Low</option></select></div>
                 </div>
                 <div class="flex gap-3 mt-6"><button type="button" onclick="closeModal('addModal')" class="flex-1 py-3.5 rounded-xl bg-dark-700/50 text-gray-300 font-semibold">Cancel</button><button type="submit" class="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-primary-500 to-primary-600 text-white font-semibold">Create</button></div>
@@ -178,10 +174,25 @@
                     <div><label class="block text-xs text-gray-500 mb-2">Status</label><select id="editStatus" class="w-full px-4 py-3 rounded-xl bg-dark-700/50 border border-dark-600 text-white text-base focus:outline-none focus:border-primary-500"><option value="todo">📋 To Do</option><option value="progress">🔥 In Progress</option><option value="review">👀 Review</option><option value="done">✅ Done</option></select></div>
                     <div><label class="block text-xs text-gray-500 mb-2">Title</label><input type="text" id="editTitle" required class="w-full px-4 py-3 rounded-xl bg-dark-700/50 border border-dark-600 text-white text-base focus:outline-none focus:border-primary-500"></div>
                     <div><label class="block text-xs text-gray-500 mb-2">Description</label><textarea id="editDesc" rows="3" class="w-full px-4 py-3 rounded-xl bg-dark-700/50 border border-dark-600 text-white text-base focus:outline-none focus:border-primary-500 resize-none"></textarea></div>
-                    <div><label class="block text-xs text-gray-500 mb-2">Category</label><select id="editCategory" class="w-full px-4 py-3 rounded-xl bg-dark-700/50 border border-dark-600 text-white text-base focus:outline-none focus:border-primary-500"><option value="dev">💻 Dev</option><option value="marketing">📣 Marketing</option><option value="content">🎨 Content</option><option value="ambassador">🤝 Ambassador</option><option value="ops">⚙️ Ops</option></select></div>
+                    <div><label class="block text-xs text-gray-500 mb-2">Category</label><select id="editCategory" class="w-full px-4 py-3 rounded-xl bg-dark-700/50 border border-dark-600 text-white text-base focus:outline-none focus:border-primary-500"><option value="dev">💻 Dev</option><option value="marketing">📣 Marketing</option><option value="content">🎨 Content</option><option value="ambassador">🤝 Ambassador</option><option value="ops">⚙️ Ops</option><option value="michigan">🏔️ Michigan Project</option><option value="internal">🏠 Internal</option></select></div>
                     <div><label class="block text-xs text-gray-500 mb-2">Priority</label><select id="editPriority" class="w-full px-4 py-3 rounded-xl bg-dark-700/50 border border-dark-600 text-white text-base focus:outline-none focus:border-primary-500"><option value="high">🔴 High</option><option value="medium">🟡 Medium</option><option value="low">🟢 Low</option></select></div>
                 </div>
                 <div class="flex gap-3 mt-6"><button type="button" onclick="deleteTask()" class="flex-1 py-3.5 rounded-xl bg-red-500/15 text-red-400 font-semibold">Delete</button><button type="submit" class="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-primary-500 to-primary-600 text-white font-semibold">Save</button></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Note Modal -->
+    <div id="noteModal" class="modal fixed inset-0 bg-black/80 z-[100] hidden items-end justify-center sm:items-center">
+        <div class="bg-dark-800 w-full max-w-lg rounded-t-3xl sm:rounded-3xl p-6 animate-slide-up max-h-[85vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-6"><h2 class="text-xl font-bold">New Note</h2><button onclick="closeModal('noteModal')" class="w-10 h-10 rounded-xl bg-dark-700/50 text-gray-400 text-xl">×</button></div>
+            <form onsubmit="submitNewNote(event)">
+                <div class="space-y-4">
+                    <div><label class="block text-xs text-gray-500 mb-2">Title</label><input type="text" id="noteTitle" required class="w-full px-4 py-3 rounded-xl bg-dark-700/50 border border-dark-600 text-white text-base focus:outline-none focus:border-primary-500" placeholder="Note title..."></div>
+                    <div><label class="block text-xs text-gray-500 mb-2">Content</label><textarea id="noteContent" rows="8" class="w-full px-4 py-3 rounded-xl bg-dark-700/50 border border-dark-600 text-white text-base focus:outline-none focus:border-primary-500 resize-none" placeholder="Brain dump, ideas, meeting notes..."></textarea></div>
+                    <div><label class="block text-xs text-gray-500 mb-2">Type</label><select id="noteType" class="w-full px-4 py-3 rounded-xl bg-dark-700/50 border border-dark-600 text-white text-base focus:outline-none focus:border-primary-500"><option value="brain_dump">🧠 Brain Dump</option><option value="meeting">📅 Meeting Notes</option><option value="idea">💡 Idea</option><option value="project">📋 Project</option></select></div>
+                </div>
+                <div class="flex gap-3 mt-6"><button type="button" onclick="closeModal('noteModal')" class="flex-1 py-3.5 rounded-xl bg-dark-700/50 text-gray-300 font-semibold">Cancel</button><button type="submit" class="flex-1 py-3.5 rounded-xl bg-gradient-to-r from-primary-500 to-primary-600 text-white font-semibold">Save</button></div>
             </form>
         </div>
     </div>
@@ -192,7 +203,7 @@
 
         const firebaseConfig = { apiKey: "AIzaSyB3Z1WDeqO4cEBMk5Q1j9H8c2-0Z1Y8X0", authDomain: "winslow-756c3.firebaseapp.com", databaseURL: "https://winslow-756c3-default-rtdb.firebaseio.com", projectId: "winslow-756c3", storageBucket: "winslow-756c3.appspot.com", messagingSenderId: "123456789", appId: "1:123456789:web:abc123" };
 
-        let db = null, tasks = {}, isFirebaseReady = false, draggedTaskId = null, touchCard = null, touchOffset = { x: 0, y: 0 };
+        let db = null, tasks = {}, notes = {}, isFirebaseReady = false, draggedTaskId = null, touchCard = null, touchOffset = { x: 0, y: 0 };
 
         function setStatus(status, text) {
             const el = document.getElementById('statusIndicator'), dot = el.querySelector('#statusDot'), txt = el.querySelector('#statusText');
@@ -218,6 +229,15 @@
             } else loadFromLocal();
         };
 
+        window.loadNotes = function() {
+            if (isFirebaseReady && db) {
+                onValue(ref(db, 'workspaces/winslow_main/notes'), (snap) => {
+                    if (snap.val()) { notes = snap.val(); renderNotes(); }
+                    else renderNotes();
+                }, () => renderNotes());
+            } else renderNotes();
+        };
+
         function saveToLocal() { localStorage.setItem('mission_tasks_backup', JSON.stringify(tasks)); }
 
         function loadFromLocal() {
@@ -227,7 +247,8 @@
                 tasks = {
                     '1': { id: '1', title: "Welcome to Mission Control", desc: "Swipe to see all columns!", category: "ops", priority: "medium", status: "todo", order: 0 },
                     '2': { id: '2', title: "Try drag & drop", desc: "Touch and hold cards to move them", category: "dev", priority: "low", status: "todo", order: 1 },
-                    '3': { id: '3', title: "Switch tabs below", desc: "Notes, Files, and Tools coming soon", category: "marketing", priority: "high", status: "progress", order: 0 }
+                    '3': { id: '3', title: "Michigan Project Task", desc: "Example Michigan project task", category: "michigan", priority: "high", status: "progress", order: 0 },
+                    '4': { id: '4', title: "Internal Project Task", desc: "Example internal project task", category: "internal", priority: "medium", status: "todo", order: 2 }
                 };
             }
             renderBoard();
@@ -242,6 +263,100 @@
                     await set(ref(db, 'workspaces/winslow_main/tasks'), tasks);
                     setStatus('saved', 'Saved ✓');
                 } catch(e) { setStatus('saved', 'Local only'); }
+            }
+        }
+
+        async function saveNotes() {
+            if (isFirebaseReady && db) {
+                try {
+                    await set(ref(db, 'workspaces/winslow_main/notes'), notes);
+                } catch(e) { console.log('Notes save failed', e); }
+            }
+        }
+
+        window.renderNotes = function() {
+            const container = document.getElementById('notes-list');
+            container.innerHTML = '';
+            const noteTypes = { brain_dump: '🧠', meeting: '📅', idea: '💡', project: '📋' };
+            const noteColors = { brain_dump: 'amber', meeting: 'blue', idea: 'emerald', project: 'primary' };
+            
+            Object.values(notes).sort((a,b) => b.updated - a.updated).forEach(note => {
+                const div = document.createElement('div');
+                div.className = 'bg-dark-800/40 border border-dark-700/50 rounded-xl p-4 cursor-pointer active:bg-dark-800/60 transition';
+                div.onclick = () => openNoteEditModal(note.id);
+                div.innerHTML = `
+                    <div class="flex items-center gap-2 font-semibold text-sm mb-2">
+                        <span class="text-lg">${noteTypes[note.type] || '📝'}</span>
+                        ${note.title}
+                        <span class="ml-auto text-xs px-2 py-0.5 rounded-lg bg-${noteColors[note.type]}-500/15 text-${noteColors[note.type]}-400">${note.type.replace('_', ' ')}</span>
+                    </div>
+                    <p class="text-xs text-gray-500 line-clamp-3">${note.content.substring(0, 150)}${note.content.length > 150 ? '...' : ''}</p>
+                    <div class="text-xs text-gray-600 mt-2">${new Date(note.updated).toLocaleDateString()}</div>
+                `;
+                container.appendChild(div);
+            });
+            
+            if (Object.keys(notes).length === 0) {
+                container.innerHTML = '<div class="text-center py-8 text-gray-500 text-sm">No notes yet. Create your first note!</div>';
+            }
+        }
+
+        window.openNoteModal = function() { document.getElementById('noteModal').classList.remove('hidden'); document.getElementById('noteModal').classList.add('flex'); document.getElementById('noteTitle').focus(); }
+        
+        window.openNoteEditModal = function(id) {
+            const note = notes[id];
+            if (!note) return;
+            const modal = document.getElementById('noteModal');
+            modal.querySelector('h2').textContent = 'Edit Note';
+            modal.querySelector('form').onsubmit = (e) => saveNote(e, id);
+            document.getElementById('noteTitle').value = note.title;
+            document.getElementById('noteContent').value = note.content;
+            document.getElementById('noteType').value = note.type;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        window.submitNewNote = async function(e) {
+            e.preventDefault();
+            const id = Date.now().toString();
+            notes[id] = { 
+                id, 
+                title: document.getElementById('noteTitle').value, 
+                content: document.getElementById('noteContent').value, 
+                type: document.getElementById('noteType').value,
+                updated: Date.now() 
+            };
+            await saveNotes();
+            renderNotes();
+            closeModal('noteModal');
+            e.target.reset();
+            // Reset form for next use
+            modal.querySelector('h2').textContent = 'New Note';
+            modal.querySelector('form').onsubmit = submitNewNote;
+        }
+
+        window.saveNote = async function(e, id) {
+            e.preventDefault();
+            if (!notes[id]) return;
+            notes[id].title = document.getElementById('noteTitle').value;
+            notes[id].content = document.getElementById('noteContent').value;
+            notes[id].type = document.getElementById('noteType').value;
+            notes[id].updated = Date.now();
+            await saveNotes();
+            renderNotes();
+            closeModal('noteModal');
+            // Reset form
+            const modal = document.getElementById('noteModal');
+            modal.querySelector('h2').textContent = 'New Note';
+            modal.querySelector('form').onsubmit = submitNewNote;
+        }
+
+        window.deleteNote = async function(id) {
+            if (id && confirm('Delete this note?')) { 
+                delete notes[id]; 
+                await saveNotes(); 
+                renderNotes(); 
+                closeModal('noteModal');
             }
         }
 
@@ -261,9 +376,9 @@
 
         function createCard(task) {
             const div = document.createElement('div');
-            const categoryColors = { dev: 'blue', marketing: 'red', content: 'amber', ambassador: 'emerald', ops: 'primary' };
+            const categoryColors = { dev: 'blue', marketing: 'red', content: 'amber', ambassador: 'emerald', ops: 'primary', michigan: 'orange', internal: 'cyan' };
             const priorityColors = { high: 'bg-red-500', medium: 'bg-amber-400', low: 'bg-emerald-400' };
-            const categoryIcons = { dev: '💻', marketing: '📣', content: '🎨', ambassador: '🤝', ops: '⚙️' };
+            const categoryIcons = { dev: '💻', marketing: '📣', content: '🎨', ambassador: '🤝', ops: '⚙️', michigan: '🏔️', internal: '🏠' };
 
             div.className = 'bg-dark-800/40 border border-dark-700/50 rounded-xl p-4 cursor-grab active:cursor-grabbing touch-none transition-all duration-150 flex-shrink-0';
             div.dataset.id = task.id;
@@ -361,6 +476,8 @@
             document.getElementById('taskFab').style.display = tab === 'tasks' ? 'flex' : 'none';
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.querySelector(`.nav-item[onclick="switchTab('${tab}')"]`)?.classList.add('active');
+            
+            if (tab === 'notes') loadNotes();
         }
 
         window.openAddModal = function() { document.getElementById('addModal').classList.remove('hidden'); document.getElementById('addModal').classList.add('flex'); document.getElementById('addTitle').focus(); }
@@ -375,7 +492,17 @@
             document.getElementById('editModal').classList.remove('hidden');
             document.getElementById('editModal').classList.add('flex');
         }
-        window.closeModal = function(id) { document.getElementById(id).classList.add('hidden'); document.getElementById(id).classList.remove('flex'); }
+        window.closeModal = function(id) { 
+            document.getElementById(id).classList.add('hidden'); 
+            document.getElementById(id).classList.remove('flex'); 
+            // Reset note modal form if closing
+            if (id === 'noteModal') {
+                const modal = document.getElementById('noteModal');
+                modal.querySelector('h2').textContent = 'New Note';
+                modal.querySelector('form').onsubmit = submitNewNote;
+                modal.querySelector('form').reset();
+            }
+        }
         window.submitNewTask = async function(e) {
             e.preventDefault();
             const id = Date.now().toString();
@@ -409,6 +536,7 @@
         }
         document.querySelectorAll('.modal').forEach(m => m.onclick = e => { if (e.target === m) closeModal(m.id); });
         window.loadTasks();
+        loadNotes();
         switchTab('tasks');
     </script>
 </body>
