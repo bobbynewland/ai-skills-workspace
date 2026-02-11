@@ -1,13 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
   DndContext,
-  DndContextProps,
   KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
   DragOverlay,
-  rectIntersection,
+  pointerWithin,
 } from '@dnd-kit/core';
 import {
   SortableContext,
@@ -312,7 +311,7 @@ function App() {
   ];
 
   return (
-    <DndContext sensors={sensors} collisionDetection={rectIntersection} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+    <DndContext sensors={sensors} collisionDetection={pointerWithin} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div style={{ height: '100%', background: '#0a0a0f', color: '#e5e5e5', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', overflow: 'hidden', touchAction: 'none' }}>
         <header style={{ position: 'sticky', top: 0, zIndex: 40, background: 'rgba(10, 10, 15, 0.8)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(55, 65, 81, 0.3)', padding: '1rem 1.25rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
