@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  height: 100%;
+  overscroll-behavior-y: none;
+}
+
+#root {
+  height: 100%;
+}
+
+/* Custom scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Drag states */
+.dragging {
+  opacity: 0.9;
+  transform: scale(1.02);
+  box-shadow: 0 25px 50px rgba(139, 92, 246, 0.3);
+  z-index: 50;
+}
+
+.drag-over {
+  border: 2px solid #a78bfa;
+  background: rgba(167, 139, 250, 0.1);
+}
+
+/* Animations */
+@keyframes slide-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0)); }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease;
+}
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 1rem);
+}
+
+/* Touch feedback */
+.active-tap {
+  transform: scale(0.95);
+}

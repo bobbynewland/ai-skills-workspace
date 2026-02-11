@@ -35,3 +35,5 @@ temp/
 package-lock.json
 yarn.lock
 *.json
+.vercel
+.env*.local
