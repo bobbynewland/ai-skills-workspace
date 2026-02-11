@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getDatabase, ref, set, onValue, remove } from 'firebase/database';
+import { kimiChat } from './kimiApi';
 
 const firebaseConfig = {
   apiKey: "AIzaSyB3Z1WDeqO4cEBMk5Q1j9H8c2-0Z1Y8X0",
@@ -168,6 +169,10 @@ function App() {
   const [draggingTask, setDraggingTask] = useState(null);
   const [overColumn, setOverColumn] = useState(null);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [showCodeGen, setShowCodeGen] = useState(false);
+  const [codePrompt, setCodePrompt] = useState('');
+  const [codeResult, setCodeResult] = useState('');
+  const [codeLoading, setCodeLoading] = useState(false);
 
   // Touch drag state
   const touchDragRef = useRef({
@@ -231,6 +236,25 @@ function App() {
       await set(ref(db, 'workspaces/winslow_main/notes'), newNotes);
     } catch (e) {
       console.log('Notes save failed', e);
+    }
+  }, []);
+
+  // Kimi K2.5 Code Generation
+  const generateWithKimi = useCallback(async (prompt) => {
+    setCodeLoading(true);
+    setCodeResult('');
+    
+    try {
+      const result = await kimiChat([
+        { role: 'system', content: 'You are an expert coding assistant. Write clean, production-ready code. Return only the code with brief comments.' },
+        { role: 'user', content: prompt }
+      ], { temperature: 0.1, max_tokens: 4096, thinking: true });
+      
+      setCodeResult(result);
+    } catch (error) {
+      setCodeResult(`Error: ${error.message}`);
+    } finally {
+      setCodeLoading(false);
     }
   }, []);
 
@@ -519,13 +543,13 @@ function App() {
       {/* Tabs */}
       <div style={{ position: 'sticky', top: '5.5rem', zIndex: 30, background: 'rgba(10, 10, 15, 0.95)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(55, 65, 81, 0.3)', padding: '0.75rem 1.25rem' }}>
         <div className="tab-scroll">
-          {['tasks', 'notes', 'files', 'tools'].map(tab => (
+          {['tasks', 'notes', 'code', 'tools'].map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`tab-btn ${activeTab === tab ? 'active' : 'inactive'}`}
             >
-              {tab === 'tasks' ? '📋 Tasks' : tab === 'notes' ? '📝 Notes' : tab === 'files' ? '📁 Files' : '🔧 Tools'}
+              {tab === 'tasks' ? '📋 Tasks' : tab === 'notes' ? '📝 Notes' : tab === 'code' ? '💻 Code' : '🔧 Tools'}
             </button>
           ))}
         </div>
@@ -588,18 +612,43 @@ function App() {
           </div>
         )}
 
-        {/* Files */}
-        {activeTab === 'files' && (
+        {/* Code Generation with Kimi K2.5 */}
+        {activeTab === 'code' && (
           <div style={{ padding: '0 1.25rem 6rem' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem' }}>
-              <div className="grid-card">
-                <div style={{ fontSize: '1.75rem', marginBottom: '0.5rem' }}>📁</div>
-                <div style={{ fontSize: '0.75rem', fontWeight: 500 }}>Template Pack V4</div>
+            <div style={{ marginBottom: '1rem' }}>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>💻 Code with Kimi K2.5</h2>
+              <p style={{ fontSize: '0.875rem', color: '#6b7280' }}>Generate code using NVIDIA Kimi K2.5</p>
+            </div>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {/* Quick Actions */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem' }}>
+                {[
+                  { l: '📝 React Component', p: 'Create a React functional component with hooks' },
+                  { l: '🎨 CSS Styles', p: 'Write modern CSS with animations' },
+                  { l: '🔧 Utility Function', p: 'Write a JavaScript utility function' },
+                  { l: '🐛 Fix Bug', p: 'Fix this code bug: Describe the issue' }
+                ].map(action => (
+                  <button
+                    key={action.l}
+                    className="grid-card"
+                    onClick={() => { setCodePrompt(action.p); setShowCodeGen(true); }}
+                    style={{ textAlign: 'left', cursor: 'pointer', border: 'none', background: 'rgba(55, 65, 81, 0.3)' }}
+                  >
+                    <div style={{ fontSize: '1.25rem', marginBottom: '0.25rem' }}>{action.l.split(' ')[0]}</div>
+                    <div style={{ fontSize: '0.75rem', color: '#9ca3af' }}>{action.l}</div>
+                  </button>
+                ))}
               </div>
-              <div className="grid-card">
-                <div style={{ fontSize: '1.75rem', marginBottom: '0.5rem' }}>🎨</div>
-                <div style={{ fontSize: '0.75rem', fontWeight: 500 }}>Brand Assets</div>
-              </div>
+              
+              {/* Custom Prompt */}
+              <button
+                className="btn-primary"
+                onClick={() => { setCodePrompt(''); setShowCodeGen(true); }}
+                style={{ width: '100%', padding: '0.875rem' }}
+              >
+                ✨ Custom Prompt
+              </button>
             </div>
           </div>
         )}
@@ -622,7 +671,7 @@ function App() {
       {/* Bottom Navigation */}
       <nav className="bottom-nav">
         <div style={{ display: 'flex', justifyContent: 'space-around', padding: '0.5rem' }}>
-          {[{ id: 'tasks', icon: '📋', label: 'Tasks' }, { id: 'notes', icon: '📝', label: 'Notes' }, { id: 'files', icon: '📁', label: 'Files' }, { id: 'tools', icon: '🔧', label: 'Tools' }].map(item => (
+          {[{ id: 'tasks', icon: '📋', label: 'Tasks' }, { id: 'notes', icon: '📝', label: 'Notes' }, { id: 'code', icon: '💻', label: 'Code' }, { id: 'tools', icon: '🔧', label: 'Tools' }].map(item => (
             <div
               key={item.id}
               className={`nav-item ${activeTab === item.id ? 'active' : 'inactive'}`}
@@ -780,6 +829,55 @@ function App() {
             </div>
           </form>
         )}
+      </Modal>
+
+      {/* Kimi Code Generation Modal */}
+      <Modal isOpen={showCodeGen} onClose={() => setShowCodeGen(false)} title="💻 Code with Kimi K2.5">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '0.75rem', color: '#6b7280', marginBottom: '0.5rem' }}>What do you want to code?</label>
+            <textarea
+              className="form-textarea"
+              placeholder="Describe what you want to build..."
+              value={codePrompt}
+              onChange={(e) => setCodePrompt(e.target.value)}
+              rows={4}
+            />
+          </div>
+          <button
+            className="btn-primary"
+            onClick={() => generateWithKimi(codePrompt)}
+            disabled={codeLoading || !codePrompt.trim()}
+            style={{ opacity: codeLoading ? 0.6 : 1 }}
+          >
+            {codeLoading ? '⏳ Generating...' : '🚀 Generate Code'}
+          </button>
+          {codeResult && (
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                <label style={{ display: 'block', fontSize: '0.75rem', color: '#6b7280' }}>Generated Code</label>
+                <button
+                  className="btn-secondary"
+                  onClick={() => navigator.clipboard.writeText(codeResult)}
+                  style={{ padding: '0.25rem 0.5rem', fontSize: '0.75rem' }}
+                >
+                  📋 Copy
+                </button>
+              </div>
+              <pre style={{ 
+                background: 'rgba(0,0,0,0.3)', 
+                padding: '1rem', 
+                borderRadius: '0.5rem',
+                fontSize: '0.75rem',
+                overflow: 'auto',
+                maxHeight: '300px',
+                whiteSpace: 'pre-wrap'
+              }}>
+                {codeResult}
+              </pre>
+            </div>
+          )}
+        </div>
       </Modal>
     </div>
   );

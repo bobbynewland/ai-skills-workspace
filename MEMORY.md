@@ -31,6 +31,8 @@ All-in-one platform for entrepreneurs to launch businesses with AI. "Entrepreneu
 - Firebase localStorage fallback pattern
 - seedream4k needs: `fal-ai/bytedance/seedream/v4.5/text-to-image`
 - OpenRouter: `"api": "openai-completions"` not "openai-chat"
+- **Mobile touch scroll**: Don't use `touch-action: none` on containers - it blocks scroll. Use 25px threshold on cards for drag vs scroll distinction
+- **Scroll indicators**: Must be fixed-position OUTSIDE scroll container, track via window.scrollY not container.scrollTop
 
 ## Active Todo
 - [ ] V4 templates with textured backgrounds
