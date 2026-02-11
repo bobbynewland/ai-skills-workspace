@@ -24,8 +24,8 @@
         .stats-bar { display: flex; gap: 8px; padding: 0 20px 20px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
         .stat-pill { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 8px 16px; font-size: 0.8rem; white-space: nowrap; }
         .stat-pill span { color: #a78bfa; font-weight: 600; }
-        .board { display: flex; gap: 12px; padding: 0 20px 100px; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 120px; }
-        .column { min-width: 280px; max-width: 280px; flex-shrink: 0; }
+        .board { display: flex; gap: 12px; padding: 0 20px 100px; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 120px; touch-action: pan-x; }
+        .column { min-width: 280px; max-width: 280px; flex-shrink: 0; touch-action: none; }
         .column-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid; }
         .column-title { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 0.9rem; }
         .column-count { background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; color: #9ca3af; }
@@ -33,9 +33,11 @@
         .progress .column-header { border-color: #fbbf24; }
         .review .column-header { border-color: #34d399; }
         .done .column-header { border-color: #60a5fa; }
-        .cards { display: flex; flex-direction: column; gap: 10px; }
-        .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s ease; }
-        .card:active { transform: scale(0.98); }
+        .cards { display: flex; flex-direction: column; gap: 10px; min-height: 100px; }
+        .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 16px; cursor: grab; transition: all 0.2s ease; touch-action: none; }
+        .card:active { cursor: grabbing; transform: scale(1.02); z-index: 1000; position: relative; }
+        .card.dragging { opacity: 0.5; transform: scale(0.95); }
+        .card.drag-over { border-color: #a78bfa; background: rgba(167, 139, 250, 0.1); }
         .card:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); }
         .card-title { font-weight: 500; font-size: 0.95rem; margin-bottom: 8px; line-height: 1.4; }
         .card-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
@@ -125,137 +127,19 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <script>
         // Firebase config
-        const firebaseConfig = {
-            apiKey: "AIzaSyB3Z1WDeqO4cEBMk5Q1j9H8c2-0Z1Y8X0",
-            authDomain: "winslow-756c3.firebaseapp.com",
-            databaseURL: "https://winslow-756c3-default-rtdb.firebaseio.com",
-            projectId: "winslow-756c3",
-            storageBucket: "winslow-756c3.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "1:123456789:web:abc123"
-        };
-        
-        // Initialize Firebase
-        let db;
-        try {
-            firebase.initializeApp(firebaseConfig);
-            db = firebase.database();
-            setConnectionStatus('syncing', 'Firebase connecting...');
-        } catch(e) {
-            console.log('Firebase not available, using localStorage');
-            setConnectionStatus('disconnected', 'Using localStorage');
-        }
-        
-        let state = { tasks: [] };
-        let currentTaskId = null;
-        let localTasks = [];
-        
-        document.addEventListener('DOMContentLoaded', () => { loadState(); setupTabs(); });
+        const firebaseConfig = { apiKey: "AIzaSyB3Z1WDeqO4cEBMk5Q1j9H8c2-0Z1Y8X0", authDomain: "winslow-756c3.firebaseapp.com", databaseURL: "https://winslow-756c3-default-rtdb.firebaseio.com", projectId: "winslow-756c3", storageBucket: "winslow-756c3.appspot.com", messagingSenderId: "123456789", appId: "1:123456789:web:abc123" };
+        let db; try { firebase.initializeApp(firebaseConfig); db = firebase.database(); setConnectionStatus('syncing', 'Firebase connecting...'); } catch(e) { setConnectionStatus('disconnected', 'Using localStorage'); }
+        let state = { tasks: [] }, currentTaskId = null;
+        document.addEventListener('DOMContentLoaded', () => { loadState(); setupTabs(); setupDragDrop(); });
         function setupTabs() { document.querySelectorAll('.tab').forEach(tab => { tab.addEventListener('click', () => { const tabName = tab.dataset.tab; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); tab.classList.add('active'); document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); document.getElementById(`${tabName}-tab`).classList.add('active'); document.getElementById('taskFab').style.display = tabName === 'tasks' ? 'flex' : 'none'; }); }); }
-        
-        function setConnectionStatus(status, text) {
-            const statusEl = document.getElementById('googleStatus');
-            const textEl = document.getElementById('googleStatusText');
-            statusEl.className = `status-dot ${status}`;
-            textEl.textContent = text;
-        }
-        
-        function loadState() {
-            if (db) {
-                // Try Firebase first
-                setConnectionStatus('syncing', 'Loading from Firebase...');
-                db.ref('workspaces/winslow_main/tasks').on('value', (snapshot) => {
-                    const data = snapshot.val();
-                    if (data) {
-                        state.tasks = Object.entries(data).map(([id, task]) => ({ id, ...task }));
-                        renderBoard();
-                        setConnectionStatus('connected', 'Firebase connected ✓');
-                        localStorage.setItem('mission_control_firebase', JSON.stringify(state.tasks));
-                    } else {
-                        // Try local backup
-                        loadFromLocal();
-                    }
-                }, (error) => {
-                    console.log('Firebase read failed, using local');
-                    loadFromLocal();
-                });
-            } else {
-                loadFromLocal();
-            }
-        }
-        
-        function loadFromLocal() {
-            const firebaseBackup = localStorage.getItem('mission_control_firebase');
-            if (firebaseBackup) {
-                state.tasks = JSON.parse(firebaseBackup);
-            } else {
-                const oldLocal = localStorage.getItem('mission_control_v2') || localStorage.getItem('mission_control_v1') || localStorage.getItem('winslow_board_v2');
-                if (oldLocal) {
-                    const old = JSON.parse(oldLocal);
-                    state.tasks = old.tasks || [];
-                } else {
-                    state.tasks = [
-                        { id: Date.now().toString(), title: "Welcome to Mission Control", desc: "Your tasks are now synced with Firebase!", category: "ops", priority: "medium", status: "todo" }
-                    ];
-                }
-            }
-            renderBoard();
-            setConnectionStatus('disconnected', 'Local mode (Firebase offline)');
-        }
-        
-        function saveState() {
-            // Save to Firebase if available
-            if (db) {
-                const updates = {};
-                state.tasks.forEach(task => {
-                    updates[`tasks/${task.id}`] = task;
-                });
-                db.ref('workspaces/winslow_main').update({ tasks: null }).then(() => {
-                    db.ref('workspaces/winslow_main/tasks').set(state.tasks.reduce((acc, task) => {
-                        acc[task.id] = task;
-                        return acc;
-                    }, {}));
-                });
-            }
-            // Always backup locally
-            localStorage.setItem('mission_control_firebase', JSON.stringify(state.tasks));
-            renderStats();
-        }
-        
-        function renderBoard() {
-            document.querySelectorAll('.cards').forEach(el => el.innerHTML = '');
-            state.tasks.forEach(task => {
-                const card = createCardElement(task);
-                const col = document.querySelector(`.cards[data-status="${task.status}"]`);
-                if (col) col.appendChild(card);
-            });
-            renderStats();
-        }
-        
-        function createCardElement(task) {
-            const div = document.createElement('div');
-            div.className = 'card';
-            div.dataset.id = task.id;
-            div.dataset.status = task.status;
-            const tagClass = `tag-${task.category}`;
-            const priorityClass = `priority-${task.priority}`;
-            div.innerHTML = `<div class="card-title">${task.title}</div><div class="card-meta"><span class="tag ${tagClass}">${getCategoryLabel(task.category)}</span><span class="priority-dot ${priorityClass}"></span></div>`;
-            div.addEventListener('click', () => openDetail(task.id));
-            return div;
-        }
-        
+        function setConnectionStatus(status, text) { const statusEl = document.getElementById('googleStatus'); const textEl = document.getElementById('googleStatusText'); statusEl.className = `status-dot ${status}`; textEl.textContent = text; }
+        function loadState() { if (db) { setConnectionStatus('syncing', 'Loading from Firebase...'); db.ref('workspaces/winslow_main/tasks').on('value', (snapshot) => { const data = snapshot.val(); if (data) { state.tasks = Object.entries(data).map(([id, task]) => ({ id, ...task })); renderBoard(); setConnectionStatus('connected', 'Firebase connected ✓'); localStorage.setItem('mission_control_firebase', JSON.stringify(state.tasks)); } else { loadFromLocal(); } }, (error) => { loadFromLocal(); }); } else { loadFromLocal(); } }
+        function loadFromLocal() { const firebaseBackup = localStorage.getItem('mission_control_firebase'); if (firebaseBackup) { state.tasks = JSON.parse(firebaseBackup); } else { const oldLocal = localStorage.getItem('mission_control_v2') || localStorage.getItem('mission_control_v1') || localStorage.getItem('winslow_board_v2'); if (oldLocal) { const old = JSON.parse(oldLocal); state.tasks = old.tasks || []; } else { state.tasks = [{ id: Date.now().toString(), title: "Welcome to Mission Control", desc: "Drag tasks between columns!", category: "ops", priority: "medium", status: "todo" }]; } } renderBoard(); setConnectionStatus('disconnected', 'Local mode (Firebase offline)'); }
+        function saveState() { if (db) { const updates = {}; state.tasks.forEach(task => { updates[`tasks/${task.id}`] = task; }); db.ref('workspaces/winslow_main').update({ tasks: null }).then(() => { db.ref('workspaces/winslow_main/tasks').set(state.tasks.reduce((acc, task) => { acc[task.id] = task; return acc; }, {})); }); } localStorage.setItem('mission_control_firebase', JSON.stringify(state.tasks)); renderStats(); }
+        function renderBoard() { document.querySelectorAll('.cards').forEach(el => el.innerHTML = ''); state.tasks.forEach(task => { const card = createCardElement(task); const col = document.querySelector(`.cards[data-status="${task.status}"]`); if (col) col.appendChild(card); }); renderStats(); }
+        function createCardElement(task) { const div = document.createElement('div'); div.className = 'card'; div.dataset.id = task.id; div.dataset.status = task.status; const tagClass = `tag-${task.category}`; const priorityClass = `priority-${task.priority}`; div.innerHTML = `<div class="card-title">${task.title}</div><div class="card-meta"><span class="tag ${tagClass}">${getCategoryLabel(task.category)}</span><span class="priority-dot ${priorityClass}"></span></div>`; div.addEventListener('click', () => openDetail(task.id)); return div; }
         function getCategoryLabel(cat) { const labels = { dev: 'Dev', marketing: 'Marketing', content: 'Content', ambassador: 'Ambassador', ops: 'Ops' }; return labels[cat] || cat; }
-        
-        function renderStats() {
-            const counts = { total: 0, todo: 0, progress: 0, review: 0, done: 0 };
-            state.tasks.forEach(t => { counts.total++; counts[t.status]++; });
-            document.getElementById('stat-total').textContent = counts.total;
-            document.getElementById('stat-todo').textContent = counts.todo;
-            document.getElementById('stat-progress').textContent = counts.progress;
-            document.getElementById('stat-done').textContent = counts.done;
-            document.querySelectorAll('.column').forEach(col => { const status = col.dataset.column; const countEl = col.querySelector('.column-count'); if (countEl) countEl.textContent = counts[status] || 0; });
-        }
-        
+        function renderStats() { const counts = { total: 0, todo: 0, progress: 0, review: 0, done: 0 }; state.tasks.forEach(t => { counts.total++; counts[t.status]++; }); document.getElementById('stat-total').textContent = counts.total; document.getElementById('stat-todo').textContent = counts.todo; document.getElementById('stat-progress').textContent = counts.progress; document.getElementById('stat-done').textContent = counts.done; document.querySelectorAll('.column').forEach(col => { const status = col.dataset.column; const countEl = col.querySelector('.column-count'); if (countEl) countEl.textContent = counts[status] || 0; }); }
         function openAddModal() { document.getElementById('addModal').classList.add('active'); document.getElementById('addTitle').focus(); }
         function openDetail(id) { currentTaskId = id; const task = state.tasks.find(t => t.id == id); if (!task) return; document.getElementById('editId').value = id; document.getElementById('editTitle').value = task.title; document.getElementById('editDesc').value = task.desc || ''; document.getElementById('editStatus').value = task.status; document.getElementById('editCategory').value = task.category; document.getElementById('editPriority').value = task.priority; document.getElementById('detailModal').classList.add('active'); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); currentTaskId = null; }
@@ -263,6 +147,100 @@
         function saveTask(e) { e.preventDefault(); if (!currentTaskId) return; const task = state.tasks.find(t => t.id == currentTaskId); if (!task) return; task.title = document.getElementById('editTitle').value; task.desc = document.getElementById('editDesc').value; task.status = document.getElementById('editStatus').value; task.category = document.getElementById('editCategory').value; task.priority = document.getElementById('editPriority').value; task.updatedAt = Date.now(); saveState(); renderBoard(); closeModal('detailModal'); }
         function deleteTask() { if (!currentTaskId) return; if (!confirm('Delete this task?')) return; state.tasks = state.tasks.filter(t => t.id != currentTaskId); saveState(); renderBoard(); closeModal('detailModal'); }
         function openTool(tool) { const urls = { docs: 'https://docs.google.com', sheets: 'https://sheets.google.com', slides: 'https://slides.google.com', drive: 'https://drive.google.com', calendar: 'https://calendar.google.com', gmail: 'https://mail.google.com', photos: 'https://photos.google.com' }; window.open(urls[tool], '_blank'); }
+        
+        // Drag and Drop Setup
+        function setupDragDrop() {
+            const cards = document.querySelectorAll('.card');
+            const columns = document.querySelectorAll('.cards');
+            let draggedCard = null;
+            let touchOffset = { x: 0, y: 0 };
+            
+            // Mouse drag
+            cards.forEach(card => {
+                card.addEventListener('dragstart', (e) => { draggedCard = card; card.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; });
+                card.addEventListener('dragend', () => { card.classList.remove('dragging'); draggedCard = null; });
+            });
+            
+            // Touch drag for mobile
+            cards.forEach(card => {
+                card.addEventListener('touchstart', (e) => {
+                    draggedCard = card;
+                    card.classList.add('dragging');
+                    const touch = e.touches[0];
+                    const rect = card.getBoundingClientRect();
+                    touchOffset.x = touch.clientX - rect.left;
+                    touchOffset.y = touch.clientY - rect.top;
+                    card.style.position = 'fixed';
+                    card.style.zIndex = '1000';
+                    card.style.width = rect.width + 'px';
+                }, { passive: true });
+                
+                card.addEventListener('touchmove', (e) => {
+                    if (!draggedCard) return;
+                    e.preventDefault();
+                    const touch = e.touches[0];
+                    draggedCard.style.left = (touch.clientX - touchOffset.x) + 'px';
+                    draggedCard.style.top = (touch.clientY - touchOffset.y) + 'px';
+                    
+                    // Highlight column under touch
+                    columns.forEach(col => col.classList.remove('drag-over'));
+                    const elemBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+                    const cardBelow = elemBelow?.closest('.cards');
+                    if (cardBelow) cardBelow.classList.add('drag-over');
+                }, { passive: false });
+                
+                card.addEventListener('touchend', (e) => {
+                    if (!draggedCard) return;
+                    const touch = e.changedTouches[0];
+                    const elemBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+                    const cardBelow = elemBelow?.closest('.cards');
+                    const columnBelow = elemBelow?.closest('.column');
+                    
+                    if (columnBelow) {
+                        const newStatus = columnBelow.dataset.column;
+                        const taskId = draggedCard.dataset.id;
+                        const task = state.tasks.find(t => t.id == taskId);
+                        if (task && task.status !== newStatus) {
+                            task.status = newStatus;
+                            task.updatedAt = Date.now();
+                            saveState();
+                            renderBoard();
+                        }
+                    }
+                    
+                    draggedCard.classList.remove('dragging');
+                    draggedCard.style.position = '';
+                    draggedCard.style.zIndex = '';
+                    draggedCard.style.left = '';
+                    draggedCard.style.top = '';
+                    draggedCard.style.width = '';
+                    columns.forEach(col => col.classList.remove('drag-over'));
+                    draggedCard = null;
+                });
+            });
+            
+            // Column drop zones
+            columns.forEach(col => {
+                col.addEventListener('dragover', (e) => { e.preventDefault(); col.classList.add('drag-over'); });
+                col.addEventListener('dragleave', () => col.classList.remove('drag-over'));
+                col.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    col.classList.remove('drag-over');
+                    if (draggedCard) {
+                        const newStatus = col.dataset.status;
+                        const taskId = draggedCard.dataset.id;
+                        const task = state.tasks.find(t => t.id == taskId);
+                        if (task && task.status !== newStatus) {
+                            task.status = newStatus;
+                            task.updatedAt = Date.now();
+                            saveState();
+                            renderBoard();
+                        }
+                    }
+                });
+            });
+        }
+        
         document.querySelectorAll('.modal').forEach(modal => { modal.addEventListener('click', e => { if (e.target === modal) closeModal(modal.id); }); });
     </script>
 </body>
