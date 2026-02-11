@@ -73,7 +73,7 @@ function TaskCard({ task, onClick, onDragStart, onDragEnd, onTouchStart, onTouch
   );
 }
 
-function TaskColumn({ status, tasks, columnIcons, columnLabels, onTaskClick, onDragOver, onDragLeave, onDrop, isOver }) {
+function TaskColumn({ status, tasks, columnIcons, columnLabels, onTaskClick, onDragOver, onDragLeave, onDrop, onDragStart, onDragEnd, onTouchStart, onTouchMove, onTouchEnd, isOver }) {
   const columnTasks = Object.values(tasks).filter(t => t.status === status).sort((a, b) => (a.order || 0) - (b.order || 0));
 
   return (
@@ -101,11 +101,11 @@ function TaskColumn({ status, tasks, columnIcons, columnLabels, onTaskClick, onD
             key={task.id}
             task={task}
             onClick={() => onTaskClick(task)}
-            onDragStart={handleDragStart}
-            onDragEnd={handleDragEnd}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
+            onDragStart={onDragStart}
+            onDragEnd={onDragEnd}
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
           />
         ))}
         {columnTasks.length === 0 && (
@@ -544,6 +544,11 @@ function App() {
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
+                onDragStart={handleDragStart}
+                onDragEnd={handleDragEnd}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
                 isOver={overColumn === `column-${status}`}
               />
             ))}
