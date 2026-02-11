@@ -161,6 +161,7 @@ function App() {
   const [tasks, setTasks] = useState({});
   const [notes, setNotes] = useState({});
   const [syncStatus, setSyncStatus] = useState({ text: 'Loading...', type: 'saved' });
+  const [scrollProgress, setScrollProgress] = useState(0);
   const [showAddTask, setShowAddTask] = useState(false);
   const [showAddNote, setShowAddNote] = useState(false);
   const [editingNote, setEditingNote] = useState(null);
@@ -231,6 +232,20 @@ function App() {
     } catch (e) {
       console.log('Notes save failed', e);
     }
+  }, []);
+
+  // Track scroll position for indicator
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = scrollHeight > 0 ? (window.scrollY / scrollHeight) * 100 : 0;
+      setScrollProgress(Math.min(100, Math.max(0, progress)));
+    };
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Initial
+    
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   // Drag handlers - native HTML5 drag and drop
@@ -521,7 +536,11 @@ function App() {
       </div>
 
       {/* Content */}
-      <div style={{ flex: 1, overflow: 'auto', overflowX: 'hidden' }}>
+      <div style={{ flex: 1, overflow: 'auto', overflowX: 'hidden', position: 'relative' }}>
+        {/* Scroll Position Indicator */}
+        <div style={{ position: 'fixed', left: 0, top: '5.5rem', bottom: '4.5rem', width: '3px', background: 'rgba(55, 65, 81, 0.3)', zIndex: 50 }}>
+          <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: `${scrollProgress}%`, background: 'linear-gradient(180deg, #a78bfa 0%, #60a5fa 100%)', transition: 'height 0.1s ease-out' }} />
+        </div>
         {/* Stats */}
         <div className="stats-scroll">
           <div className="stat-pill">Total: <span>{stats.total}</span></div>
