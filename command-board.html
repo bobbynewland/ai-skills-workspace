@@ -3,641 +3,267 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>AI Skills Studio - Command Board</title>
+    <title>Mission Control</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: #fff; min-height: 100vh; padding: 15px; touch-action: pan-y; }
-        
-        /* Utility */
-        .hidden { display: none !important; }
-        .unselectable { user-select: none; -webkit-user-select: none; }
-        
-        /* Header */
-        .header { text-align: center; margin-bottom: 20px; padding: 15px; }
-        .header h1 { font-size: 2rem; background: linear-gradient(90deg, #00d4ff, #7b2cbf); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px; }
-        .header p { color: #888; font-size: 1rem; }
-        
-        /* Stats */
-        .stats { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
-        .stat-box { background: rgba(255,255,255,0.05); padding: 12px 20px; border-radius: 10px; text-align: center; min-width: 80px; border: 1px solid rgba(255,255,255,0.1); }
-        .stat-number { font-size: 1.6rem; font-weight: bold; color: #00d4ff; }
-        .stat-label { color: #888; font-size: 0.8rem; }
-        
-        /* Revenue Tracker */
-        .money-tracker { background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(123,44,191,0.1)); padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px solid rgba(0,212,255,0.2); }
-        .money-tracker h3 { color: #00d4ff; margin-bottom: 12px; font-size: 1rem; }
-        .money-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .money-item { background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px; text-align: center; }
-        .money-label { color: #888; font-size: 0.75rem; }
-        .money-value { font-size: 1.3rem; font-weight: bold; color: #00ff88; }
-        
-        /* Board Layout */
-        .board { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 20px; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory; }
-        .column { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 12px; border: 1px solid rgba(255,255,255,0.05); min-width: 280px; max-width: 320px; flex-shrink: 0; scroll-snap-align: start; display: flex; flex-direction: column; max-height: 70vh; }
-        .column-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 2px solid; }
-        .column-title { font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
-        .column-count { background: rgba(255,255,255,0.1); padding: 3px 10px; border-radius: 15px; font-size: 0.8rem; }
-        
-        /* Column Colors */
-        .todo .column-header { border-color: #ff6b6b; }
-        .progress .column-header { border-color: #ffd93d; }
-        .review .column-header { border-color: #6bcf7f; }
-        .done .column-header { border-color: #00d4ff; }
-        
-        /* Tasks Container */
-        .tasks { flex-grow: 1; overflow-y: auto; min-height: 80px; padding: 4px; -webkit-overflow-scrolling: touch; }
-        
-        /* Task Card - Mobile First */
-        .task-card { 
-            background: rgba(255,255,255,0.05); 
-            border-radius: 10px; 
-            padding: 12px; 
-            margin-bottom: 10px; 
-            cursor: grab; 
-            transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
-            border: 1px solid rgba(255,255,255,0.08);
-            border-left: 3px solid transparent;
-            user-select: none;
-            -webkit-user-select: none;
-            touch-action: none;
-            position: relative;
-        }
-        .task-card:active { cursor: grabbing; }
-        .task-card.dragging { 
-            opacity: 0.5; 
-            transform: scale(1.02);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-            z-index: 1000;
-            position: relative;
-        }
-        .task-card.drag-over {
-            border-color: #00d4ff;
-            background: rgba(0,212,255,0.1);
-        }
-        
-        /* Drag Handle */
-        .drag-handle {
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: grab;
-            color: rgba(255,255,255,0.3);
-            font-size: 16px;
-            transition: color 0.2s;
-            background: linear-gradient(90deg, rgba(255,255,255,0.05), transparent);
-            border-radius: 10px 0 0 10px;
-        }
-        .drag-handle:active { cursor: grabbing; color: rgba(255,255,255,0.6); }
-        
-        /* Card Content */
-        .card-content { padding-left: 35px; min-height: 50px; }
-        .task-title { font-weight: 600; font-size: 0.95rem; line-height: 1.3; margin-bottom: 6px; word-wrap: break-word; }
-        .task-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
-        .task-desc-preview { font-size: 0.8rem; color: #aaa; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        
-        /* Tags & Priorities */
-        .tag { font-size: 0.7rem; padding: 3px 8px; border-radius: 12px; font-weight: 500; }
-        .tag-marketing { background: rgba(255,107,107,0.2); color: #ff6b6b; }
-        .tag-dev { background: rgba(0,212,255,0.2); color: #00d4ff; }
-        .tag-content { background: rgba(255,217,61,0.2); color: #ffd93d; }
-        .tag-ambassador { background: rgba(107,207,127,0.2); color: #6bcf7f; }
-        .tag-urgent { background: rgba(255,0,0,0.2); color: #ff4444; }
-        .tag-ops { background: rgba(156, 39, 176, 0.2); color: #e040fb; }
-        
-        .priority { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
-        .priority-high { background: #ff4444; }
-        .priority-medium { background: #ffd93d; }
-        .priority-low { background: #6bcf7f; }
-        
-        .add-task-btn { width: 100%; padding: 14px; background: rgba(255,255,255,0.05); border: 2px dashed rgba(255,255,255,0.15); border-radius: 8px; color: #888; cursor: pointer; transition: all 0.3s; margin-top: 10px; font-size: 0.95rem; user-select: none; }
-        .add-task-btn:hover { background: rgba(255,255,255,0.1); color: #fff; border-color: rgba(255,255,255,0.4); }
-        .add-task-btn:active { transform: scale(0.98); }
-        
-        /* Modals */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: flex-end; padding: 0; }
-        .modal-content { 
-            background: #1a1a2e; 
-            padding: 20px; 
-            border-radius: 20px 20px 0 0; 
-            width: 100%; 
-            max-width: 600px; 
-            border: 1px solid rgba(255,255,255,0.1);
-            display: flex; 
-            flex-direction: column; 
-            gap: 1rem;
-            max-height: 85vh;
-            overflow-y: auto;
-            animation: slideUp 0.3s ease;
-        }
-        @keyframes slideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
-        .modal h2 { color: #00d4ff; margin-bottom: 5px; font-size: 1.3rem; }
-        
-        .form-group label { display: block; margin-bottom: 5px; color: #888; font-size: 0.85rem; }
-        .form-group input, .form-group select, .form-group textarea { 
-            width: 100%; 
-            padding: 14px; 
-            background: rgba(255,255,255,0.05); 
-            border: 1px solid rgba(255,255,255,0.1); 
-            border-radius: 10px; 
-            color: #fff; 
-            font-family: inherit; 
-            font-size: 1rem;
-            -webkit-appearance: none;
-        }
-        .form-group textarea { min-height: 120px; resize: vertical; line-height: 1.5; }
-        
-        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
-        .btn { flex: 1; padding: 14px; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.2s; font-size: 1rem; }
-        .btn-primary { background: linear-gradient(90deg, #00d4ff, #7b2cbf); color: #fff; }
-        .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; }
-        .btn-danger { background: rgba(255, 68, 68, 0.2); color: #ff4444; }
-        .btn:active { transform: scale(0.97); }
-        
-        /* Detail View Specifics */
-        .detail-meta { display: flex; gap: 10px; margin-bottom: 5px; }
-        .detail-meta > div { flex: 1; }
-        
-        /* Drag Preview */
-        .drag-preview {
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            opacity: 0.9;
-            transform: rotate(3deg);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0f; color: #e5e5e5; min-height: 100vh; overflow-x: hidden; padding-bottom: 80px; }
+        .header { padding: 20px; background: linear-gradient(180deg, #0a0a0f 0%, transparent 100%); position: sticky; top: 0; z-index: 100; }
+        .header h1 { font-size: 1.5rem; font-weight: 600; background: linear-gradient(135deg, #fff 0%, #a78bfa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header p { color: #6b7280; font-size: 0.875rem; margin-top: 4px; }
+        .connection-status { display: flex; align-items: center; gap: 8px; padding: 8px 20px; font-size: 0.8rem; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .status-dot.connected { background: #34d399; }
+        .status-dot.disconnected { background: #f87171; }
+        .status-dot.syncing { background: #fbbf24; animation: pulse 1s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .tabs { display: flex; gap: 4px; padding: 0 20px 20px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .tab { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 10px 16px; font-size: 0.85rem; cursor: pointer; white-space: nowrap; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+        .tab.active { background: linear-gradient(135deg, rgba(167, 139, 250, 0.15) 0%, rgba(124, 58, 237, 0.15) 100%); border-color: rgba(167, 139, 250, 0.3); }
+        .tab-content { display: none; padding: 0 20px; }
+        .tab-content.active { display: block; }
+        .stats-bar { display: flex; gap: 8px; padding: 0 20px 20px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .stat-pill { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 8px 16px; font-size: 0.8rem; white-space: nowrap; }
+        .stat-pill span { color: #a78bfa; font-weight: 600; }
+        .board { display: flex; gap: 12px; padding: 0 20px 100px; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 120px; }
+        .column { min-width: 280px; max-width: 280px; flex-shrink: 0; }
+        .column-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid; }
+        .column-title { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 0.9rem; }
+        .column-count { background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; color: #9ca3af; }
+        .todo .column-header { border-color: #f87171; }
+        .progress .column-header { border-color: #fbbf24; }
+        .review .column-header { border-color: #34d399; }
+        .done .column-header { border-color: #60a5fa; }
+        .cards { display: flex; flex-direction: column; gap: 10px; }
+        .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s ease; }
+        .card:active { transform: scale(0.98); }
+        .card:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); }
+        .card-title { font-weight: 500; font-size: 0.95rem; margin-bottom: 8px; line-height: 1.4; }
+        .card-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .tag { font-size: 0.7rem; padding: 4px 10px; border-radius: 6px; font-weight: 500; }
+        .tag-dev { background: rgba(96, 165, 250, 0.15); color: #60a5fa; }
+        .tag-marketing { background: rgba(248, 113, 113, 0.15); color: #f87171; }
+        .tag-content { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
+        .tag-ambassador { background: rgba(52, 211, 153, 0.15); color: #34d399; }
+        .tag-ops { background: rgba(167, 139, 250, 0.15); color: #a78bfa; }
+        .priority-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .priority-high { background: #f87171; }
+        .priority-medium { background: #fbbf24; }
+        .priority-low { background: #34d399; }
+        .notes-list { display: flex; flex-direction: column; gap: 12px; padding-bottom: 120px; }
+        .note-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 16px; cursor: pointer; }
+        .note-title { font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .note-preview { color: #9ca3af; font-size: 0.9rem; line-height: 1.5; }
+        .note-meta { display: flex; gap: 12px; margin-top: 12px; font-size: 0.75rem; color: #6b7280; }
+        .files-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; padding-bottom: 120px; }
+        .file-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 16px; text-align: center; cursor: pointer; transition: all 0.2s; }
+        .file-card:hover { background: rgba(255,255,255,0.05); }
+        .file-icon { font-size: 2.5rem; margin-bottom: 8px; }
+        .file-name { font-size: 0.85rem; font-weight: 500; word-break: break-word; }
+        .file-meta { font-size: 0.75rem; color: #6b7280; margin-top: 4px; }
+        .tools-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding-bottom: 120px; }
+        .tool-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; cursor: pointer; transition: all 0.2s; }
+        .tool-card:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); transform: translateY(-2px); }
+        .tool-icon { font-size: 2rem; }
+        .tool-name { font-weight: 600; font-size: 0.9rem; }
+        .tool-desc { font-size: 0.75rem; color: #6b7280; text-align: center; }
+        .google-connect { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 24px; margin-bottom: 20px; text-align: center; }
+        .google-connect h3 { margin-bottom: 12px; }
+        .google-connect p { color: #9ca3af; font-size: 0.9rem; margin-bottom: 16px; }
+        .fab { position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; border-radius: 16px; background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%); border: none; color: white; font-size: 1.5rem; cursor: pointer; box-shadow: 0 10px 40px rgba(124, 58, 237, 0.4); z-index: 100; display: flex; align-items: center; justify-content: center; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: flex-end; justify-content: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: #16161c; width: 100%; max-width: 600px; border-radius: 24px 24px 0 0; padding: 24px; max-height: 85vh; overflow-y: auto; animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .modal-header h2 { font-size: 1.25rem; font-weight: 600; }
+        .close-btn { width: 36px; height: 36px; border-radius: 10px; background: rgba(255,255,255,0.05); border: none; color: #9ca3af; font-size: 1.25rem; cursor: pointer; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; color: #9ca3af; font-size: 0.8rem; margin-bottom: 8px; font-weight: 500; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #fff; font-size: 1rem; -webkit-appearance: none; }
+        .form-group textarea { min-height: 100px; resize: none; line-height: 1.5; }
+        .btn-group { display: flex; gap: 12px; margin-top: 20px; }
+        .btn { flex: 1; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.2s; border: none; }
+        .btn-primary { background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%); color: white; }
+        .btn-secondary { background: rgba(255,255,255,0.05); color: #e5e5e5; border: 1px solid rgba(255,255,255,0.1); }
+        .btn-danger { background: rgba(248, 113, 113, 0.15); color: #f87171; }
+        .btn:active { transform: scale(0.98); }
+        @media (min-width: 768px) { .board, .tabs, .notes-list, .files-grid, .tools-grid { padding-left: 40px; padding-right: 40px; } .modal-content { margin: auto; border-radius: 24px; } .column { min-width: 320px; max-width: 320px; } }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🚀 AI Skills Studio</h1>
-        <p>Mission Control v2.0</p>
-    </div>
-    
-    <div class="money-tracker">
-        <h3>💰 Revenue Tracker</h3>
-        <div class="money-grid">
-            <div class="money-item">
-                <div class="money-label">Ambassadors</div>
-                <div class="money-value" id="stat-ambassadors">0</div>
-            </div>
-            <div class="money-item">
-                <div class="money-label">Monthly</div>
-                <div class="money-value" id="stat-revenue">$0</div>
-            </div>
-            <div class="money-item">
-                <div class="money-label">Users</div>
-                <div class="money-value" id="stat-users">0</div>
-            </div>
+    <div class="header"><h1>🚀 Mission Control</h1><p>Your command center</p></div>
+    <div class="connection-status"><span class="status-dot disconnected" id="googleStatus"></span><span id="googleStatusText">Firebase connecting...</span></div>
+    <div class="tabs"><div class="tab active" data-tab="tasks"><span>📋 Tasks</span></div><div class="tab" data-tab="notes"><span>📝 Notes</span></div><div class="tab" data-tab="files"><span>📁 Files</span></div><div class="tab" data-tab="tools"><span>🔧 Google Tools</span></div></div>
+    <div class="tab-content active" id="tasks-tab">
+        <div class="stats-bar"><div class="stat-pill">Total: <span id="stat-total">0</span></div><div class="stat-pill">To Do: <span id="stat-todo">0</span></div><div class="stat-pill">In Progress: <span id="stat-progress">0</span></div><div class="stat-pill">Done: <span id="stat-done">0</span></div></div>
+        <div class="board">
+            <div class="column todo" data-column="todo"><div class="column-header"><div class="column-title">📋 To Do <span class="column-count">0</span></div></div><div class="cards" data-status="todo"></div></div>
+            <div class="column progress" data-column="progress"><div class="column-header"><div class="column-title">🔥 In Progress <span class="column-count">0</span></div></div><div class="cards" data-status="progress"></div></div>
+            <div class="column review" data-column="review"><div class="column-header"><div class="column-title">👀 Review <span class="column-count">0</span></div></div><div class="cards" data-status="review"></div></div>
+            <div class="column done" data-column="done"><div class="column-header"><div class="column-title">✅ Done <span class="column-count">0</span></div></div><div class="cards" data-status="done"></div></div>
         </div>
     </div>
-    
-    <div class="stats">
-        <div class="stat-box"><div class="stat-number" id="total-tasks">0</div><div class="stat-label">Total</div></div>
-        <div class="stat-box"><div class="stat-number" id="count-todo-stat">0</div><div class="stat-label">To Do</div></div>
-        <div class="stat-box"><div class="stat-number" id="count-progress-stat">0</div><div class="stat-label">In Progress</div></div>
-        <div class="stat-box"><div class="stat-number" id="count-done-stat">0</div><div class="stat-label">Done</div></div>
-    </div>
-    
-    <div class="board">
-        <div class="column todo" id="col-todo">
-            <div class="column-header"><div class="column-title">📋 To Do</div><span class="column-count">0</span></div>
-            <div class="tasks" data-status="todo"></div>
-            <button class="add-task-btn" onclick="openAddModal('todo')">+ Add Task</button>
-        </div>
-        <div class="column progress" id="col-progress">
-            <div class="column-header"><div class="column-title">🔥 In Progress</div><span class="column-count">0</span></div>
-            <div class="tasks" data-status="progress"></div>
-            <button class="add-task-btn" onclick="openAddModal('progress')">+ Add Task</button>
-        </div>
-        <div class="column review" id="col-review">
-            <div class="column-header"><div class="column-title">👀 Review</div><span class="column-count">0</span></div>
-            <div class="tasks" data-status="review"></div>
-            <button class="add-task-btn" onclick="openAddModal('review')">+ Add Task</button>
-        </div>
-        <div class="column done" id="col-done">
-            <div class="column-header"><div class="column-title">✅ Done</div><span class="column-count">0</span></div>
-            <div class="tasks" data-status="done"></div>
-            <button class="add-task-btn" onclick="openAddModal('done')">+ Add Task</button>
-        </div>
-    </div>
-
-    <!-- Add Task Modal -->
-    <div class="modal" id="addModal">
-        <div class="modal-content">
-            <h2>New Task</h2>
-            <div class="form-group"><label>Title</label><input type="text" id="addTitle" placeholder="Task name..."></div>
-            <div class="detail-meta">
-                <div class="form-group">
-                    <label>Category</label>
-                    <select id="addCategory">
-                        <option value="dev">Dev</option>
-                        <option value="marketing">Marketing</option>
-                        <option value="content">Content</option>
-                        <option value="ambassador">Ambassador</option>
-                        <option value="ops">Ops</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Priority</label>
-                    <select id="addPriority">
-                        <option value="high">High 🔴</option>
-                        <option value="medium">Medium 🟡</option>
-                        <option value="low">Low 🟢</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group"><label>Notes</label><textarea id="addDesc" placeholder="Details..."></textarea></div>
-            <div class="btn-group">
-                <button class="btn btn-secondary" onclick="closeModal('addModal')">Cancel</button>
-                <button class="btn btn-primary" onclick="submitNewTask()">Create</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Edit/Detail Modal -->
-    <div class="modal" id="detailModal">
-        <div class="modal-content">
-            <input type="hidden" id="editId">
-            <div class="form-group"><label>Title</label><input type="text" id="editTitle"></div>
-            <div class="detail-meta">
-                <div class="form-group">
-                    <label>Status</label>
-                    <select id="editStatus">
-                        <option value="todo">To Do</option>
-                        <option value="progress">In Progress</option>
-                        <option value="review">Review</option>
-                        <option value="done">Done</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Priority</label>
-                    <select id="editPriority">
-                        <option value="high">High</option>
-                        <option value="medium">Medium</option>
-                        <option value="low">Low</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group"><label>Detailed Notes</label><textarea id="editDesc"></textarea></div>
-            <div class="btn-group">
-                <button class="btn btn-secondary" onclick="closeModal('detailModal')">Close</button>
-                <button class="btn btn-primary" onclick="saveEdit()">Save</button>
-                <button class="btn btn-danger" onclick="deleteTask()">Delete</button>
-            </div>
-        </div>
-    </div>
-
+    <div class="tab-content" id="notes-tab"><div class="google-connect"><h3>📝 Google Docs Integration</h3><p>Connect to access your Brain Dump and Notes from Google Docs</p></div><div class="notes-list"><div class="note-card" onclick="alert('Google Docs integration coming soon!')"><div class="note-title">🧠 Brain Dump</div><div class="note-preview">Your central note-taking space for ideas and thoughts...</div><div class="note-meta">📄 Google Docs • Coming soon</div></div><div class="note-card" onclick="alert('Google Docs integration coming soon!')"><div class="note-title">📅 Meeting Notes</div><div class="note-preview">Meeting notes with action items and decisions...</div><div class="note-meta">📄 Google Docs • Coming soon</div></div></div></div>
+    <div class="tab-content" id="files-tab"><div class="google-connect"><h3>📁 Firebase Storage</h3><p>Your files synced in real-time via Firebase</p></div><div class="files-grid"><div class="file-card" onclick="alert('File browser coming soon!')"><div class="file-icon">📁</div><div class="file-name">Browse Files</div><div class="file-meta">Click to view all files</div></div><div class="file-card" onclick="alert('File browser coming soon!')"><div class="file-icon">📤</div><div class="file-name">Upload File</div><div class="file-meta">Click to upload</div></div></div></div>
+    <div class="tab-content" id="tools-tab"><div class="google-connect"><h3>🔧 Google Workspace</h3><p>Quick access to all Google tools</p></div><div class="tools-grid"><div class="tool-card" onclick="openTool('docs')"><div class="tool-icon">📄</div><div class="tool-name">Google Docs</div><div class="tool-desc">Documents</div></div><div class="tool-card" onclick="openTool('sheets')"><div class="tool-icon">📊</div><div class="tool-name">Google Sheets</div><div class="tool-desc">Spreadsheets</div></div><div class="tool-card" onclick="openTool('drive')"><div class="tool-icon">☁️</div><div class="tool-name">Google Drive</div><div class="tool-desc">All files</div></div><div class="tool-card" onclick="openTool('calendar')"><div class="tool-icon">📅</div><div class="tool-name">Calendar</div><div class="tool-desc">Schedule</div></div><div class="tool-card" onclick="openTool('gmail')"><div class="tool-icon">✉️</div><div class="tool-name">Gmail</div><div class="tool-desc">Email</div></div><div class="tool-card" onclick="openTool('photos')"><div class="tool-icon">🖼️</div><div class="tool-name">Photos</div><div class="tool-desc">Images</div></div></div></div>
+    <button class="fab" onclick="openAddModal()" id="taskFab">+</button>
+    <div class="modal" id="addModal"><div class="modal-content"><div class="modal-header"><h2>New Task</h2><button class="close-btn" onclick="closeModal('addModal')">×</button></div>
+        <form onsubmit="submitNewTask(event)"><div class="form-group"><label>Title</label><input type="text" id="addTitle" placeholder="What needs to be done?" required></div>
+            <div class="form-group"><label>Description</label><textarea id="addDesc" placeholder="Add details..."></textarea></div>
+            <div class="form-group"><label>Category</label><select id="addCategory"><option value="dev">💻 Dev</option><option value="marketing">📣 Marketing</option><option value="content">🎨 Content</option><option value="ambassador">🤝 Ambassador</option><option value="ops">⚙️ Ops</option></select></div>
+            <div class="form-group"><label>Priority</label><select id="addPriority"><option value="high">🔴 High</option><option value="medium">🟡 Medium</option><option value="low">🟢 Low</option></select></div>
+            <div class="btn-group"><button type="button" class="btn btn-secondary" onclick="closeModal('addModal')">Cancel</button><button type="submit" class="btn btn-primary">Create Task</button></div></form></div></div>
+    <div class="modal" id="detailModal"><div class="modal-content"><div class="modal-header"><h2>Task Details</h2><button class="close-btn" onclick="closeModal('detailModal')">×</button></div>
+        <form onsubmit="saveTask(event)"><input type="hidden" id="editId">
+            <div class="form-group"><label>Status</label><select id="editStatus"><option value="todo">📋 To Do</option><option value="progress">🔥 In Progress</option><option value="review">👀 Review</option><option value="done">✅ Done</option></select></div>
+            <div class="form-group"><label>Title</label><input type="text" id="editTitle" required></div>
+            <div class="form-group"><label>Description</label><textarea id="editDesc"></textarea></div>
+            <div class="form-group"><label>Category</label><select id="editCategory"><option value="dev">💻 Dev</option><option value="marketing">📣 Marketing</option><option value="content">🎨 Content</option><option value="ambassador">🤝 Ambassador</option><option value="ops">⚙️ Ops</option></select></div>
+            <div class="form-group"><label>Priority</label><select id="editPriority"><option value="high">🔴 High</option><option value="medium">🟡 Medium</option><option value="low">🟢 Low</option></select></div>
+            <div class="btn-group"><button type="button" class="btn btn-danger" onclick="deleteTask()">Delete</button><button type="submit" class="btn btn-primary">Save</button></div></form></div></div>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <script>
-        // Data Model
-        let state = {
-            tasks: [],
-            config: { ambassadors: 0, revenue: 0, users: 0 }
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyB3Z1WDeqO4cEBMk5Q1j9H8c2-0Z1Y8X0",
+            authDomain: "winslow-756c3.firebaseapp.com",
+            databaseURL: "https://winslow-756c3-default-rtdb.firebaseio.com",
+            projectId: "winslow-756c3",
+            storageBucket: "winslow-756c3.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abc123"
         };
-
-        // Drag state
-        let dragState = {
-            card: null,
-            originalParent: null,
-            startY: 0,
-            startX: 0,
-            touchIdentifier: null,
-            preview: null
-        };
-
-        // Init
-        document.addEventListener('DOMContentLoaded', () => {
-            loadState();
-            renderBoard();
-            setupColumnListeners();
-        });
-
-        // --- Core Functions ---
-
-        function loadState() {
-            const raw = localStorage.getItem('winslow_board_v2');
-            if (raw) {
-                state = JSON.parse(raw);
-            } else {
-                state.tasks = [
-                    { id: Date.now(), title: "Setup Mission Control", desc: "Board is live.", category: "ops", priority: "high", status: "done" },
-                    { id: Date.now()+1, title: "Create Kids Clothing Templates", desc: "Need 5-10 high quality templates for the launch.", category: "content", priority: "high", status: "todo" }
-                ];
-                saveState();
-            }
-            
-            document.getElementById('stat-ambassadors').textContent = state.config.ambassadors;
-            document.getElementById('stat-revenue').textContent = '$' + state.config.revenue;
-            document.getElementById('stat-users').textContent = state.config.users;
+        
+        // Initialize Firebase
+        let db;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.database();
+            setConnectionStatus('syncing', 'Firebase connecting...');
+        } catch(e) {
+            console.log('Firebase not available, using localStorage');
+            setConnectionStatus('disconnected', 'Using localStorage');
         }
-
+        
+        let state = { tasks: [] };
+        let currentTaskId = null;
+        let localTasks = [];
+        
+        document.addEventListener('DOMContentLoaded', () => { loadState(); setupTabs(); });
+        function setupTabs() { document.querySelectorAll('.tab').forEach(tab => { tab.addEventListener('click', () => { const tabName = tab.dataset.tab; document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); tab.classList.add('active'); document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); document.getElementById(`${tabName}-tab`).classList.add('active'); document.getElementById('taskFab').style.display = tabName === 'tasks' ? 'flex' : 'none'; }); }); }
+        
+        function setConnectionStatus(status, text) {
+            const statusEl = document.getElementById('googleStatus');
+            const textEl = document.getElementById('googleStatusText');
+            statusEl.className = `status-dot ${status}`;
+            textEl.textContent = text;
+        }
+        
+        function loadState() {
+            if (db) {
+                // Try Firebase first
+                setConnectionStatus('syncing', 'Loading from Firebase...');
+                db.ref('workspaces/winslow_main/tasks').on('value', (snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        state.tasks = Object.entries(data).map(([id, task]) => ({ id, ...task }));
+                        renderBoard();
+                        setConnectionStatus('connected', 'Firebase connected ✓');
+                        localStorage.setItem('mission_control_firebase', JSON.stringify(state.tasks));
+                    } else {
+                        // Try local backup
+                        loadFromLocal();
+                    }
+                }, (error) => {
+                    console.log('Firebase read failed, using local');
+                    loadFromLocal();
+                });
+            } else {
+                loadFromLocal();
+            }
+        }
+        
+        function loadFromLocal() {
+            const firebaseBackup = localStorage.getItem('mission_control_firebase');
+            if (firebaseBackup) {
+                state.tasks = JSON.parse(firebaseBackup);
+            } else {
+                const oldLocal = localStorage.getItem('mission_control_v2') || localStorage.getItem('mission_control_v1') || localStorage.getItem('winslow_board_v2');
+                if (oldLocal) {
+                    const old = JSON.parse(oldLocal);
+                    state.tasks = old.tasks || [];
+                } else {
+                    state.tasks = [
+                        { id: Date.now().toString(), title: "Welcome to Mission Control", desc: "Your tasks are now synced with Firebase!", category: "ops", priority: "medium", status: "todo" }
+                    ];
+                }
+            }
+            renderBoard();
+            setConnectionStatus('disconnected', 'Local mode (Firebase offline)');
+        }
+        
         function saveState() {
-            localStorage.setItem('winslow_board_v2', JSON.stringify(state));
+            // Save to Firebase if available
+            if (db) {
+                const updates = {};
+                state.tasks.forEach(task => {
+                    updates[`tasks/${task.id}`] = task;
+                });
+                db.ref('workspaces/winslow_main').update({ tasks: null }).then(() => {
+                    db.ref('workspaces/winslow_main/tasks').set(state.tasks.reduce((acc, task) => {
+                        acc[task.id] = task;
+                        return acc;
+                    }, {}));
+                });
+            }
+            // Always backup locally
+            localStorage.setItem('mission_control_firebase', JSON.stringify(state.tasks));
             renderStats();
         }
-
+        
         function renderBoard() {
-            document.querySelectorAll('.tasks').forEach(el => el.innerHTML = '');
+            document.querySelectorAll('.cards').forEach(el => el.innerHTML = '');
             state.tasks.forEach(task => {
                 const card = createCardElement(task);
-                const col = document.querySelector(`.tasks[data-status="${task.status}"]`);
+                const col = document.querySelector(`.cards[data-status="${task.status}"]`);
                 if (col) col.appendChild(card);
             });
             renderStats();
         }
-
+        
         function createCardElement(task) {
             const div = document.createElement('div');
-            div.className = 'task-card unselectable';
+            div.className = 'card';
             div.dataset.id = task.id;
             div.dataset.status = task.status;
-
-            const priorityClass = 'priority-' + task.priority;
-            const tagClass = 'tag-' + task.category;
-            const descPreview = task.desc ? `<div class="task-desc-preview">${task.desc.substring(0, 50)}${task.desc.length > 50 ? '...' : ''}</div>` : '';
-
-            div.innerHTML = `
-                <div class="drag-handle">☰</div>
-                <div class="card-content">
-                    <div class="task-title"><span class="priority ${priorityClass}"></span>${task.title}</div>
-                    ${descPreview}
-                    <div class="task-meta">
-                        <span class="tag ${tagClass}">${task.category.toUpperCase()}</span>
-                    </div>
-                </div>
-            `;
-
-            // Add touch/mouse listeners to handle only
-            const handle = div.querySelector('.drag-handle');
-            handle.addEventListener('touchstart', handleTouchStart, { passive: false });
-            handle.addEventListener('mousedown', handleMouseDown);
-            
-            // Click to open detail (not on handle)
-            div.addEventListener('click', (e) => {
-                if (!e.target.closest('.drag-handle')) {
-                    openDetail(task.id);
-                }
-            });
-
+            const tagClass = `tag-${task.category}`;
+            const priorityClass = `priority-${task.priority}`;
+            div.innerHTML = `<div class="card-title">${task.title}</div><div class="card-meta"><span class="tag ${tagClass}">${getCategoryLabel(task.category)}</span><span class="priority-dot ${priorityClass}"></span></div>`;
+            div.addEventListener('click', () => openDetail(task.id));
             return div;
         }
-
-        // --- Touch Drag ---
-
-        function handleTouchStart(e) {
-            e.preventDefault();
-            const touch = e.changedTouches[0];
-            const card = touch.target.closest('.task-card');
-            if (!card) return;
-
-            startDrag(card, touch.clientX, touch.clientY, touch.identifier);
-        }
-
-        function handleMouseDown(e) {
-            if (e.button !== 0) return;
-            const card = e.target.closest('.task-card');
-            if (!card) return;
-            
-            e.preventDefault();
-            startDrag(card, e.clientX, e.clientY, 'mouse');
-        }
-
-        function startDrag(card, clientX, clientY, identifier) {
-            // Remove any existing drag state
-            if (dragState.card) endDrag();
-
-            dragState.card = card;
-            dragState.originalParent = card.parentElement;
-            dragState.startX = clientX;
-            dragState.startY = clientY;
-            dragState.touchIdentifier = identifier;
-
-            // Create preview
-            dragState.preview = card.cloneNode(true);
-            dragState.preview.className = 'task-card drag-preview';
-            dragState.preview.style.width = card.offsetWidth + 'px';
-            dragState.preview.style.left = clientX - card.offsetWidth/2 + 'px';
-            dragState.preview.style.top = clientY - 20 + 'px';
-            document.body.appendChild(dragState.preview);
-
-            card.classList.add('dragging');
-            card.style.opacity = '0.3';
-
-            // Add move/end listeners
-            if (identifier === 'mouse') {
-                document.addEventListener('mousemove', handleMouseMove);
-                document.addEventListener('mouseup', handleMouseUp);
-            }
-        }
-
-        function handleTouchMove(e) {
-            e.preventDefault();
-            for (let i = 0; i < e.changedTouches.length; i++) {
-                const touch = e.changedTouches[i];
-                if (touch.identifier === dragState.touchIdentifier) {
-                    updateDrag(touch.clientX, touch.clientY);
-                }
-            }
-        }
-
-        function handleMouseMove(e) {
-            if (dragState.touchIdentifier === 'mouse') {
-                updateDrag(e.clientX, e.clientY);
-            }
-        }
-
-        function updateDrag(clientX, clientY) {
-            if (!dragState.preview) return;
-
-            // Move preview
-            dragState.preview.style.left = clientX - dragState.card.offsetWidth/2 + 'px';
-            dragState.preview.style.top = clientY - 20 + 'px';
-
-            // Find column under touch point
-            const columns = document.querySelectorAll('.tasks');
-            columns.forEach(col => {
-                const rect = col.getBoundingClientRect();
-                const isOver = clientX >= rect.left && clientX <= rect.right &&
-                              clientY >= rect.top && clientY <= rect.bottom;
-                
-                if (isOver) {
-                    col.classList.add('drag-over');
-                } else {
-                    col.classList.remove('drag-over');
-                }
-            });
-        }
-
-        function handleTouchEnd(e) {
-            for (let i = 0; i < e.changedTouches.length; i++) {
-                const touch = e.changedTouches[i];
-                if (touch.identifier === dragState.touchIdentifier) {
-                    endDrag(touch.clientX, touch.clientY);
-                }
-            }
-        }
-
-        function handleMouseUp(e) {
-            if (dragState.touchIdentifier === 'mouse') {
-                endDrag(e.clientX, e.clientY);
-            }
-        }
-
-        function endDrag(clientX, clientY) {
-            if (!dragState.card) return;
-
-            // Find target column
-            let targetColumn = null;
-            if (clientX !== undefined) {
-                const columns = document.querySelectorAll('.tasks');
-                columns.forEach(col => {
-                    const rect = col.getBoundingClientRect();
-                    if (clientX >= rect.left && clientX <= rect.right &&
-                        clientY >= rect.top && clientY <= rect.bottom) {
-                        targetColumn = col;
-                    }
-                });
-            }
-
-            // Remove listeners
-            document.removeEventListener('mousemove', handleMouseMove);
-            document.removeEventListener('mouseup', handleMouseUp);
-            document.removeEventListener('touchmove', handleTouchMove);
-            document.removeEventListener('touchend', handleTouchEnd);
-
-            // Update task status if dropped in different column
-            if (targetColumn && targetColumn !== dragState.originalParent) {
-                const newStatus = targetColumn.dataset.status;
-                const taskId = dragState.card.dataset.id;
-                const task = state.tasks.find(t => t.id == taskId);
-                if (task && task.status !== newStatus) {
-                    task.status = newStatus;
-                    saveState();
-                }
-            }
-
-            // Cleanup
-            dragState.card.classList.remove('dragging');
-            dragState.card.style.opacity = '';
-            if (dragState.preview) {
-                dragState.preview.remove();
-                dragState.preview = null;
-            }
-            document.querySelectorAll('.tasks').forEach(c => c.classList.remove('drag-over'));
-            
-            dragState.card = null;
-            dragState.originalParent = null;
-            dragState.touchIdentifier = null;
-
-            renderBoard();
-        }
-
-        function setupColumnListeners() {
-            document.addEventListener('touchmove', handleTouchMove, { passive: false });
-            document.addEventListener('touchend', handleTouchEnd, { passive: false });
-        }
-
-        // --- Stats & UI ---
-
+        
+        function getCategoryLabel(cat) { const labels = { dev: 'Dev', marketing: 'Marketing', content: 'Content', ambassador: 'Ambassador', ops: 'Ops' }; return labels[cat] || cat; }
+        
         function renderStats() {
-            ['todo', 'progress', 'review', 'done'].forEach(s => {
-                const count = state.tasks.filter(t => t.status === s).length;
-                const col = document.querySelector(`#col-${s} .column-count`);
-                if(col) col.innerText = count;
-                const statBox = document.getElementById(`count-${s}-stat`);
-                if(statBox) statBox.innerText = count;
-            });
-            document.getElementById('total-tasks').innerText = state.tasks.length;
+            const counts = { total: 0, todo: 0, progress: 0, review: 0, done: 0 };
+            state.tasks.forEach(t => { counts.total++; counts[t.status]++; });
+            document.getElementById('stat-total').textContent = counts.total;
+            document.getElementById('stat-todo').textContent = counts.todo;
+            document.getElementById('stat-progress').textContent = counts.progress;
+            document.getElementById('stat-done').textContent = counts.done;
+            document.querySelectorAll('.column').forEach(col => { const status = col.dataset.column; const countEl = col.querySelector('.column-count'); if (countEl) countEl.textContent = counts[status] || 0; });
         }
-
-        // --- Task Actions ---
-
-        let addTargetColumn = 'todo';
-
-        function openAddModal(status) {
-            addTargetColumn = status;
-            document.getElementById('addModal').style.display = 'flex';
-            document.getElementById('addTitle').focus();
-        }
-
-        function submitNewTask() {
-            const title = document.getElementById('addTitle').value;
-            if (!title) return;
-
-            const newTask = {
-                id: Date.now().toString(),
-                title: title,
-                desc: document.getElementById('addDesc').value,
-                category: document.getElementById('addCategory').value,
-                priority: document.getElementById('addPriority').value,
-                status: addTargetColumn,
-                created: Date.now()
-            };
-
-            state.tasks.push(newTask);
-            saveState();
-            renderBoard();
-            closeModal('addModal');
-            
-            document.getElementById('addTitle').value = '';
-            document.getElementById('addDesc').value = '';
-        }
-
-        function openDetail(id) {
-            const task = state.tasks.find(t => t.id == id);
-            if (!task) return;
-
-            document.getElementById('editId').value = task.id;
-            document.getElementById('editTitle').value = task.title;
-            document.getElementById('editDesc').value = task.desc || '';
-            document.getElementById('editStatus').value = task.status;
-            document.getElementById('editPriority').value = task.priority;
-
-            document.getElementById('detailModal').style.display = 'flex';
-        }
-
-        function saveEdit() {
-            const id = document.getElementById('editId').value;
-            const task = state.tasks.find(t => t.id == id);
-            if (task) {
-                task.title = document.getElementById('editTitle').value;
-                task.desc = document.getElementById('editDesc').value;
-                task.status = document.getElementById('editStatus').value;
-                task.priority = document.getElementById('editPriority').value;
-                saveState();
-                renderBoard();
-                closeModal('detailModal');
-            }
-        }
-
-        function deleteTask() {
-            const id = document.getElementById('editId').value;
-            if (confirm('Delete this task?')) {
-                state.tasks = state.tasks.filter(t => t.id != id);
-                saveState();
-                renderBoard();
-                closeModal('detailModal');
-            }
-        }
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
-
-        // Close modals on outside click (but not on modal content)
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                event.target.style.display = "none";
-            }
-        }
+        
+        function openAddModal() { document.getElementById('addModal').classList.add('active'); document.getElementById('addTitle').focus(); }
+        function openDetail(id) { currentTaskId = id; const task = state.tasks.find(t => t.id == id); if (!task) return; document.getElementById('editId').value = id; document.getElementById('editTitle').value = task.title; document.getElementById('editDesc').value = task.desc || ''; document.getElementById('editStatus').value = task.status; document.getElementById('editCategory').value = task.category; document.getElementById('editPriority').value = task.priority; document.getElementById('detailModal').classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); currentTaskId = null; }
+        function submitNewTask(e) { e.preventDefault(); const newTask = { id: Date.now().toString(), title: document.getElementById('addTitle').value, desc: document.getElementById('addDesc').value, category: document.getElementById('addCategory').value, priority: document.getElementById('addPriority').value, status: 'todo', createdAt: Date.now() }; state.tasks.push(newTask); saveState(); renderBoard(); closeModal('addModal'); e.target.reset(); }
+        function saveTask(e) { e.preventDefault(); if (!currentTaskId) return; const task = state.tasks.find(t => t.id == currentTaskId); if (!task) return; task.title = document.getElementById('editTitle').value; task.desc = document.getElementById('editDesc').value; task.status = document.getElementById('editStatus').value; task.category = document.getElementById('editCategory').value; task.priority = document.getElementById('editPriority').value; task.updatedAt = Date.now(); saveState(); renderBoard(); closeModal('detailModal'); }
+        function deleteTask() { if (!currentTaskId) return; if (!confirm('Delete this task?')) return; state.tasks = state.tasks.filter(t => t.id != currentTaskId); saveState(); renderBoard(); closeModal('detailModal'); }
+        function openTool(tool) { const urls = { docs: 'https://docs.google.com', sheets: 'https://sheets.google.com', slides: 'https://slides.google.com', drive: 'https://drive.google.com', calendar: 'https://calendar.google.com', gmail: 'https://mail.google.com', photos: 'https://photos.google.com' }; window.open(urls[tool], '_blank'); }
+        document.querySelectorAll('.modal').forEach(modal => { modal.addEventListener('click', e => { if (e.target === modal) closeModal(modal.id); }); });
     </script>
 </body>
 </html>
