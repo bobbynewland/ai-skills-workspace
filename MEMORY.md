@@ -114,6 +114,11 @@
 
 ## Lessons Learned
 
+- **Native HTML5 drag-and-drop > @dnd-kit for Kanban boards**
+  - @dnd-kit's SortableContext only detects collisions within same container
+  - Native drag/drop using `draggable`, `onDragOver`, `onDrop` works reliably across columns
+  - No complex collision detection algorithms needed
+
 - Telegram gateway needs periodic restarts
 - seedream4k requires specific Fal API endpoint: `fal-ai/bytedance/seedream/v4.5/text-to-image`
 - Backup workspace regularly with `tar` excluding venv/node_modules
