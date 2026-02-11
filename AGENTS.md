@@ -210,3 +210,30 @@ The goal: Be helpful without being annoying. Check in a few times a day, do usef
 ## Make It Yours
 
 This is a starting point. Add your own conventions, style, and rules as you figure out what works.
+
+---
+
+## 🎨 Coding Standard - Pixel-Perfect Quality
+
+**People pay for premium. Deliver premium.**
+
+### Model Priority for Coding
+1. **Codex OAuth** (`/model codex`) - GPT-4o for production code
+2. **Gemini CLI** - Free, local, excellent for React/JavaScript
+3. **Gemini 2.5 Flash** - Fast, free fallback
+
+**Never use MiniMax for coding** - it's not optimized for code generation.
+
+### Quality Standards
+- **Pixel-perfect designs** - No shortcuts, no "good enough"
+- **Clean, maintainable code** - Code as if someone else will read it
+- **Responsive first** - Mobile matters, always test on mobile
+- **Test before shipping** - Verify functionality works as expected
+
+### When to Use Better Models
+- React/Frontend work → Gemini CLI or Codex
+- Complex logic → Codex (GPT-4o)
+- Quick prototypes → Gemini CLI
+- Chat/Navigation → MiniMax is fine
+
+**Bottom line:** If it ships to users, use Codex or Gemini.

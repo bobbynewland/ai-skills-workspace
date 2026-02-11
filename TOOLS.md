@@ -6,13 +6,13 @@
 1. **MiniMax M2.1** - Primary brain ($20/mo, 300 prompts/5hrs)
 2. **Gemini 2.5 Flash** (AI Studio API) - Fallback, 1M tokens
 
-### Coding Tasks
-1. **Gemini CLI** (free) - No limits, runs locally
-2. **Gemini 2.5 Flash** (AI Studio API) - Free tier, fast
-3. **Codex OAuth** - Production coding (/model codex)
+### Coding Tasks ⭐ PIXEL-PERFECT QUALITY
+1. **Codex OAuth** (/model codex) - GPT-4o production coding - BEST for premium code
+2. **Gemini CLI** (free) - No limits, runs locally - Excellent for React/JavaScript
+3. **Gemini 2.5 Flash** (AI Studio API) - Fast, free, 1M tokens
 4. **Antigravity OAuth** - Free Google account access
 5. **Pony Alpha** (OpenRouter) - FREE fallback
-6. **MiniMax M2.1** - Final fallback
+6. **MiniMax M2.1** - Emergency fallback only
 
 ### General Tasks & Reasoning
 1. **Gemini 2.5 Pro** (AI Studio API) - Deep reasoning, 1M tokens
@@ -25,6 +25,22 @@
 1. **seedream4k** (Fal API) - Text-to-image
 2. **Imagen 4.0** (Google AI Studio) - High-quality images
 3. **Veo 3.0** (Google AI Studio) - Video generation
+
+## Capabilities
+
+### Transcription
+- **Whisper CLI** - Local video/audio transcription (100% free)
+- Supported: MP4, MP3, WAV, M4A, YouTube URLs
+- Output: TXT, VTT, SRT, TSV, JSON
+- Models: tiny/base/small/medium/large
+
+### Content Creation Stack (Free!)
+- 💬 Chat: MiniMax M2.1 → Gemini 2.5 Flash
+- 🖼️ Images: Imagen 4.0 (Google AI Studio)
+- 🎬 Videos: Veo 3.0 (Google AI Studio)
+- 🎙️ Transcription: Whisper (local)
+- 🤖 AI Avatars: HeyGen API
+- 📝 Templates: seedream4k (Fal AI)
 
 ## Available Models (Google AI Studio)
 
