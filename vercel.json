@@ -1,17 +1,12 @@
 {
   "version": 2,
   "name": "ai-skills-workspace",
-  "buildCommand": null,
-  "outputDirectory": "command-board",
+  "outputDirectory": ".",
   "framework": null,
   "rewrites": [
     {
-      "source": "/",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/files",
-      "destination": "/files.html"
+      "source": "/(.*)",
+      "destination": "/$1"
     }
   ]
 }
