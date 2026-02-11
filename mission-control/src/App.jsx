@@ -84,7 +84,7 @@ function TaskColumn({ status, tasks, columnIcons, columnLabels, onTaskClick, onD
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
       onDrop={onDrop}
-      style={{ minHeight: '150px', touchAction: 'pan-y' }}
+      style={{ minHeight: '150px' }}
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', paddingBottom: '0.75rem', borderBottom: `2px solid ${columnColors[status]}` }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -532,7 +532,7 @@ function App() {
 
         {/* Tasks Board */}
         {activeTab === 'tasks' && (
-          <div className="board-container">
+          <div className="board-container" style={{ touchAction: 'pan-x' }}>
             {['todo', 'progress', 'review', 'done'].map(status => (
               <TaskColumn
                 key={status}
