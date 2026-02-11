@@ -57,8 +57,9 @@ const noteTypeColors = {
 
 function SortableTaskCard({ task, onClick }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: task.id });
-  const style = { transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined, transition, opacity: isDragging ? 0.9 : 1 };
+  const style = { transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined, transition, opacity: isDragging ? 0.5 : 1 };
   const catColor = categoryColors[task.category] || categoryColors.ops;
+
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners} onClick={onClick} className="task-card">
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
@@ -75,7 +76,7 @@ function SortableTaskCard({ task, onClick }) {
 function DragOverlayCard({ task }) {
   const catColor = categoryColors[task.category] || categoryColors.ops;
   return (
-    <div className="task-card" style={{ opacity: 0.9, boxShadow: '0 25px 50px rgba(139, 92, 246, 0.3)', zIndex: 9999, border: '2px solid #a78bfa', background: 'rgba(31, 41, 55, 0.6)' }}>
+    <div className="task-card" style={{ opacity: 0.9, boxShadow: '0 25px 50px rgba(139, 92, 246, 0.4)', zIndex: 9999, border: '2px solid #a78bfa', background: 'rgba(31, 41, 55, 0.9)' }}>
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
         <div style={{ fontWeight: 500, fontSize: '0.875rem', lineHeight: 1.4, paddingRight: '0.5rem', flex: 1 }}>{task.title}</div>
         <div className="priority-dot" style={{ backgroundColor: priorityColors[task.priority] }} />
@@ -87,9 +88,10 @@ function DragOverlayCard({ task }) {
   );
 }
 
-function TaskColumn({ status, tasks, columnIcons, columnLabels, onTaskClick, onDragEnd }) {
+function TaskColumn({ status, tasks, columnIcons, columnLabels, onTaskClick }) {
   const columnTasks = Object.values(tasks).filter(t => t.status === status).sort((a, b) => (a.order || 0) - (b.order || 0));
   const columnColors = { todo: { border: '#f87171' }, progress: { border: '#fbbf24' }, review: { border: '#34d399' }, done: { border: '#60a5fa' } };
+
   return (
     <div className="column-layout">
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', paddingBottom: '0.75rem', borderBottom: `2px solid ${columnColors[status].border}` }}>
@@ -147,25 +149,35 @@ function App() {
   const [editingTask, setEditingTask] = useState(null);
   const [activeId, setActiveId] = useState(null);
 
+  // 12px activation distance prevents accidental drags during scroll
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 12 },
+    }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
   useEffect(() => {
     const tasksRef = ref(db, 'workspaces/winslow_main/tasks');
-    const unsubTasks = onValue(tasksRef, (snapshot) => {
+    const unsub = onValue(tasksRef, (snapshot) => {
       const data = snapshot.val();
       if (data) { setTasks(data); setStatus({ text: 'Synced ✓', type: 'saved' }); }
-      else { setTasks({ '1': { id: '1', title: 'Welcome to Mission Control', category: 'ops', priority: 'medium', status: 'todo', order: 0 }, '2': { id: '2', title: 'Drag cards to reorder them', category: 'dev', priority: 'low', status: 'todo', order: 1 }, '3': { id: '3', title: 'Michigan Project Task', category: 'michigan', priority: 'high', status: 'progress', order: 0 } }); setStatus({ text: 'Ready', type: 'saved' }); }
+      else {
+        setTasks({
+          '1': { id: '1', title: 'Welcome to Mission Control', category: 'ops', priority: 'medium', status: 'todo', order: 0 },
+          '2': { id: '2', title: 'Drag cards to reorder them', category: 'dev', priority: 'low', status: 'todo', order: 1 },
+          '3': { id: '3', title: 'Michigan Project Task', category: 'michigan', priority: 'high', status: 'progress', order: 0 }
+        });
+        setStatus({ text: 'Ready', type: 'saved' });
+      }
     });
-    return () => unsubTasks();
+    return () => unsub();
   }, []);
 
   useEffect(() => {
     const notesRef = ref(db, 'workspaces/winslow_main/notes');
-    const unsubNotes = onValue(notesRef, (snapshot) => { const data = snapshot.val(); if (data) setNotes(data); });
-    return () => unsubNotes();
+    const unsub = onValue(notesRef, (snapshot) => { const data = snapshot.val(); if (data) setNotes(data); });
+    return () => unsub();
   }, []);
 
   const saveTasks = useCallback(async (newTasks) => {
@@ -178,6 +190,29 @@ function App() {
     try { await set(ref(db, 'workspaces/winslow_main/notes'), newNotes); }
     catch (e) { console.log('Notes save failed', e); }
   }, []);
+
+  const handleDragStart = useCallback((event) => { setActiveId(event.active.id); }, []);
+  const handleDragEnd = useCallback((event) => {
+    const { active, over } = event;
+    setActiveId(null);
+    if (!over) return;
+    const activeTask = tasks[active.id];
+    if (!activeTask) return;
+    let newStatus = activeTask.status;
+    const overEl = document.getElementById(`column-${over.id}`);
+    if (overEl) newStatus = overEl.dataset.status;
+    else if (tasks[over.id]) newStatus = tasks[over.id].status;
+    if (newStatus !== activeTask.status) {
+      const newTasks = { ...tasks };
+      Object.values(newTasks).forEach(t => { if (t.status === activeTask.status && t.order > activeTask.order) newTasks[t.id] = { ...t, order: t.order - 1 }; });
+      const colTasks = Object.values(newTasks).filter(t => t.status === newStatus);
+      let newOrder = colTasks.length;
+      if (tasks[over.id]?.status === newStatus) { newOrder = tasks[over.id].order; Object.values(newTasks).forEach(t => { if (t.status === newStatus && t.order >= newOrder && t.id !== active.id) newTasks[t.id] = { ...t, order: t.order + 1 }; }); }
+      newTasks[active.id] = { ...activeTask, status: newStatus, order: newOrder };
+      setTasks(newTasks);
+      saveTasks(newTasks);
+    }
+  }, [tasks, saveTasks]);
 
   const addTask = (task) => {
     const id = Date.now().toString();
@@ -197,28 +232,6 @@ function App() {
     delete newTasks[id];
     Object.values(newTasks).forEach(t => { if (t.status === task.status && t.order > task.order) newTasks[t.id] = { ...t, order: t.order - 1 }; });
     setTasks(newTasks); await saveTasks(newTasks);
-  };
-
-  const handleDragStart = (event) => { setActiveId(event.active.id); };
-
-  const handleDragEnd = (event) => {
-    const { active, over } = event;
-    setActiveId(null);
-    if (!over) return;
-    const activeId = active?.id;
-    const activeTask = tasks[activeId];
-    if (!activeTask) return;
-    let newStatus = activeTask.status;
-    let newOrder = activeTask.order;
-    const overElement = document.getElementById(`column-${over.id}`);
-    if (overElement) newStatus = overElement.dataset.status;
-    if (newStatus !== activeTask.status) {
-      const newTasks = { ...tasks };
-      Object.values(newTasks).forEach(t => { if (t.status === activeTask.status && t.order > activeTask.order) newTasks[t.id] = { ...t, order: t.order - 1 }; });
-      Object.values(newTasks).forEach(t => { if (t.status === newStatus && t.order >= newOrder && t.id !== activeId) newTasks[t.id] = { ...t, order: t.order + 1 }; });
-      newTasks[activeId] = { ...activeTask, status: newStatus, order: newOrder };
-      setTasks(newTasks); saveTasks(newTasks);
-    }
   };
 
   const addNote = (note) => {
@@ -268,7 +281,7 @@ function App() {
             {['tasks', 'notes', 'files', 'tools'].map(tab => <button key={tab} onClick={() => setActiveTab(tab)} className={`tab-btn ${activeTab === tab ? 'active' : 'inactive'}`}>{tab === 'tasks' ? '📋 Tasks' : tab === 'notes' ? '📝 Notes' : tab === 'files' ? '📁 Files' : '🔧 Tools'}</button>)}
           </div>
         </div>
-        <div style={{ height: 'calc(100vh - 11rem)', overflow: 'auto', overflowX: 'hidden' }}>
+        <div style={{ height: 'calc(100vh - 11rem)', overflow: 'auto', overflowX: 'hidden', touchAction: 'pan-x pan-y' }}>
           <div className="stats-scroll">
             <div className="stat-pill">Total: <span>{stats.total}</span></div>
             <div className="stat-pill" style={{ color: '#f87171' }}>To Do: <span>{stats.todo}</span></div>
@@ -277,7 +290,7 @@ function App() {
           </div>
           {activeTab === 'tasks' && (
             <div className="board-container">
-              {['todo', 'progress', 'review', 'done'].map(status => <div key={status} id={`column-${status}`} data-status={status}><TaskColumn status={status} tasks={tasks} columnIcons={columnIcons} columnLabels={columnLabels} onTaskClick={(task) => setEditingTask(task)} onDragEnd={handleDragEnd} /></div>)}
+              {['todo', 'progress', 'review', 'done'].map(status => <div key={status} id={`column-${status}`} data-status={status}><TaskColumn status={status} tasks={tasks} columnIcons={columnIcons} columnLabels={columnLabels} onTaskClick={(task) => setEditingTask(task)} /></div>)}
             </div>
           )}
           {activeTab === 'notes' && (
