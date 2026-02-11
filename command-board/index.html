@@ -36,6 +36,9 @@
         .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 16px; cursor: grab; transition: all 0.2s; }
         .card:active { cursor: grabbing; }
         .card:hover { background: rgba(255,255,255,0.05); transform: translateY(-2px); }
+        .card.dragging { opacity: 0.5; transform: scale(0.95); }
+        .card.drag-over-above { border-top: 3px solid #a78bfa; margin-top: 8px; }
+        .card.drag-over-below { border-bottom: 3px solid #a78bfa; margin-bottom: 8px; }
         .card-title { font-weight: 500; font-size: 0.95rem; margin-bottom: 8px; }
         .card-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
         .tag { font-size: 0.7rem; padding: 4px 10px; border-radius: 6px; }
@@ -434,8 +437,9 @@
             modal.onclick = function(e) { if (e.target === modal) closeModal(modal.id); };
         });
         
-        // Drag and Drop
+        // Drag and Drop with Reordering
         let draggedCard = null;
+        let draggedTaskId = null;
         
         function setupDragDrop() {
             const cards = document.querySelectorAll('.card');
@@ -445,36 +449,85 @@
                 card.draggable = true;
                 card.addEventListener('dragstart', (e) => {
                     draggedCard = card;
-                    card.style.opacity = '0.5';
+                    draggedTaskId = card.dataset.id;
+                    card.classList.add('dragging');
                     e.dataTransfer.effectAllowed = 'move';
+                    e.dataTransfer.setData('text/plain', card.dataset.id);
                 });
                 card.addEventListener('dragend', () => {
-                    card.style.opacity = '1';
+                    card.classList.remove('dragging');
                     draggedCard = null;
+                    draggedTaskId = null;
+                    cards.forEach(c => {
+                        c.classList.remove('drag-over-above');
+                        c.classList.remove('drag-over-below');
+                    });
                     containers.forEach(c => c.classList.remove('drag-over'));
+                });
+                card.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    if (card === draggedCard) return;
+                    const rect = card.getBoundingClientRect();
+                    const midY = rect.top + rect.height / 2;
+                    const mouseY = e.clientY;
+                    if (mouseY < midY) {
+                        card.classList.remove('drag-over-below');
+                        card.classList.add('drag-over-above');
+                    } else {
+                        card.classList.remove('drag-over-above');
+                        card.classList.add('drag-over-below');
+                    }
+                });
+                card.addEventListener('dragleave', () => {
+                    card.classList.remove('drag-over-above');
+                    card.classList.remove('drag-over-below');
+                });
+                card.addEventListener('drop', async (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (!draggedTaskId) return;
+                    
+                    const targetCard = card;
+                    const container = targetCard.parentElement;
+                    const targetStatus = container.id.replace('col-', '');
+                    const allCards = Array.from(container.querySelectorAll('.card'));
+                    const targetIndex = allCards.indexOf(targetCard);
+                    
+                    // Remove drag indicators
+                    cards.forEach(c => {
+                        c.classList.remove('drag-over-above');
+                        c.classList.remove('drag-over-below');
+                    });
+                    
+                    // Move task
+                    if (tasks[draggedTaskId]) {
+                        const isAbove = targetCard.classList.contains('drag-over-above');
+                        const oldStatus = tasks[draggedTaskId].status;
+                        tasks[draggedTaskId].status = targetStatus;
+                        tasks[draggedTaskId].updatedAt = Date.now();
+                        await saveTasks();
+                        renderBoard();
+                    }
                 });
             });
             
+            // Allow dropping on empty containers (append to end)
             containers.forEach(container => {
                 container.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    container.classList.add('drag-over');
-                });
-                container.addEventListener('dragleave', () => {
-                    container.classList.remove('drag-over');
+                    if (draggedCard && container.children.length === 0) {
+                        e.preventDefault();
+                        container.classList.add('drag-over');
+                    }
                 });
                 container.addEventListener('drop', async (e) => {
                     e.preventDefault();
                     container.classList.remove('drag-over');
-                    if (draggedCard) {
-                        const newStatus = container.id.replace('col-', '');
-                        const taskId = draggedCard.dataset.id;
-                        if (tasks[taskId] && tasks[taskId].status !== newStatus) {
-                            tasks[taskId].status = newStatus;
-                            tasks[taskId].updatedAt = Date.now();
-                            await saveTasks();
-                            renderBoard();
-                        }
+                    if (draggedTaskId && tasks[draggedTaskId]) {
+                        const targetStatus = container.id.replace('col-', '');
+                        tasks[draggedTaskId].status = targetStatus;
+                        tasks[draggedTaskId].updatedAt = Date.now();
+                        await saveTasks();
+                        renderBoard();
                     }
                 });
             });
