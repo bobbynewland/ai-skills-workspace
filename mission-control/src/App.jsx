@@ -56,7 +56,7 @@ function TaskCard({ task, onClick, onDragStart, onDragEnd, onTouchStart, onTouch
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
-      style={{ touchAction: 'none' }}
+      style={{ touchAction: 'pan-y' }}
     >
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
         <div style={{ fontWeight: 500, fontSize: '0.875rem', lineHeight: 1.4, paddingRight: '0.5rem', flex: 1 }}>
@@ -161,14 +161,14 @@ function App() {
   const [tasks, setTasks] = useState({});
   const [notes, setNotes] = useState({});
   const [syncStatus, setSyncStatus] = useState({ text: 'Loading...', type: 'saved' });
-  const [scrollProgress, setScrollProgress] = useState(0);
   const [showAddTask, setShowAddTask] = useState(false);
   const [showAddNote, setShowAddNote] = useState(false);
   const [editingNote, setEditingNote] = useState(null);
   const [editingTask, setEditingTask] = useState(null);
   const [draggingTask, setDraggingTask] = useState(null);
   const [overColumn, setOverColumn] = useState(null);
-  
+  const [scrollProgress, setScrollProgress] = useState(0);
+
   // Touch drag state
   const touchDragRef = useRef({
     isDragging: false,
@@ -243,7 +243,7 @@ function App() {
     };
     
     window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); // Initial
+    handleScroll();
     
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -344,8 +344,9 @@ function App() {
     const deltaX = Math.abs(touch.clientX - startX);
     const deltaY = Math.abs(touch.clientY - startY);
     
-    // If moved more than 25px, start drag (prevents accidental drags during scroll)
-    if (!isDragging && (deltaX > 25 || deltaY > 25)) {
+    // If moved more than 25px vertically, start drag (prevents accidental drags during scroll)
+    // We prioritize vertical movement for drag start to allow horizontal scroll when swiping between tabs/cards slightly
+    if (!isDragging && deltaY > 25 && deltaX < deltaY * 1.5) {
       const task = tasks[taskId];
       if (!task) return;
       
@@ -368,7 +369,7 @@ function App() {
     }
     
     // Update clone position
-    if (touchDragRef.current.isDragging && clone) {
+    if (isDragging && clone) {
       clone.style.left = `${touch.clientX - 40}px`;
       clone.style.top = `${touch.clientY - 40}px`;
       
@@ -383,11 +384,6 @@ function App() {
       } else {
         setOverColumn(null);
       }
-    }
-    
-    // Prevent scroll while dragging
-    if (isDragging) {
-      e.preventDefault();
     }
   }, [tasks, overColumn]);
 
@@ -535,12 +531,13 @@ function App() {
         </div>
       </div>
 
+            {/* Scroll Position Indicator - fixed outside scroll container */}
+      <div style={{ position: 'fixed', left: 0, top: '5.5rem', bottom: '4.5rem', width: '4px', background: 'rgba(55, 65, 81, 0.5)', zIndex: 100, pointerEvents: 'none' }}>
+        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: `${scrollProgress}%`, background: 'linear-gradient(180deg, #a78bfa 0%, #818cf8 50%, #60a5fa 100%)', transition: 'height 0.1s ease-out', boxShadow: '0 0 8px rgba(167, 139, 250, 0.5)' }} />
+      </div>
+
       {/* Content */}
-      <div style={{ flex: 1, overflow: 'auto', overflowX: 'hidden', position: 'relative' }}>
-        {/* Scroll Position Indicator */}
-        <div style={{ position: 'fixed', left: 0, top: '5.5rem', bottom: '4.5rem', width: '4px', background: 'rgba(55, 65, 81, 0.5)', zIndex: 50 }}>
-          <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: `${scrollProgress}%`, background: 'linear-gradient(180deg, #a78bfa 0%, #818cf8 50%, #60a5fa 100%)', transition: 'height 0.1s ease-out', boxShadow: '0 0 8px rgba(167, 139, 250, 0.5)' }} />
-        </div>
+      <div style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', touchAction: 'pan-y' }}>
         {/* Stats */}
         <div className="stats-scroll">
           <div className="stat-pill">Total: <span>{stats.total}</span></div>
@@ -551,7 +548,7 @@ function App() {
 
         {/* Tasks Board */}
         {activeTab === 'tasks' && (
-          <div className="board-container" style={{ touchAction: 'pan-x' }}>
+          <div className="board-container" style={{ touchAction: 'pan-y' }}>
             {['todo', 'progress', 'review', 'done'].map(status => (
               <TaskColumn
                 key={status}

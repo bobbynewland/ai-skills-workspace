@@ -20,7 +20,7 @@ body {
   cursor: grab;
   user-select: none;
   transition: all 0.2s ease;
-  touch-action: none;
+  touch-action: pan-y;
 }
 
 .task-card:active { cursor: grabbing; }
