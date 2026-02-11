@@ -1,6 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getDatabase, ref, set, onValue } from 'firebase/database';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragOverlay,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 // Firebase config
 const firebaseConfig = {
@@ -55,6 +72,19 @@ function App() {
   const [showAddTask, setShowAddTask] = useState(false);
   const [showAddNote, setShowAddNote] = useState(false);
   const [editingNote, setEditingNote] = useState(null);
+  const [activeId, setActiveId] = useState(null);
+
+  // Sensors for drag-drop
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   // Load tasks from Firebase
   useEffect(() => {
@@ -65,7 +95,6 @@ function App() {
         setTasks(data);
         setStatus({ text: 'Synced ✓', type: 'saved' });
       } else {
-        // Default tasks
         setTasks({
           '1': { id: '1', title: 'Welcome to Mission Control', category: 'ops', priority: 'medium', status: 'todo', order: 0 },
           '2': { id: '2', title: 'Drag cards to move them', category: 'dev', priority: 'low', status: 'todo', order: 1 },
@@ -124,28 +153,35 @@ function App() {
     saveTasks(newTasks);
   };
 
-  // Move task
-  const moveTask = (id, newStatus, newOrder) => {
-    const task = tasks[id];
-    const newTasks = { ...tasks };
-    
-    // Remove from old position
-    Object.values(newTasks).forEach(t => {
-      if (t.status === task.status && t.order > task.order) {
-        newTasks[t.id] = { ...t, order: t.order - 1 };
-      }
-    });
-    
-    // Add to new position
-    Object.values(newTasks).forEach(t => {
-      if (t.status === newStatus && t.order >= newOrder && t.id !== id) {
-        newTasks[t.id] = { ...t, order: t.order + 1 };
-      }
-    });
-    
-    newTasks[id] = { ...task, status: newStatus, order: newOrder };
+  // Handle drag end
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+    setActiveId(null);
+
+    if (!over) return;
+
+    const activeId = active.id;
+    const overId = over.id;
+
+    // Get all tasks
+    const taskIds = Object.keys(tasks);
+    const activeIndex = taskIds.indexOf(activeId);
+    const overIndex = taskIds.indexOf(overId);
+
+    if (activeIndex === overIndex) return;
+
+    // Reorder
+    const newTasks = arrayMove(taskIds, activeIndex, overIndex).reduce((acc, id, order) => {
+      acc[id] = { ...tasks[id], order };
+      return acc;
+    }, {});
+
     setTasks(newTasks);
     saveTasks(newTasks);
+  };
+
+  const handleDragStart = (event) => {
+    setActiveId(event.active.id);
   };
 
   // Delete task
@@ -154,7 +190,6 @@ function App() {
     const task = newTasks[id];
     delete newTasks[id];
     
-    // Reorder remaining
     Object.values(newTasks).forEach(t => {
       if (t.status === task.status && t.order > task.order) {
         newTasks[t.id] = { ...t, order: t.order - 1 };
@@ -192,140 +227,190 @@ function App() {
   };
 
   return (
-    <div className="h-full bg-dark-950 text-gray-200 font-sans overflow-hidden">
-      {/* Header */}
-      <header className="sticky top-0 z-40 bg-dark-950/80 backdrop-blur-lg border-b border-dark-800/50 px-5 py-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-bold bg-gradient-to-r from-white to-primary-400 bg-clip-text text-transparent">
-              🚀 Mission Control
-            </h1>
-            <p className="text-xs text-gray-500 mt-0.5">Your command center</p>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+    >
+      <div className="h-full bg-dark-950 text-gray-200 font-sans overflow-hidden touch-none">
+        {/* Header */}
+        <header className="sticky top-0 z-40 bg-dark-950/80 backdrop-blur-lg border-b border-dark-800/50 px-5 py-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-xl font-bold bg-gradient-to-r from-white to-primary-400 bg-clip-text text-transparent">
+                🚀 Mission Control
+              </h1>
+              <p className="text-xs text-gray-500 mt-0.5">Your command center</p>
+            </div>
+            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${status.type === 'saving' ? 'bg-amber-500/20' : 'bg-dark-800/50'}`}>
+              <span className={`w-1.5 h-1.5 rounded-full ${status.type === 'saving' ? 'bg-amber-400 animate-pulse' : 'bg-emerald-400'}`}></span>
+              <span className={`text-xs ${status.type === 'saving' ? 'text-amber-400' : 'text-gray-400'}`}>{status.text}</span>
+            </div>
           </div>
-          <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full ${status.type === 'saving' ? 'bg-amber-500/20' : 'bg-dark-800/50'}`}>
-            <span className={`w-1.5 h-1.5 rounded-full ${status.type === 'saving' ? 'bg-amber-400 animate-pulse' : 'bg-emerald-400'}`}></span>
-            <span className={`text-xs ${status.type === 'saving' ? 'text-amber-400' : 'text-gray-400'}`}>{status.text}</span>
+        </header>
+
+        {/* Tabs */}
+        <div className="sticky top-24 z-30 bg-dark-950/95 backdrop-blur-sm px-5 py-3 border-b border-dark-800/30">
+          <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+            {['tasks', 'notes', 'files', 'tools'].map(tab => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${
+                  activeTab === tab
+                    ? 'bg-primary-500/15 text-primary-400 border border-primary-500/30'
+                    : 'bg-dark-800/50 text-gray-400 border border-dark-700/50'
+                }`}
+              >
+                {tab === 'tasks' && '📋 Tasks'}
+                {tab === 'notes' && '📝 Notes'}
+                {tab === 'files' && '📁 Files'}
+                {tab === 'tools' && '🔧 Tools'}
+              </button>
+            ))}
           </div>
         </div>
-      </header>
 
-      {/* Tabs */}
-      <div className="sticky top-24 z-30 bg-dark-950/95 backdrop-blur-sm px-5 py-3 border-b border-dark-800/30">
-        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
-          {['tasks', 'notes', 'files', 'tools'].map(tab => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${
-                activeTab === tab
-                  ? 'bg-primary-500/15 text-primary-400 border border-primary-500/30'
-                  : 'bg-dark-800/50 text-gray-400 border border-dark-700/50'
-              }`}
-            >
-              {tab === 'tasks' && '📋 Tasks'}
-              {tab === 'notes' && '📝 Notes'}
-              {tab === 'files' && '📁 Files'}
-              {tab === 'tools' && '🔧 Tools'}
-            </button>
-          ))}
+        {/* Content */}
+        <div className="h-[calc(100%-12rem)] overflow-auto -overflow-x-hidden">
+          {activeTab === 'tasks' && (
+            <TaskBoard 
+              tasks={tasks}
+              deleteTask={deleteTask}
+            />
+          )}
+          {activeTab === 'notes' && (
+            <NotesList 
+              notes={notes}
+              onAdd={() => setShowAddNote(true)}
+              onEdit={setEditingNote}
+              onDelete={deleteNote}
+            />
+          )}
+          {activeTab === 'files' && <FilesTab />}
+          {activeTab === 'tools' && <ToolsTab />}
         </div>
-      </div>
 
-      {/* Content */}
-      <div className="h-[calc(100%-12rem)] overflow-auto -overflow-x-hidden">
+        {/* Bottom Navigation */}
+        <nav className="fixed bottom-0 left-0 right-0 bg-dark-900/95 backdrop-blur-lg border-t border-dark-800/50 z-40 pb-safe">
+          <div className="flex justify-around py-2 px-2">
+            {[
+              { id: 'tasks', icon: '📋', label: 'Tasks' },
+              { id: 'notes', icon: '📝', label: 'Notes' },
+              { id: 'files', icon: '📁', label: 'Files' },
+              { id: 'tools', icon: '🔧', label: 'Tools' }
+            ].map(item => (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                className={`flex-1 py-3 px-4 text-center transition-colors ${
+                  activeTab === item.id ? 'text-primary-400' : 'text-gray-400'
+                }`}
+              >
+                <div className="text-xl mb-0.5">{item.icon}</div>
+                <div className="text-xs font-medium">{item.label}</div>
+              </button>
+            ))}
+          </div>
+        </nav>
+
+        {/* FAB */}
         {activeTab === 'tasks' && (
-          <TaskBoard 
-            tasks={tasks} 
-            moveTask={moveTask}
-            updateTask={updateTask}
-            deleteTask={deleteTask}
-          />
+          <button
+            onClick={() => setShowAddTask(true)}
+            className="fixed bottom-6 right-6 w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-400 to-primary-600 text-white text-2xl shadow-lg shadow-primary-500/30 z-50 flex items-center justify-center active:scale-95 transition-transform"
+          >
+            +
+          </button>
         )}
+
         {activeTab === 'notes' && (
-          <NotesList 
-            notes={notes}
-            onAdd={() => setShowAddNote(true)}
-            onEdit={setEditingNote}
-            onDelete={deleteNote}
+          <button
+            onClick={() => setShowAddNote(true)}
+            className="fixed bottom-6 right-6 w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-400 to-primary-600 text-white text-2xl shadow-lg shadow-primary-500/30 z-50 flex items-center justify-center active:scale-95 transition-transform"
+          >
+            +
+          </button>
+        )}
+
+        {/* Add Task Modal */}
+        {showAddTask && (
+          <AddTaskModal
+            onClose={() => setShowAddTask(false)}
+            onSave={addTask}
           />
         )}
-        {activeTab === 'files' && <FilesTab />}
-        {activeTab === 'tools' && <ToolsTab />}
+
+        {/* Add Note Modal */}
+        {showAddNote && (
+          <AddNoteModal
+            onClose={() => setShowAddNote(false)}
+            onSave={addNote}
+          />
+        )}
+
+        {/* Edit Note Modal */}
+        {editingNote && (
+          <EditNoteModal
+            note={notes[editingNote]}
+            onClose={() => setEditingNote(null)}
+            onSave={(updates) => updateNote(editingNote, updates)}
+            onDelete={() => deleteNote(editingNote)}
+          />
+        )}
+
+        {/* Drag Overlay */}
+        <DragOverlay>
+          {activeId && tasks[activeId] ? (
+            <SortableTaskCard task={tasks[activeId]} />
+          ) : null}
+        </DragOverlay>
       </div>
+    </DndContext>
+  );
+}
 
-      {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-dark-900/95 backdrop-blur-lg border-t border-dark-800/50 z-40 pb-safe">
-        <div className="flex justify-around py-2 px-2">
-          {[
-            { id: 'tasks', icon: '📋', label: 'Tasks' },
-            { id: 'notes', icon: '📝', label: 'Notes' },
-            { id: 'files', icon: '📁', label: 'Files' },
-            { id: 'tools', icon: '🔧', label: 'Tools' }
-          ].map(item => (
-            <button
-              key={item.id}
-              onClick={() => setActiveTab(item.id)}
-              className={`flex-1 py-3 px-4 text-center transition-colors ${
-                activeTab === item.id ? 'text-primary-400' : 'text-gray-400'
-              }`}
-            >
-              <div className="text-xl mb-0.5">{item.icon}</div>
-              <div className="text-xs font-medium">{item.label}</div>
-            </button>
-          ))}
-        </div>
-      </nav>
+// Sortable Task Card
+function SortableTaskCard({ task }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: task.id });
 
-      {/* FAB */}
-      {activeTab === 'tasks' && (
-        <button
-          onClick={() => setShowAddTask(true)}
-          className="fixed bottom-6 right-6 w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-400 to-primary-600 text-white text-2xl shadow-lg shadow-primary-500/30 z-50 flex items-center justify-center active:scale-95 transition-transform"
-        >
-          +
-        </button>
-      )}
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.9 : 1,
+  };
 
-      {activeTab === 'notes' && (
-        <button
-          onClick={() => setShowAddNote(true)}
-          className="fixed bottom-6 right-6 w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-400 to-primary-600 text-white text-2xl shadow-lg shadow-primary-500/30 z-50 flex items-center justify-center active:scale-95 transition-transform"
-        >
-          +
-        </button>
-      )}
-
-      {/* Add Task Modal */}
-      {showAddTask && (
-        <AddTaskModal
-          onClose={() => setShowAddTask(false)}
-          onSave={addTask}
-        />
-      )}
-
-      {/* Add Note Modal */}
-      {showAddNote && (
-        <AddNoteModal
-          onClose={() => setShowAddNote(false)}
-          onSave={addNote}
-        />
-      )}
-
-      {/* Edit Note Modal */}
-      {editingNote && (
-        <EditNoteModal
-          note={notes[editingNote]}
-          onClose={() => setEditingNote(null)}
-          onSave={(updates) => updateNote(editingNote, updates)}
-          onDelete={() => deleteNote(editingNote)}
-        />
-      )}
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      className="bg-dark-800/60 border-2 border-primary-500/50 rounded-xl p-4 cursor-grabbing touch-none shadow-xl z-50"
+    >
+      <div className="flex items-start justify-between mb-2">
+        <div className="font-medium text-sm leading-snug pr-2">{task.title}</div>
+        <span className={`w-2 h-2 rounded-full flex-shrink-0 ${priorityColors[task.priority]}`}></span>
+      </div>
+      <div className="flex items-center gap-2 flex-wrap">
+        <span className={`px-2 py-0.5 rounded-lg text-xs font-medium bg-${categoryColors[task.category]}-500/15 text-${categoryColors[task.category]}-400`}>
+          {Icons[task.category]} {task.category.charAt(0).toUpperCase() + task.category.slice(1)}
+        </span>
+      </div>
     </div>
   );
 }
 
 // Task Board Component
-function TaskBoard({ tasks, moveTask, updateTask, deleteTask }) {
+function TaskBoard({ tasks, deleteTask }) {
   const columns = ['todo', 'progress', 'review', 'done'];
   const columnLabels = { todo: 'To Do', progress: 'In Progress', review: 'Review', done: 'Done' };
 
@@ -335,31 +420,12 @@ function TaskBoard({ tasks, moveTask, updateTask, deleteTask }) {
       .sort((a, b) => (a.order || 0) - (b.order || 0));
   };
 
-  const handleDragStart = (e, task) => {
-    e.dataTransfer.setData('taskId', task.id);
-    e.dataTransfer.effectAllowed = 'move';
-  };
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-  };
-
-  const handleDrop = (e, status) => {
-    e.preventDefault();
-    const taskId = e.dataTransfer.getData('taskId');
-    const order = getColumnTasks(status).length;
-    moveTask(taskId, status, order);
-  };
-
   return (
     <div className="flex gap-3 px-5 pb-32 overflow-x-auto overflow-y-hidden min-h-full -overflow-x-hidden">
       {columns.map(status => (
         <div
           key={status}
           className="min-w-[17.5rem] max-w-[17.5rem] flex-shrink-0 flex flex-col"
-          onDragOver={handleDragOver}
-          onDrop={(e) => handleDrop(e, status)}
         >
           <div className="flex items-center justify-between mb-4 pb-3 border-b-2 px-1"
                style={{ 
@@ -376,43 +442,18 @@ function TaskBoard({ tasks, moveTask, updateTask, deleteTask }) {
               </span>
             </div>
           </div>
-          <div className="flex-1 overflow-y-auto cards-scroll pr-2">
-            {getColumnTasks(status).map(task => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                onDragStart={handleDragStart}
-                onUpdate={updateTask}
-                onDelete={deleteTask}
-              />
-            ))}
+          <div className="flex-1 overflow-y-auto cards-scroll pr-2 space-y-3">
+            <SortableContext 
+              items={getColumnTasks(status).map(t => t.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              {getColumnTasks(status).map(task => (
+                <SortableTaskCard key={task.id} task={task} />
+              ))}
+            </SortableContext>
           </div>
         </div>
       ))}
-    </div>
-  );
-}
-
-// Task Card Component
-function TaskCard({ task, onDragStart, onUpdate, onDelete }) {
-  const [showMenu, setShowMenu] = useState(false);
-
-  return (
-    <div
-      draggable
-      onDragStart={(e) => onDragStart(e, task)}
-      className="bg-dark-800/40 border border-dark-700/50 rounded-xl p-4 cursor-grab active:cursor-grabbing touch-none transition-all duration-150 flex-shrink-0 mb-3"
-      onClick={() => setShowMenu(true)}
-    >
-      <div className="flex items-start justify-between mb-2">
-        <div className="font-medium text-sm leading-snug pr-2">{task.title}</div>
-        <span className={`w-2 h-2 rounded-full flex-shrink-0 ${priorityColors[task.priority]}`}></span>
-      </div>
-      <div className="flex items-center gap-2 flex-wrap">
-        <span className={`px-2 py-0.5 rounded-lg text-xs font-medium bg-${categoryColors[task.category]}-500/15 text-${categoryColors[task.category]}-400`}>
-          {Icons[task.category]} {task.category.charAt(0).toUpperCase() + task.category.slice(1)}
-        </span>
-      </div>
     </div>
   );
 }
