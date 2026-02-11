@@ -344,8 +344,8 @@ function App() {
     const deltaX = Math.abs(touch.clientX - startX);
     const deltaY = Math.abs(touch.clientY - startY);
     
-    // If moved more than 10px, start drag
-    if (!isDragging && (deltaX > 10 || deltaY > 10)) {
+    // If moved more than 25px, start drag (prevents accidental drags during scroll)
+    if (!isDragging && (deltaX > 25 || deltaY > 25)) {
       const task = tasks[taskId];
       if (!task) return;
       
@@ -538,8 +538,8 @@ function App() {
       {/* Content */}
       <div style={{ flex: 1, overflow: 'auto', overflowX: 'hidden', position: 'relative' }}>
         {/* Scroll Position Indicator */}
-        <div style={{ position: 'fixed', left: 0, top: '5.5rem', bottom: '4.5rem', width: '3px', background: 'rgba(55, 65, 81, 0.3)', zIndex: 50 }}>
-          <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: `${scrollProgress}%`, background: 'linear-gradient(180deg, #a78bfa 0%, #60a5fa 100%)', transition: 'height 0.1s ease-out' }} />
+        <div style={{ position: 'fixed', left: 0, top: '5.5rem', bottom: '4.5rem', width: '4px', background: 'rgba(55, 65, 81, 0.5)', zIndex: 50 }}>
+          <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: `${scrollProgress}%`, background: 'linear-gradient(180deg, #a78bfa 0%, #818cf8 50%, #60a5fa 100%)', transition: 'height 0.1s ease-out', boxShadow: '0 0 8px rgba(167, 139, 250, 0.5)' }} />
         </div>
         {/* Stats */}
         <div className="stats-scroll">
