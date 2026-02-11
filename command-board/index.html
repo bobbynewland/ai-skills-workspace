@@ -13,11 +13,9 @@
         .status-indicator { display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; margin-left: 12px; padding: 4px 10px; border-radius: 20px; }
         .status-indicator.saving { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
         .status-indicator.saved { background: rgba(52, 211, 153, 0.2); color: #34d399; }
-        .status-indicator.error { background: rgba(248, 113, 113, 0.2); color: #f87171; }
         .status-dot { width: 6px; height: 6px; border-radius: 50%; }
         .status-dot.saving { background: #fbbf24; animation: pulse 1s infinite; }
         .status-dot.saved { background: #34d399; }
-        .status-dot.error { background: #f87171; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
         .stats-bar { display: flex; gap: 8px; padding: 0 20px 20px; flex-wrap: wrap; }
         .stat-pill { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 8px 16px; font-size: 0.8rem; }
@@ -31,14 +29,12 @@
         .progress .column-header { border-color: #fbbf24; }
         .review .column-header { border-color: #34d399; }
         .done .column-header { border-color: #60a5fa; }
-        .cards-container { display: flex; flex-direction: column; gap: 10px; min-height: 100px; padding: 8px; border-radius: 8px; transition: background 0.2s; }
-        .cards-container.drag-over { background: rgba(167, 139, 250, 0.15); }
-        .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 16px; cursor: grab; transition: all 0.2s; }
+        .cards-container { display: flex; flex-direction: column; gap: 10px; min-height: 100px; padding: 8px; border-radius: 8px; }
+        .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 16px; cursor: grab; transition: all 0.2s; user-select: none; }
         .card:active { cursor: grabbing; }
-        .card:hover { background: rgba(255,255,255,0.05); transform: translateY(-2px); }
-        .card.dragging { opacity: 0.5; transform: scale(0.95); }
-        .card.drag-over-above { border-top: 3px solid #a78bfa; margin-top: 8px; }
-        .card.drag-over-below { border-bottom: 3px solid #a78bfa; margin-bottom: 8px; }
+        .card:hover { background: rgba(255,255,255,0.05); }
+        .card.dragging { opacity: 0.4; transform: scale(0.98); }
+        .card.drag-over { border: 2px solid #a78bfa; }
         .card-title { font-weight: 500; font-size: 0.95rem; margin-bottom: 8px; }
         .card-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
         .tag { font-size: 0.7rem; padding: 4px 10px; border-radius: 6px; }
@@ -76,7 +72,7 @@
         <p>Your task board</p>
         <span class="status-indicator saving" id="statusIndicator">
             <span class="status-dot saving"></span>
-            <span id="statusText">Initializing...</span>
+            <span id="statusText">Loading...</span>
         </span>
     </div>
     
@@ -92,25 +88,25 @@
             <div class="column-header">
                 <h3>📋 To Do <span class="column-count" id="count-todo">0</span></h3>
             </div>
-            <div class="cards-container" id="col-todo"></div>
+            <div class="cards-container" id="col-todo" data-status="todo"></div>
         </div>
         <div class="column progress">
             <div class="column-header">
                 <h3>🔥 In Progress <span class="column-count" id="count-progress">0</span></h3>
             </div>
-            <div class="cards-container" id="col-progress"></div>
+            <div class="cards-container" id="col-progress" data-status="progress"></div>
         </div>
         <div class="column review">
             <div class="column-header">
                 <h3>👀 Review <span class="column-count" id="count-review">0</span></h3>
             </div>
-            <div class="cards-container" id="col-review"></div>
+            <div class="cards-container" id="col-review" data-status="review"></div>
         </div>
         <div class="column done">
             <div class="column-header">
                 <h3>✅ Done <span class="column-count" id="count-done">0</span></h3>
             </div>
-            <div class="cards-container" id="col-done"></div>
+            <div class="cards-container" id="col-done" data-status="done"></div>
         </div>
     </div>
     
@@ -214,7 +210,6 @@
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getDatabase, ref, set, onValue, remove, update } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
         
-        // Firebase config
         const firebaseConfig = {
             apiKey: "AIzaSyB3Z1WDeqO4cEBMk5Q1j9H8c2-0Z1Y8X0",
             authDomain: "winslow-756c3.firebaseapp.com",
@@ -228,8 +223,8 @@
         let db = null;
         let tasks = {};
         let isFirebaseReady = false;
+        let draggedTaskId = null;
         
-        // Status indicator
         function setStatus(status, text) {
             const indicator = document.getElementById('statusIndicator');
             const dot = indicator.querySelector('.status-dot');
@@ -239,22 +234,18 @@
             textEl.textContent = text;
         }
         
-        // Initialize Firebase
         try {
             const app = initializeApp(firebaseConfig);
             db = getDatabase(app);
-            setStatus('saving', 'Connecting to Firebase...');
             setStatus('saved', 'Firebase connected ✓');
             isFirebaseReady = true;
-            console.log('Firebase initialized');
         } catch(e) {
             console.error('Firebase init error:', e);
-            setStatus('error', 'Firebase offline - using localStorage');
+            setStatus('saved', 'Local mode');
             isFirebaseReady = false;
         }
         
-        // Load tasks from Firebase or localStorage
-        window.loadTasks = async function() {
+        window.loadTasks = function() {
             if (isFirebaseReady && db) {
                 const tasksRef = ref(db, 'workspaces/winslow_main/tasks');
                 onValue(tasksRef, (snapshot) => {
@@ -263,14 +254,11 @@
                         tasks = data;
                         saveToLocalStorage();
                         renderBoard();
-                        setStatus('saved', 'Synced from Firebase ✓');
+                        setStatus('saved', 'Synced ✓');
                     } else {
                         loadFromLocalStorage();
                     }
-                }, (error) => {
-                    console.error('Firebase read error:', error);
-                    loadFromLocalStorage();
-                });
+                }, () => { loadFromLocalStorage(); });
             } else {
                 loadFromLocalStorage();
             }
@@ -284,53 +272,64 @@
             const saved = localStorage.getItem('mission_tasks_backup');
             if (saved) {
                 tasks = JSON.parse(saved);
-                renderBoard();
-                setStatus('saved', 'Loaded from localStorage');
             } else {
-                // Default tasks
+                const now = Date.now();
                 tasks = {
-                    '1': { id: '1', title: "Welcome to Mission Control", desc: "Click a task to edit. Use the Status dropdown to move between columns.", category: "ops", priority: "medium", status: "todo" },
-                    '2': { id: '2', title: "Try changing status", desc: "Open a task and use the Status dropdown to move it.", category: "dev", priority: "low", status: "todo" },
-                    '3': { id: '3', title: "Add your own tasks", desc: "Click the + button to create new tasks", category: "marketing", priority: "high", status: "progress" }
+                    '1': { id: '1', title: "Welcome to Mission Control", desc: "Drag cards to reorder or move between columns", category: "ops", priority: "medium", status: "todo", order: 0, createdAt: now },
+                    '2': { id: '2', title: "Try drag and drop", desc: "Drag this card up/down to reorder within column", category: "dev", priority: "low", status: "todo", order: 1, createdAt: now },
+                    '3': { id: '3', title: "Move between columns", desc: "Drag to another column to change status", category: "marketing", priority: "high", status: "progress", order: 0, createdAt: now }
                 };
                 saveTasks();
-                setStatus('saved', 'Default tasks loaded');
             }
+            renderBoard();
+            setStatus('saved', 'Loaded');
         }
         
         async function saveTasks() {
+            saveToLocalStorage();
             if (isFirebaseReady && db) {
                 try {
-                    setStatus('saving', 'Saving to Firebase...');
+                    setStatus('saving', 'Saving...');
                     await set(ref(db, 'workspaces/winslow_main/tasks'), tasks);
-                    saveToLocalStorage();
-                    setStatus('saved', 'Saved to Firebase ✓');
+                    setStatus('saved', 'Saved ✓');
                 } catch(e) {
-                    console.error('Firebase save error:', e);
-                    saveToLocalStorage();
-                    setStatus('error', 'Saved locally only');
+                    console.error('Save error:', e);
+                    setStatus('saved', 'Local only');
                 }
-            } else {
-                saveToLocalStorage();
-                setStatus('saved', 'Saved locally');
             }
         }
         
         window.renderBoard = function() {
+            // Sort tasks by order within each status
+            const sortedTasks = {};
+            ['todo', 'progress', 'review', 'done'].forEach(status => {
+                const statusTasks = Object.values(tasks).filter(t => t.status === status);
+                statusTasks.sort((a, b) => (a.order || 0) - (b.order || 0));
+                statusTasks.forEach((t, i) => {
+                    if (t.order !== i) {
+                        t.order = i;
+                        tasks[t.id].order = i;
+                    }
+                });
+            });
+            
             // Clear columns
             ['todo', 'progress', 'review', 'done'].forEach(status => {
                 document.getElementById('col-' + status).innerHTML = '';
             });
             
             // Add cards
-            Object.values(tasks).forEach(task => {
-                const card = createCard(task);
-                const container = document.getElementById('col-' + task.status);
-                if (container) container.appendChild(card);
+            ['todo', 'progress', 'review', 'done'].forEach(status => {
+                const statusTasks = Object.values(tasks).filter(t => t.status === status);
+                statusTasks.sort((a, b) => (a.order || 0) - (b.order || 0));
+                const container = document.getElementById('col-' + status);
+                statusTasks.forEach(task => {
+                    container.appendChild(createCard(task));
+                });
             });
             
             renderStats();
-            setTimeout(setupDragDrop, 100); // Re-setup drag-drop
+            setupDragDrop();
         }
         
         function createCard(task) {
@@ -343,7 +342,9 @@
                 '<span class="tag tag-' + task.category + '">' + getCategoryLabel(task.category) + '</span>' +
                 '<span class="priority-dot priority-' + task.priority + '"></span>' +
                 '</div>';
-            div.onclick = () => window.openEditModal(task.id);
+            div.ondragstart = (e) => { draggedTaskId = task.id; div.classList.add('dragging'); e.dataTransfer.setData('text/plain', task.id); };
+            div.ondragend = () => { div.classList.remove('dragging'); draggedTaskId = null; document.querySelectorAll('.card').forEach(c => c.classList.remove('drag-over')); };
+            div.onclick = () => openEditModal(task.id);
             return div;
         }
         
@@ -355,15 +356,83 @@
         window.renderStats = function() {
             const counts = { total: Object.keys(tasks).length, todo: 0, progress: 0, review: 0, done: 0 };
             Object.values(tasks).forEach(t => { if (counts[t.status] !== undefined) counts[t.status]++; });
-            
+            ['todo', 'progress', 'review', 'done'].forEach(s => {
+                document.getElementById('stat-' + s).textContent = counts[s];
+                document.getElementById('count-' + s).textContent = counts[s];
+            });
             document.getElementById('stat-total').textContent = counts.total;
-            document.getElementById('stat-todo').textContent = counts.todo;
-            document.getElementById('stat-progress').textContent = counts.progress;
-            document.getElementById('stat-done').textContent = counts.done;
-            document.getElementById('count-todo').textContent = counts.todo;
-            document.getElementById('count-progress').textContent = counts.progress;
-            document.getElementById('count-review').textContent = counts.review;
-            document.getElementById('count-done').textContent = counts.done;
+        }
+        
+        function setupDragDrop() {
+            const containers = document.querySelectorAll('.cards-container');
+            
+            containers.forEach(container => {
+                container.ondragover = (e) => {
+                    e.preventDefault();
+                    const afterElement = getDragAfterElement(container, e.clientY);
+                    document.querySelectorAll('.card').forEach(c => c.classList.remove('drag-over'));
+                    if (afterElement == null) {
+                        container.classList.add('drag-over');
+                    } else {
+                        afterElement.classList.add('drag-over');
+                    }
+                };
+                
+                container.ondragleave = () => {
+                    container.classList.remove('drag-over');
+                };
+                
+                container.ondrop = async (e) => {
+                    e.preventDefault();
+                    container.classList.remove('drag-over');
+                    document.querySelectorAll('.card').forEach(c => c.classList.remove('drag-over'));
+                    
+                    if (!draggedTaskId || !tasks[draggedTaskId]) return;
+                    
+                    const newStatus = container.dataset.status;
+                    const afterElement = getDragAfterElement(container, e.clientY);
+                    
+                    // Get current order of tasks in target column
+                    const targetTasks = Object.values(tasks).filter(t => t.status === newStatus);
+                    targetTasks.sort((a, b) => (a.order || 0) - (b.order || 0));
+                    
+                    let newOrder = targetTasks.length;
+                    if (afterElement) {
+                        const afterId = afterElement.dataset.id;
+                        const afterIndex = targetTasks.findIndex(t => t.id === afterId);
+                        newOrder = afterIndex >= 0 ? afterIndex : targetTasks.length;
+                    }
+                    
+                    // Update task
+                    tasks[draggedTaskId].status = newStatus;
+                    tasks[draggedTaskId].updatedAt = Date.now();
+                    
+                    // Reorder
+                    targetTasks.forEach((t, i) => {
+                        if (t.id === draggedTaskId) {
+                            tasks[t.id].order = newOrder;
+                        } else {
+                            tasks[t.id].order = i;
+                        }
+                    });
+                    
+                    await saveTasks();
+                    renderBoard();
+                };
+            });
+        }
+        
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.card:not(.dragging)')];
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
         }
         
         window.openAddModal = function() {
@@ -392,15 +461,20 @@
         window.submitNewTask = async function(e) {
             e.preventDefault();
             const id = Date.now().toString();
+            const status = 'todo';
+            const statusTasks = Object.values(tasks).filter(t => t.status === status);
+            
             tasks[id] = {
                 id: id,
                 title: document.getElementById('addTitle').value,
                 desc: document.getElementById('addDesc').value,
                 category: document.getElementById('addCategory').value,
                 priority: document.getElementById('addPriority').value,
-                status: 'todo',
+                status: status,
+                order: statusTasks.length,
                 createdAt: Date.now()
             };
+            
             await saveTasks();
             renderBoard();
             closeModal('addModal');
@@ -411,12 +485,26 @@
             e.preventDefault();
             const id = document.getElementById('editId').value;
             if (!tasks[id]) return;
+            
+            const newStatus = document.getElementById('editStatus').value;
+            const oldStatus = tasks[id].status;
+            
             tasks[id].title = document.getElementById('editTitle').value;
             tasks[id].desc = document.getElementById('editDesc').value;
-            tasks[id].status = document.getElementById('editStatus').value;
+            tasks[id].status = newStatus;
             tasks[id].category = document.getElementById('editCategory').value;
             tasks[id].priority = document.getElementById('editPriority').value;
             tasks[id].updatedAt = Date.now();
+            
+            // If status changed, reorder
+            if (oldStatus !== newStatus) {
+                const oldTasks = Object.values(tasks).filter(t => t.status === oldStatus);
+                oldTasks.forEach((t, i) => tasks[t.id].order = i);
+                
+                const newTasks = Object.values(tasks).filter(t => t.status === newStatus);
+                newTasks.forEach((t, i) => tasks[t.id].order = i);
+            }
+            
             await saveTasks();
             renderBoard();
             closeModal('editModal');
@@ -432,110 +520,11 @@
             closeModal('editModal');
         }
         
-        // Close modal on background click
         document.querySelectorAll('.modal').forEach(modal => {
             modal.onclick = function(e) { if (e.target === modal) closeModal(modal.id); };
         });
         
-        // Drag and Drop with Reordering
-        let draggedCard = null;
-        let draggedTaskId = null;
-        
-        function setupDragDrop() {
-            const cards = document.querySelectorAll('.card');
-            const containers = document.querySelectorAll('.cards-container');
-            
-            cards.forEach(card => {
-                card.draggable = true;
-                card.addEventListener('dragstart', (e) => {
-                    draggedCard = card;
-                    draggedTaskId = card.dataset.id;
-                    card.classList.add('dragging');
-                    e.dataTransfer.effectAllowed = 'move';
-                    e.dataTransfer.setData('text/plain', card.dataset.id);
-                });
-                card.addEventListener('dragend', () => {
-                    card.classList.remove('dragging');
-                    draggedCard = null;
-                    draggedTaskId = null;
-                    cards.forEach(c => {
-                        c.classList.remove('drag-over-above');
-                        c.classList.remove('drag-over-below');
-                    });
-                    containers.forEach(c => c.classList.remove('drag-over'));
-                });
-                card.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    if (card === draggedCard) return;
-                    const rect = card.getBoundingClientRect();
-                    const midY = rect.top + rect.height / 2;
-                    const mouseY = e.clientY;
-                    if (mouseY < midY) {
-                        card.classList.remove('drag-over-below');
-                        card.classList.add('drag-over-above');
-                    } else {
-                        card.classList.remove('drag-over-above');
-                        card.classList.add('drag-over-below');
-                    }
-                });
-                card.addEventListener('dragleave', () => {
-                    card.classList.remove('drag-over-above');
-                    card.classList.remove('drag-over-below');
-                });
-                card.addEventListener('drop', async (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if (!draggedTaskId) return;
-                    
-                    const targetCard = card;
-                    const container = targetCard.parentElement;
-                    const targetStatus = container.id.replace('col-', '');
-                    const allCards = Array.from(container.querySelectorAll('.card'));
-                    const targetIndex = allCards.indexOf(targetCard);
-                    
-                    // Remove drag indicators
-                    cards.forEach(c => {
-                        c.classList.remove('drag-over-above');
-                        c.classList.remove('drag-over-below');
-                    });
-                    
-                    // Move task
-                    if (tasks[draggedTaskId]) {
-                        const isAbove = targetCard.classList.contains('drag-over-above');
-                        const oldStatus = tasks[draggedTaskId].status;
-                        tasks[draggedTaskId].status = targetStatus;
-                        tasks[draggedTaskId].updatedAt = Date.now();
-                        await saveTasks();
-                        renderBoard();
-                    }
-                });
-            });
-            
-            // Allow dropping on empty containers (append to end)
-            containers.forEach(container => {
-                container.addEventListener('dragover', (e) => {
-                    if (draggedCard && container.children.length === 0) {
-                        e.preventDefault();
-                        container.classList.add('drag-over');
-                    }
-                });
-                container.addEventListener('drop', async (e) => {
-                    e.preventDefault();
-                    container.classList.remove('drag-over');
-                    if (draggedTaskId && tasks[draggedTaskId]) {
-                        const targetStatus = container.id.replace('col-', '');
-                        tasks[draggedTaskId].status = targetStatus;
-                        tasks[draggedTaskId].updatedAt = Date.now();
-                        await saveTasks();
-                        renderBoard();
-                    }
-                });
-            });
-        }
-        
-        // Initialize
         window.loadTasks();
-        setTimeout(setupDragDrop, 100);
     </script>
 </body>
 </html>
