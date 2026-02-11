@@ -30,25 +30,35 @@
 ### Model Priority Chain
 
 **Chat:**
-1. MiniMax M2.1 (Primary)
-2. Gemini 1.5 Flash (Fallback)
+1. Gemini 2.5 Flash (AI Studio API) - FASTEST, 1M tokens
+2. MiniMax M2.1 (Primary - $20/mo, 300 prompts/5hrs)
+3. Gemini CLI (Free fallback)
 
 **Coding:**
-1. Pony Alpha (OpenRouter - FREE!)
-2. Gemini CLI / Gemini API (Fallback)
-3. MiniMax M2.1 (Final)
+1. Gemini CLI (Free, no limits)
+2. Gemini 2.5 Flash (AI Studio API)
+3. Codex OAuth (Production)
+4. Antigravity OAuth (Free Google account)
+5. Pony Alpha (OpenRouter - FREE!)
+6. Vertex AI ($300 credits)
 
 **General Tasks:**
-1. Gemini Flash (Speed)
-2. Gemini Pro (Complex reasoning)
-3. MiniMax M2.1 (Final)
+1. Gemini 2.5 Pro (Deep reasoning, 1M tokens!)
+2. Gemini 2.5 Flash (Speed + reasoning)
+3. Gemini CLI (Free tier)
+4. Vertex AI ($300 credits)
+
+### Available Google AI Studio Models
+- `gemini-2.5-flash` - Latest! 1M tokens, 65K output
+- `gemini-2.5-pro` - Most capable, 1M tokens
+- `gemini-2.0-flash` - Stable, fast
+- `gemma-3-27b-it` - Open model, 128K context
+- `imagen-4.0-generate` - Image generation
+- `veo-3.0-generate` - Video generation
 
 ### API Keys
-- `/root/.openclaw/workspace/.keys/google_ai_studio.key`
+- `/root/.openclaw/workspace/.keys/google_ai_studio.key` ✅ Key set: `AIzaSyBvHCl21VNCnDrsZQ6DERko5YV0Y1kC30U`
 - `/root/.openclaw/workspace/.keys/vertex_ai.json`
-- `/root/.openclaw/workspace/.keys/fal.key` (for seedream4k)
-- `/root/.openclaw/workspace/.keys/heygen.key` (for training videos)
-- `/root/.openclaw/workspace/.keys/openrouter.key` (for Pony Alpha)
 
 ### Skills Created
 - `/root/.openclaw/workspace/skills/training-videos/heygen_skill.py` - Create AI avatar training videos
@@ -74,6 +84,14 @@
 ---
 
 ## Recent Work
+
+### Mission Control - Command Board (2026-02-10)
+- **URL**: https://command-board-lake.vercel.app
+- **GitHub**: 91fbe57
+- **Firebase**: Realtime Database sync at `winslow-756c3-default-rtdb`
+- **Data Path**: `/workspaces/winslow_main/tasks`
+- **Features**: Tasks (Kanban), Notes, Files, Google Tools tabs
+- **Fix**: Migrated from localStorage to Firebase sync
 
 ### Bold Fashion V3 Pack (Latest)
 - **Models:** Black, Latina, Asian
@@ -103,6 +121,9 @@
 - "run a back" = push to GitHub
 - OpenRouter config requires `"api": "openai-completions"` format (not "openai-chat")
 - Google Slides scope (`https://www.googleapis.com/auth/slides`) is invalid for this OAuth token
+- **Firebase localStorage fallback**: Command board now saves to Firebase but backs up to localStorage
+- **Google AI Studio key**: Now has real API key - access to Gemini 2.5!
+- **Model endpoints**: Use `/v1beta/models/` for AI Studio API
 
 ---
 
@@ -110,8 +131,11 @@
 
 - [ ] Implement textured backgrounds in V4
 - [ ] Apply creative director research findings
-- [ ] Get Firebase/command board operational
+- [x] Get Firebase/command board operational (Firebase sync at winslow-756c3-default-rtdb)
 - [ ] Generate V4 templates with enhanced design elements
 - [x] Create HeyGen training video skill
 - [x] Configure OpenRouter Pony Alpha for free coding
 - [ ] Create Link in Bio page templates
+- [x] Add Google AI Studio API key (real key set: Gemini 2.5 access!)
+- [ ] Configure Antigravity OAuth (add `antigravity_oauth.json` to `.keys/`)
+- [ ] Test Gemini 2.5 Pro for deep reasoning tasks
