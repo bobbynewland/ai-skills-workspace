@@ -2,46 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mission Control</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0f; color: #e5e5e5; min-height: 100vh; overflow-x: hidden; padding-bottom: 80px; }
-        .header { padding: 20px; background: linear-gradient(180deg, #0a0a0f 0%, transparent 100%); position: sticky; top: 0; z-index: 100; }
-        .header h1 { font-size: 1.5rem; font-weight: 600; background: linear-gradient(135deg, #fff 0%, #a78bfa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0f; color: #e5e5e5; min-height: 100vh; padding-bottom: 100px; }
+        .header { padding: 20px; position: sticky; top: 0; background: #0a0a0f; z-index: 100; }
+        .header h1 { font-size: 1.5rem; font-weight: 600; background: linear-gradient(135deg, #fff, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .header p { color: #6b7280; font-size: 0.875rem; margin-top: 4px; }
-        .connection-status { display: flex; align-items: center; gap: 8px; padding: 8px 20px; font-size: 0.8rem; }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; }
-        .status-dot.connected { background: #34d399; }
-        .status-dot.disconnected { background: #f87171; }
-        .status-dot.syncing { background: #fbbf24; animation: pulse 1s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .tabs { display: flex; gap: 4px; padding: 0 20px 20px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        .tab { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 10px 16px; font-size: 0.85rem; cursor: pointer; white-space: nowrap; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
-        .tab.active { background: linear-gradient(135deg, rgba(167, 139, 250, 0.15) 0%, rgba(124, 58, 237, 0.15) 100%); border-color: rgba(167, 139, 250, 0.3); }
-        .tab-content { display: none; padding: 0 20px; }
-        .tab-content.active { display: block; }
-        .stats-bar { display: flex; gap: 8px; padding: 0 20px 20px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-        .stat-pill { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 8px 16px; font-size: 0.8rem; white-space: nowrap; }
+        .status-bar { display: flex; gap: 8px; padding: 0 20px 20px; flex-wrap: wrap; }
+        .stat-pill { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 8px 16px; font-size: 0.8rem; }
         .stat-pill span { color: #a78bfa; font-weight: 600; }
-        .board { display: flex; gap: 12px; padding: 0 20px 100px; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 120px; touch-action: pan-x; }
-        .column { min-width: 280px; max-width: 280px; flex-shrink: 0; touch-action: none; }
+        .board { display: flex; gap: 16px; padding: 0 20px; overflow-x: auto; padding-bottom: 120px; }
+        .column { min-width: 280px; max-width: 280px; flex-shrink: 0; }
         .column-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid; }
-        .column-title { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 0.9rem; }
-        .column-count { background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; color: #9ca3af; }
+        .column-header h3 { font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .column-count { background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; }
         .todo .column-header { border-color: #f87171; }
         .progress .column-header { border-color: #fbbf24; }
         .review .column-header { border-color: #34d399; }
         .done .column-header { border-color: #60a5fa; }
-        .cards { display: flex; flex-direction: column; gap: 10px; min-height: 100px; padding: 4px; border-radius: 8px; transition: background 0.2s; }
-        .cards.drag-over { background: rgba(167, 139, 250, 0.1); }
-        .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 16px; cursor: grab; transition: all 0.2s ease; touch-action: none; }
-        .card:active { cursor: grabbing; }
-        .card.dragging { opacity: 0.7; transform: scale(1.02); box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
-        .card:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); }
-        .card-title { font-weight: 500; font-size: 0.95rem; margin-bottom: 8px; line-height: 1.4; }
+        .cards-container { display: flex; flex-direction: column; gap: 10px; min-height: 100px; }
+        .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.2s; }
+        .card:hover { background: rgba(255,255,255,0.05); }
+        .card-title { font-weight: 500; font-size: 0.95rem; margin-bottom: 8px; }
         .card-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-        .tag { font-size: 0.7rem; padding: 4px 10px; border-radius: 6px; font-weight: 500; }
+        .tag { font-size: 0.7rem; padding: 4px 10px; border-radius: 6px; }
         .tag-dev { background: rgba(96, 165, 250, 0.15); color: #60a5fa; }
         .tag-marketing { background: rgba(248, 113, 113, 0.15); color: #f87171; }
         .tag-content { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
@@ -51,188 +37,271 @@
         .priority-high { background: #f87171; }
         .priority-medium { background: #fbbf24; }
         .priority-low { background: #34d399; }
-        .notes-list { display: flex; flex-direction: column; gap: 12px; padding-bottom: 120px; }
-        .note-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 16px; cursor: pointer; }
-        .note-title { font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-        .note-preview { color: #9ca3af; font-size: 0.9rem; line-height: 1.5; }
-        .note-meta { display: flex; gap: 12px; margin-top: 12px; font-size: 0.75rem; color: #6b7280; }
-        .files-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; padding-bottom: 120px; }
-        .file-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 16px; text-align: center; cursor: pointer; transition: all 0.2s; }
-        .file-card:hover { background: rgba(255,255,255,0.05); }
-        .file-icon { font-size: 2.5rem; margin-bottom: 8px; }
-        .file-name { font-size: 0.85rem; font-weight: 500; word-break: break-word; }
-        .file-meta { font-size: 0.75rem; color: #6b7280; margin-top: 4px; }
-        .tools-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding-bottom: 120px; }
-        .tool-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; cursor: pointer; transition: all 0.2s; }
-        .tool-card:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); transform: translateY(-2px); }
-        .tool-icon { font-size: 2rem; }
-        .tool-name { font-weight: 600; font-size: 0.9rem; }
-        .tool-desc { font-size: 0.75rem; color: #6b7280; text-align: center; }
-        .google-connect { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 24px; margin-bottom: 20px; text-align: center; }
-        .google-connect h3 { margin-bottom: 12px; }
-        .google-connect p { color: #9ca3af; font-size: 0.9rem; margin-bottom: 16px; }
-        .fab { position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; border-radius: 16px; background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%); border: none; color: white; font-size: 1.5rem; cursor: pointer; box-shadow: 0 10px 40px rgba(124, 58, 237, 0.4); z-index: 100; display: flex; align-items: center; justify-content: center; }
+        .fab { position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; border-radius: 16px; background: linear, #a78-gradient(135degbfa, #7c3aed); border: none; color: white; font-size: 1.5rem; cursor: pointer; box-shadow: 0 10px 40px rgba(124, 58, 237, 0.4); z-index: 100; }
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: flex-end; justify-content: center; }
         .modal.active { display: flex; }
-        .modal-content { background: #16161c; width: 100%; max-width: 600px; border-radius: 24px 24px 0 0; padding: 24px; max-height: 85vh; overflow-y: auto; animation: slideUp 0.3s ease; }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .modal-content { background: #16161c; width: 100%; max-width: 500px; border-radius: 24px 24px 0 0; padding: 24px; max-height: 85vh; overflow-y: auto; }
+        @media (min-width: 768px) { .modal-content { margin: auto; border-radius: 24px; } .board { padding: 0 40px; } }
         .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
         .modal-header h2 { font-size: 1.25rem; font-weight: 600; }
         .close-btn { width: 36px; height: 36px; border-radius: 10px; background: rgba(255,255,255,0.05); border: none; color: #9ca3af; font-size: 1.25rem; cursor: pointer; }
         .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; color: #9ca3af; font-size: 0.8rem; margin-bottom: 8px; font-weight: 500; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #fff; font-size: 1rem; -webkit-appearance: none; }
-        .form-group textarea { min-height: 100px; resize: none; line-height: 1.5; }
+        .form-group label { display: block; color: #9ca3af; font-size: 0.8rem; margin-bottom: 8px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: #fff; font-size: 1rem; }
+        .form-group textarea { min-height: 100px; resize: none; }
         .btn-group { display: flex; gap: 12px; margin-top: 20px; }
-        .btn { flex: 1; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: all 0.2s; border: none; }
-        .btn-primary { background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%); color: white; }
+        .btn { flex: 1; padding: 14px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; cursor: pointer; border: none; }
+        .btn-primary { background: linear-gradient(135deg, #a78bfa, #7c3aed); color: white; }
         .btn-secondary { background: rgba(255,255,255,0.05); color: #e5e5e5; border: 1px solid rgba(255,255,255,0.1); }
         .btn-danger { background: rgba(248, 113, 113, 0.15); color: #f87171; }
-        .btn:active { transform: scale(0.98); }
-        @media (min-width: 768px) { .board, .tabs, .notes-list, .files-grid, .tools-grid { padding-left: 40px; padding-right: 40px; } .modal-content { margin: auto; border-radius: 24px; } .column { min-width: 320px; max-width: 320px; } }
+        .tabs { display: flex; gap: 8px; padding: 0 20px 20px; overflow-x: auto; }
+        .tab { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 10px 16px; font-size: 0.85rem; cursor: pointer; white-space: nowrap; }
+        .tab.active { background: linear-gradient(135deg, rgba(167, 139, 250, 0.15), rgba(124, 58, 237, 0.15)); border-color: rgba(167, 139, 250, 0.3); }
+        .tab-content { display: none; padding: 0 20px; }
+        .tab-content.active { display: block; }
     </style>
 </head>
 <body>
-    <div class="header"><h1>🚀 Mission Control</h1><p>Your command center</p></div>
-    <div class="connection-status"><span class="status-dot disconnected" id="googleStatus"></span><span id="googleStatusText">Loading...</span></div>
-    <div class="tabs"><div class="tab active" data-tab="tasks"><span>📋 Tasks</span></div><div class="tab" data-tab="notes"><span>📝 Notes</span></div><div class="tab" data-tab="files"><span>📁 Files</span></div><div class="tab" data-tab="tools"><span>🔧 Google Tools</span></div></div>
+    <div class="header">
+        <h1>🚀 Mission Control</h1>
+        <p>Your task board</p>
+    </div>
+    
+    <div class="tabs">
+        <div class="tab active" onclick="showTab('tasks')">📋 Tasks</div>
+    </div>
+    
     <div class="tab-content active" id="tasks-tab">
-        <div class="stats-bar"><div class="stat-pill">Total: <span id="stat-total">0</span></div><div class="stat-pill">To Do: <span id="stat-todo">0</span></div><div class="stat-pill">In Progress: <span id="stat-progress">0</span></div><div class="stat-pill">Done: <span id="stat-done">0</span></div></div>
+        <div class="status-bar">
+            <div class="stat-pill">Total: <span id="stat-total">0</span></div>
+            <div class="stat-pill">To Do: <span id="stat-todo">0</span></div>
+            <div class="stat-pill">In Progress: <span id="stat-progress">0</span></div>
+            <div class="stat-pill">Done: <span id="stat-done">0</span></div>
+        </div>
+        
         <div class="board">
-            <div class="column todo" data-column="todo"><div class="column-header"><div class="column-title">📋 To Do <span class="column-count">0</span></div></div><div class="cards" data-status="todo"></div></div>
-            <div class="column progress" data-column="progress"><div class="column-header"><div class="column-title">🔥 In Progress <span class="column-count">0</span></div></div><div class="cards" data-status="progress"></div></div>
-            <div class="column review" data-column="review"><div class="column-header"><div class="column-title">👀 Review <span class="column-count">0</span></div></div><div class="cards" data-status="review"></div></div>
-            <div class="column done" data-column="done"><div class="column-header"><div class="column-title">✅ Done <span class="column-count">0</span></div></div><div class="cards" data-status="done"></div></div>
+            <div class="column todo">
+                <div class="column-header">
+                    <h3>📋 To Do <span class="column-count" id="count-todo">0</span></h3>
+                </div>
+                <div class="cards-container" id="col-todo" data-status="todo"></div>
+            </div>
+            <div class="column progress">
+                <div class="column-header">
+                    <h3>🔥 In Progress <span class="column-count" id="count-progress">0</span></h3>
+                </div>
+                <div class="cards-container" id="col-progress" data-status="progress"></div>
+            </div>
+            <div class="column review">
+                <div class="column-header">
+                    <h3>👀 Review <span class="column-count" id="count-review">0</span></h3>
+                </div>
+                <div class="cards-container" id="col-review" data-status="review"></div>
+            </div>
+            <div class="column done">
+                <div class="column-header">
+                    <h3>✅ Done <span class="column-count" id="count-done">0</span></h3>
+                </div>
+                <div class="cards-container" id="col-done" data-status="done"></div>
+            </div>
         </div>
     </div>
-    <div class="tab-content" id="notes-tab"><div class="google-connect"><h3>📝 Google Docs Integration</h3><p>Connect to access your Brain Dump and Notes from Google Docs</p></div><div class="notes-list"><div class="note-card"><div class="note-title">🧠 Brain Dump</div><div class="note-preview">Your central note-taking space...</div></div></div></div>
-    <div class="tab-content" id="files-tab"><div class="google-connect"><h3>📁 Firebase Storage</h3><p>Your files synced in real-time via Firebase</p></div><div class="files-grid"><div class="file-card"><div class="file-icon">📁</div><div class="file-name">Browse Files</div></div></div></div>
-    <div class="tab-content" id="tools-tab"><div class="google-connect"><h3>🔧 Google Workspace</h3><p>Quick access to all Google tools</p></div><div class="tools-grid"><div class="tool-card" onclick="openTool('docs')"><div class="tool-icon">📄</div><div class="tool-name">Google Docs</div></div><div class="tool-card" onclick="openTool('sheets')"><div class="tool-icon">📊</div><div class="tool-name">Google Sheets</div></div><div class="tool-card" onclick="openTool('drive')"><div class="tool-icon">☁️</div><div class="tool-name">Google Drive</div></div><div class="tool-card" onclick="openTool('calendar')"><div class="tool-icon">📅</div><div class="tool-name">Calendar</div></div><div class="tool-card" onclick="openTool('gmail')"><div class="tool-icon">✉️</div><div class="tool-name">Gmail</div></div><div class="tool-card" onclick="openTool('photos')"><div class="tool-icon">🖼️</div><div class="tool-name">Photos</div></div></div></div>
-    <button class="fab" onclick="openAddModal()" id="taskFab">+</button>
-    <div class="modal" id="addModal"><div class="modal-content"><div class="modal-header"><h2>New Task</h2><button class="close-btn" onclick="closeModal('addModal')">×</button></div>
-        <form onsubmit="submitNewTask(event)"><div class="form-group"><label>Title</label><input type="text" id="addTitle" placeholder="What needs to be done?" required></div>
-            <div class="form-group"><label>Description</label><textarea id="addDesc" placeholder="Add details..."></textarea></div>
-            <div class="form-group"><label>Category</label><select id="addCategory"><option value="dev">💻 Dev</option><option value="marketing">📣 Marketing</option><option value="content">🎨 Content</option><option value="ambassador">🤝 Ambassador</option><option value="ops">⚙️ Ops</option></select></div>
-            <div class="form-group"><label>Priority</label><select id="addPriority"><option value="high">🔴 High</option><option value="medium">🟡 Medium</option><option value="low">🟢 Low</option></select></div>
-            <div class="btn-group"><button type="button" class="btn btn-secondary" onclick="closeModal('addModal')">Cancel</button><button type="submit" class="btn btn-primary">Create Task</button></div></form></div></div>
-    <div class="modal" id="detailModal"><div class="modal-content"><div class="modal-header"><h2>Task Details</h2><button class="close-btn" onclick="closeModal('detailModal')">×</button></div>
-        <form onsubmit="saveTask(event)"><input type="hidden" id="editId">
-            <div class="form-group"><label>Status</label><select id="editStatus"><option value="todo">📋 To Do</option><option value="progress">🔥 In Progress</option><option value="review">👀 Review</option><option value="done">✅ Done</option></select></div>
-            <div class="form-group"><label>Title</label><input type="text" id="editTitle" required></div>
-            <div class="form-group"><label>Description</label><textarea id="editDesc"></textarea></div>
-            <div class="form-group"><label>Category</label><select id="editCategory"><option value="dev">💻 Dev</option><option value="marketing">📣 Marketing</option><option value="content">🎨 Content</option><option value="ambassador">🤝 Ambassador</option><option value="ops">⚙️ Ops</option></select></div>
-            <div class="form-group"><label>Priority</label><select id="editPriority"><option value="high">🔴 High</option><option value="medium">🟡 Medium</option><option value="low">🟢 Low</option></select></div>
-            <div class="btn-group"><button type="button" class="btn btn-danger" onclick="deleteTask()">Delete</button><button type="submit" class="btn btn-primary">Save</button></div></form></div></div>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    
+    <button class="fab" onclick="openAddModal()">+</button>
+    
+    <!-- Add Task Modal -->
+    <div class="modal" id="addModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>New Task</h2>
+                <button class="close-btn" onclick="closeModal('addModal')">×</button>
+            </div>
+            <form onsubmit="submitNewTask(event)">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="addTitle" placeholder="What needs to be done?" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="addDesc" placeholder="Add details..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="addCategory">
+                        <option value="dev">💻 Dev</option>
+                        <option value="marketing">📣 Marketing</option>
+                        <option value="content">🎨 Content</option>
+                        <option value="ambassador">🤝 Ambassador</option>
+                        <option value="ops">⚙️ Ops</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Priority</label>
+                    <select id="addPriority">
+                        <option value="high">🔴 High</option>
+                        <option value="medium">🟡 Medium</option>
+                        <option value="low">🟢 Low</option>
+                    </select>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Edit Task Modal -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Task Details</h2>
+                <button class="close-btn" onclick="closeModal('editModal')">×</button>
+            </div>
+            <form onsubmit="saveTask(event)">
+                <input type="hidden" id="editId">
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="editStatus">
+                        <option value="todo">📋 To Do</option>
+                        <option value="progress">🔥 In Progress</option>
+                        <option value="review">👀 Review</option>
+                        <option value="done">✅ Done</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="editTitle" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="editDesc"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="editCategory">
+                        <option value="dev">💻 Dev</option>
+                        <option value="marketing">📣 Marketing</option>
+                        <option value="content">🎨 Content</option>
+                        <option value="ambassador">🤝 Ambassador</option>
+                        <option value="ops">⚙️ Ops</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Priority</label>
+                    <select id="editPriority">
+                        <option value="high">🔴 High</option>
+                        <option value="medium">🟡 Medium</option>
+                        <option value="low">🟢 Low</option>
+                    </select>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-danger" onclick="deleteTask()">Delete</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
     <script>
-        // Firebase config
-        const firebaseConfig = { apiKey: "AIzaSyB3Z1WDeqO4cEBMk5Q1j9H8c2-0Z1Y8X0", authDomain: "winslow-756c3.firebaseapp.com", databaseURL: "https://winslow-756c3-default-rtdb.firebaseio.com", projectId: "winslow-756c3", storageBucket: "winslow-756c3.appspot.com", messagingSenderId: "123456789", appId: "1:123456789:web:abc123" };
-        let db = null;
-        try {
-            firebase.initializeApp(firebaseConfig);
-            db = firebase.database();
-            setConnectionStatus('syncing', 'Firebase connecting...');
-        } catch(e) { console.log('Firebase init failed:', e); setConnectionStatus('disconnected', 'Local mode'); }
+        // Simple, reliable task manager
+        let tasks = [];
+        let currentEditId = null;
         
-        let state = { tasks: [] };
-        let currentTaskId = null;
-        
-        document.addEventListener('DOMContentLoaded', () => { loadState(); setupTabs(); setupDragDrop(); });
-        
-        function setConnectionStatus(status, text) {
-            const statusEl = document.getElementById('googleStatus');
-            const textEl = document.getElementById('googleStatusText');
-            statusEl.className = `status-dot ${status}`;
-            textEl.textContent = text;
-        }
-        
-        function loadState() {
-            const localTasks = localStorage.getItem('mission_tasks');
-            if (localTasks) {
-                state.tasks = JSON.parse(localTasks);
-                renderBoard();
-                setConnectionStatus('connected', 'Local storage');
+        // Load from localStorage
+        function loadTasks() {
+            const saved = localStorage.getItem('mission_tasks');
+            if (saved) {
+                tasks = JSON.parse(saved);
             } else {
-                // Seed initial tasks
-                state.tasks = [
-                    { id: '1', title: "Welcome to Mission Control", desc: "Try dragging tasks between columns!", category: "ops", priority: "medium", status: "todo" },
-                    { id: '2', title: "Add more tasks", desc: "Click + to create new tasks", category: "dev", priority: "low", status: "todo" }
+                // Default tasks
+                tasks = [
+                    { id: '1', title: "Welcome to Mission Control", desc: "Click a task to edit. Use the dropdown to change status.", category: "ops", priority: "medium", status: "todo" },
+                    { id: '2', title: "Try changing status", desc: "Open a task and use the Status dropdown", category: "dev", priority: "low", status: "todo" },
+                    { id: '3', title: "Add your own tasks", desc: "Click the + button to create new tasks", category: "marketing", priority: "high", status: "progress" }
                 ];
-                saveStateLocal();
-                renderBoard();
-                setConnectionStatus('connected', 'Local mode');
+                saveTasks();
             }
+            renderBoard();
         }
         
-        function saveStateLocal() {
-            localStorage.setItem('mission_tasks', JSON.stringify(state.tasks));
+        function saveTasks() {
+            localStorage.setItem('mission_tasks', JSON.stringify(tasks));
             renderStats();
-        }
-        
-        function saveState() {
-            saveStateLocal();
-            if (db) {
-                try {
-                    const tasksObj = {};
-                    state.tasks.forEach(t => tasksObj[t.id] = t);
-                    db.ref('workspaces/winslow_main/tasks').set(tasksObj)
-                        .then(() => setConnectionStatus('connected', 'Synced to Firebase'))
-                        .catch(e => { console.log('Firebase sync failed:', e); });
-                } catch(e) { console.log('Firebase write failed:', e); }
-            }
         }
         
         function renderBoard() {
-            document.querySelectorAll('.cards').forEach(el => el.innerHTML = '');
-            state.tasks.forEach(task => {
-                const card = createCardElement(task);
-                const col = document.querySelector(`.cards[data-status="${task.status}"]`);
-                if (col) col.appendChild(card);
+            // Clear all columns
+            ['todo', 'progress', 'review', 'done'].forEach(status => {
+                document.getElementById('col-' + status).innerHTML = '';
             });
+            
+            // Add cards to correct columns
+            tasks.forEach(task => {
+                const card = createCard(task);
+                const container = document.getElementById('col-' + task.status);
+                if (container) container.appendChild(card);
+            });
+            
             renderStats();
         }
         
-        function createCardElement(task) {
+        function createCard(task) {
             const div = document.createElement('div');
             div.className = 'card';
             div.dataset.id = task.id;
-            div.dataset.status = task.status;
-            const tagClass = `tag-${task.category}`;
-            const priorityClass = `priority-${task.priority}`;
-            div.innerHTML = `<div class="card-title">${task.title}</div><div class="card-meta"><span class="tag ${tagClass}">${getCategoryLabel(task.category)}</span><span class="priority-dot ${priorityClass}"></span></div>`;
-            div.addEventListener('click', () => openDetail(task.id));
+            div.innerHTML = '<div class="card-title">' + task.title + '</div>' +
+                '<div class="card-meta">' +
+                '<span class="tag tag-' + task.category + '">' + getCategoryLabel(task.category) + '</span>' +
+                '<span class="priority-dot priority-' + task.priority + '"></span>' +
+                '</div>';
+            div.onclick = function() { openEditModal(task.id); };
             return div;
         }
         
-        function getCategoryLabel(cat) { const labels = { dev: 'Dev', marketing: 'Marketing', content: 'Content', ambassador: 'Ambassador', ops: 'Ops' }; return labels[cat] || cat; }
+        function getCategoryLabel(cat) {
+            const labels = { dev: 'Dev', marketing: 'Marketing', content: 'Content', ambassador: 'Ambassador', ops: 'Ops' };
+            return labels[cat] || cat;
+        }
         
         function renderStats() {
-            const counts = { total: 0, todo: 0, progress: 0, review: 0, done: 0 };
-            state.tasks.forEach(t => { counts.total++; counts[t.status]++; });
+            const counts = { total: tasks.length, todo: 0, progress: 0, review: 0, done: 0 };
+            tasks.forEach(t => { if (counts[t.status] !== undefined) counts[t.status]++; });
+            
             document.getElementById('stat-total').textContent = counts.total;
             document.getElementById('stat-todo').textContent = counts.todo;
             document.getElementById('stat-progress').textContent = counts.progress;
             document.getElementById('stat-done').textContent = counts.done;
-            document.querySelectorAll('.column').forEach(col => { const status = col.dataset.column; const countEl = col.querySelector('.column-count'); if (countEl) countEl.textContent = counts[status] || 0; });
+            document.getElementById('count-todo').textContent = counts.todo;
+            document.getElementById('count-progress').textContent = counts.progress;
+            document.getElementById('count-review').textContent = counts.review;
+            document.getElementById('count-done').textContent = counts.done;
         }
         
-        function openAddModal() { document.getElementById('addModal').classList.add('active'); document.getElementById('addTitle').focus(); }
+        function openAddModal() {
+            document.getElementById('addTitle').value = '';
+            document.getElementById('addDesc').value = '';
+            document.getElementById('addModal').classList.add('active');
+            document.getElementById('addTitle').focus();
+        }
         
-        function openDetail(id) {
-            currentTaskId = id;
-            const task = state.tasks.find(t => t.id == id);
+        function openEditModal(id) {
+            const task = tasks.find(t => t.id === id);
             if (!task) return;
+            currentEditId = id;
             document.getElementById('editId').value = id;
             document.getElementById('editTitle').value = task.title;
             document.getElementById('editDesc').value = task.desc || '';
             document.getElementById('editStatus').value = task.status;
             document.getElementById('editCategory').value = task.category;
             document.getElementById('editPriority').value = task.priority;
-            document.getElementById('detailModal').classList.add('active');
+            document.getElementById('editModal').classList.add('active');
         }
         
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); currentTaskId = null; }
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+            currentEditId = null;
+        }
         
         function submitNewTask(e) {
             e.preventDefault();
@@ -242,11 +311,10 @@
                 desc: document.getElementById('addDesc').value,
                 category: document.getElementById('addCategory').value,
                 priority: document.getElementById('addPriority').value,
-                status: 'todo',
-                createdAt: Date.now()
+                status: 'todo'
             };
-            state.tasks.push(newTask);
-            saveState();
+            tasks.push(newTask);
+            saveTasks();
             renderBoard();
             closeModal('addModal');
             e.target.reset();
@@ -254,106 +322,41 @@
         
         function saveTask(e) {
             e.preventDefault();
-            if (!currentTaskId) return;
-            const task = state.tasks.find(t => t.id == currentTaskId);
+            if (!currentEditId) return;
+            const task = tasks.find(t => t.id === currentEditId);
             if (!task) return;
             task.title = document.getElementById('editTitle').value;
             task.desc = document.getElementById('editDesc').value;
             task.status = document.getElementById('editStatus').value;
             task.category = document.getElementById('editCategory').value;
             task.priority = document.getElementById('editPriority').value;
-            task.updatedAt = Date.now();
-            saveState();
+            saveTasks();
             renderBoard();
-            closeModal('detailModal');
+            closeModal('editModal');
         }
         
         function deleteTask() {
-            if (!currentTaskId) return;
+            if (!currentEditId) return;
             if (!confirm('Delete this task?')) return;
-            state.tasks = state.tasks.filter(t => t.id != currentTaskId);
-            saveState();
+            tasks = tasks.filter(t => t.id !== currentEditId);
+            saveTasks();
             renderBoard();
-            closeModal('detailModal');
+            closeModal('editModal');
         }
         
-        function openTool(tool) {
-            const urls = { docs: 'https://docs.google.com', sheets: 'https://sheets.google.com', slides: 'https://slides.google.com', drive: 'https://drive.google.com', calendar: 'https://calendar.google.com', gmail: 'https://mail.google.com', photos: 'https://photos.google.com' };
-            window.open(urls[tool], '_blank');
+        function showTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(tab + '-tab').classList.add('active');
         }
         
-        // Drag and Drop
-        function setupDragDrop() {
-            const cards = document.querySelectorAll('.card');
-            const columns = document.querySelectorAll('.cards');
-            let draggedCard = null;
-            
-            // Mouse events
-            cards.forEach(card => {
-                card.addEventListener('dragstart', (e) => { draggedCard = card; card.classList.add('dragging'); });
-                card.addEventListener('dragend', () => { card.classList.remove('dragging'); draggedCard = null; });
-            });
-            
-            columns.forEach(col => {
-                col.addEventListener('dragover', (e) => { e.preventDefault(); col.classList.add('drag-over'); });
-                col.addEventListener('dragleave', () => col.classList.remove('drag-over'));
-                col.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    col.classList.remove('drag-over');
-                    if (draggedCard) {
-                        const newStatus = col.dataset.status;
-                        const taskId = draggedCard.dataset.id;
-                        moveTask(taskId, newStatus);
-                    }
-                });
-            });
-            
-            // Touch events for mobile
-            cards.forEach(card => {
-                card.addEventListener('touchstart', (e) => {
-                    draggedCard = card;
-                    card.classList.add('dragging');
-                }, { passive: true });
-                
-                card.addEventListener('touchmove', (e) => {
-                    e.preventDefault();
-                    if (!draggedCard) return;
-                    const touch = e.touches[0];
-                    const elemBelow = document.elementFromPoint(touch.clientX, touch.clientY);
-                    columns.forEach(c => c.classList.remove('drag-over'));
-                    const colBelow = elemBelow?.closest('.cards');
-                    if (colBelow) colBelow.classList.add('drag-over');
-                }, { passive: false });
-                
-                card.addEventListener('touchend', (e) => {
-                    if (!draggedCard) return;
-                    const touch = e.changedTouches[0];
-                    const elemBelow = document.elementFromPoint(touch.clientX, touch.clientY);
-                    const colBelow = elemBelow?.closest('.cards');
-                    if (colBelow) {
-                        const newStatus = colBelow.dataset.status;
-                        const taskId = draggedCard.dataset.id;
-                        moveTask(taskId, newStatus);
-                    }
-                    draggedCard.classList.remove('dragging');
-                    columns.forEach(c => c.classList.remove('drag-over'));
-                    draggedCard = null;
-                });
-            });
-        }
+        // Initialize
+        document.addEventListener('DOMContentLoaded', loadTasks);
         
-        function moveTask(taskId, newStatus) {
-            const task = state.tasks.find(t => t.id == taskId);
-            if (task && task.status !== newStatus) {
-                task.status = newStatus;
-                task.updatedAt = Date.now();
-                saveState();
-                renderBoard();
-            }
-        }
-        
+        // Close modal on background click
         document.querySelectorAll('.modal').forEach(modal => {
-            modal.addEventListener('click', e => { if (e.target === modal) closeModal(modal.id); });
+            modal.onclick = function(e) { if (e.target === modal) closeModal(modal.id); };
         });
     </script>
 </body>
