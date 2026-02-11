@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getDatabase, ref, set, onValue, remove } from 'firebase/database';
 
@@ -42,16 +42,21 @@ const noteTypeColors = {
 
 const columnColors = { todo: '#f87171', progress: '#fbbf24', review: '#34d399', done: '#60a5fa' };
 
-function TaskCard({ task, onClick, onDragStart, onDragEnd }) {
+function TaskCard({ task, onClick, onDragStart, onDragEnd, onTouchStart, onTouchMove, onTouchEnd }) {
   const catColor = categoryColors[task.category] || categoryColors.ops;
   
   return (
     <div
       className="task-card"
+      data-task-id={task.id}
       draggable
       onDragStart={(e) => onDragStart(e, task)}
       onDragEnd={onDragEnd}
       onClick={onClick}
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+      style={{ touchAction: 'none' }}
     >
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
         <div style={{ fontWeight: 500, fontSize: '0.875rem', lineHeight: 1.4, paddingRight: '0.5rem', flex: 1 }}>
@@ -79,7 +84,7 @@ function TaskColumn({ status, tasks, columnIcons, columnLabels, onTaskClick, onD
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
       onDrop={onDrop}
-      style={{ minHeight: '150px' }}
+      style={{ minHeight: '150px', touchAction: 'pan-y' }}
     >
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', paddingBottom: '0.75rem', borderBottom: `2px solid ${columnColors[status]}` }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -96,6 +101,11 @@ function TaskColumn({ status, tasks, columnIcons, columnLabels, onTaskClick, onD
             key={task.id}
             task={task}
             onClick={() => onTaskClick(task)}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
           />
         ))}
         {columnTasks.length === 0 && (
@@ -157,6 +167,16 @@ function App() {
   const [editingTask, setEditingTask] = useState(null);
   const [draggingTask, setDraggingTask] = useState(null);
   const [overColumn, setOverColumn] = useState(null);
+  
+  // Touch drag state
+  const touchDragRef = useRef({
+    isDragging: false,
+    startX: 0,
+    startY: 0,
+    taskId: null,
+    draggedElement: null,
+    clone: null,
+  });
 
   // Load tasks from Firebase
   useEffect(() => {
@@ -285,6 +305,111 @@ function App() {
     
     setDraggingTask(null);
   }, [tasks, saveTasks]);
+
+  // Touch handlers for mobile
+  const handleTouchStart = useCallback((e) => {
+    const touch = e.touches[0];
+    const card = e.currentTarget;
+    const taskId = card.dataset.taskId || card.getAttribute('data-task-id');
+    
+    touchDragRef.current = {
+      isDragging: false,
+      startX: touch.clientX,
+      startY: touch.clientY,
+      taskId: taskId,
+      draggedElement: card,
+      clone: null,
+    };
+  }, []);
+
+  const handleTouchMove = useCallback((e) => {
+    const touch = e.touches[0];
+    const { startX, startY, isDragging, taskId, draggedElement, clone } = touchDragRef.current;
+    
+    const deltaX = Math.abs(touch.clientX - startX);
+    const deltaY = Math.abs(touch.clientY - startY);
+    
+    // If moved more than 10px, start drag
+    if (!isDragging && (deltaX > 10 || deltaY > 10)) {
+      const task = tasks[taskId];
+      if (!task) return;
+      
+      touchDragRef.current.isDragging = true;
+      setDraggingTask(task);
+      
+      // Create visual clone
+      const rect = draggedElement.getBoundingClientRect();
+      const cloneEl = draggedElement.cloneNode(true);
+      cloneEl.style.position = 'fixed';
+      cloneEl.style.left = `${rect.left}px`;
+      cloneEl.style.top = `${rect.top}px`;
+      cloneEl.style.width = `${rect.width}px`;
+      cloneEl.style.zIndex = '9999';
+      cloneEl.style.opacity = '0.9';
+      cloneEl.style.pointerEvents = 'none';
+      cloneEl.classList.add('dragging');
+      document.body.appendChild(cloneEl);
+      touchDragRef.current.clone = cloneEl;
+    }
+    
+    // Update clone position
+    if (touchDragRef.current.isDragging && clone) {
+      clone.style.left = `${touch.clientX - 40}px`;
+      clone.style.top = `${touch.clientY - 40}px`;
+      
+      // Find column under touch
+      const element = document.elementFromPoint(touch.clientX, touch.clientY);
+      let columnEl = element?.closest('[data-status]');
+      
+      if (columnEl && columnEl.id?.startsWith('column-')) {
+        if (overColumn !== columnEl.id) {
+          setOverColumn(columnEl.id);
+        }
+      } else {
+        setOverColumn(null);
+      }
+    }
+    
+    // Prevent scroll while dragging
+    if (isDragging) {
+      e.preventDefault();
+    }
+  }, [tasks, overColumn]);
+
+  const handleTouchEnd = useCallback((e) => {
+    const { isDragging, taskId, clone } = touchDragRef.current;
+    
+    if (clone) {
+      clone.remove();
+    }
+    
+    if (isDragging && taskId && overColumn) {
+      const newStatus = overColumn.replace('column-', '');
+      const task = tasks[taskId];
+      
+      if (task && task.status !== newStatus) {
+        const newTasks = { ...tasks };
+        
+        Object.values(newTasks).forEach(t => {
+          if (t.status === task.status && t.order > task.order) {
+            newTasks[t.id] = { ...t, order: t.order - 1 };
+          }
+        });
+        
+        const colTasks = Object.values(newTasks).filter(t => t.status === newStatus);
+        const newOrder = colTasks.length;
+        
+        newTasks[taskId] = { ...task, status: newStatus, order: newOrder };
+        
+        setTasks(newTasks);
+        saveTasks(newTasks);
+      }
+    }
+    
+    touchDragRef.current = { isDragging: false, startX: 0, startY: 0, taskId: null, draggedElement: null, clone: null };
+    setDraggingTask(null);
+    setOverColumn(null);
+  }, [tasks, overColumn, saveTasks]);
 
   // Task CRUD operations
   const addTask = (task) => {
