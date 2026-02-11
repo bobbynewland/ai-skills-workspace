@@ -1,13 +1,13 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   DndContext,
-  closestCenter,
+  DndContextProps,
   KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
   DragOverlay,
-  defaultDropAnimationSideEffects,
+  rectIntersection,
 } from '@dnd-kit/core';
 import {
   SortableContext,
@@ -54,10 +54,6 @@ const noteTypeColors = {
   meeting: { bg: 'rgba(96, 165, 250, 0.15)', text: '#60a5fa' },
   idea: { bg: 'rgba(52, 211, 153, 0.15)', text: '#34d399' },
   project: { bg: 'rgba(139, 92, 246, 0.15)', text: '#a78bfa' }
-};
-
-const dropAnimation = {
-  sideEffects: defaultDropAnimationSideEffects({ styles: { active: { opacity: '0.5' } } }),
 };
 
 function SortableTaskCard({ task, onClick }) {
@@ -153,8 +149,6 @@ function App() {
   const [editingNote, setEditingNote] = useState(null);
   const [editingTask, setEditingTask] = useState(null);
   const [activeId, setActiveId] = useState(null);
-  const [overId, setOverId] = useState(null);
-  const dragItemRef = useRef(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 12 } }),
@@ -198,37 +192,46 @@ function App() {
 
   const handleDragStart = useCallback((event) => {
     setActiveId(event.active.id);
-    dragItemRef.current = event.active.id;
-  }, []);
-
-  const handleDragOver = useCallback((event) => {
-    const { over } = event;
-    setOverId(over?.id || null);
   }, []);
 
   const handleDragEnd = useCallback((event) => {
-    const { active, over } = event;
+    const { active, over, delta } = event;
     setActiveId(null);
-    setOverId(null);
-
     if (!over) return;
 
     const activeId = active.id;
     const activeTask = tasks[activeId];
     if (!activeTask) return;
 
-    let newStatus = activeTask.status;
+    let newStatus = null;
 
-    // Check if dropped on a column
-    if (over.id.toString().startsWith('column-')) {
-      newStatus = over.id.toString().replace('column-', '');
+    // 1. Check if dropped on a column directly
+    if (over.id && typeof over.id === 'string' && over.id.startsWith('column-')) {
+      newStatus = over.id.replace('column-', '');
     }
-    // Check if dropped on a task
+    // 2. Check if dropped on a task - use that task's status
     else if (tasks[over.id]) {
       newStatus = tasks[over.id].status;
     }
+    // 3. Find which column contains the drop position using elementFromPoint
+    else {
+      const dropTarget = document.elementFromPoint(
+        active.rect.current.translated ? active.rect.current.translated.left + active.rect.current.width / 2 : 0,
+        active.rect.current.translated ? active.rect.current.translated.top - 20 : 0
+      );
+      if (dropTarget) {
+        let el = dropTarget;
+        while (el && el !== document.body) {
+          if (el.id && el.id.startsWith('column-')) {
+            newStatus = el.dataset.status;
+            break;
+          }
+          el = el.parentElement;
+        }
+      }
+    }
 
-    if (newStatus !== activeTask.status) {
+    if (newStatus && newStatus !== activeTask.status) {
       const newTasks = { ...tasks };
       
       // Remove from old position
@@ -238,11 +241,11 @@ function App() {
         }
       });
       
-      // Add to new column at the end
+      // Add to new column
       const colTasks = Object.values(newTasks).filter(t => t.status === newStatus);
       let newOrder = colTasks.length;
       
-      // If dropped on a task in the new column, insert before it
+      // If dropped on a task, insert at that position
       if (tasks[over.id]?.status === newStatus) {
         newOrder = tasks[over.id].order;
         Object.values(newTasks).forEach(t => {
@@ -309,7 +312,7 @@ function App() {
   ];
 
   return (
-    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
+    <DndContext sensors={sensors} collisionDetection={rectIntersection} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div style={{ height: '100%', background: '#0a0a0f', color: '#e5e5e5', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', overflow: 'hidden', touchAction: 'none' }}>
         <header style={{ position: 'sticky', top: 0, zIndex: 40, background: 'rgba(10, 10, 15, 0.8)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(55, 65, 81, 0.3)', padding: '1rem 1.25rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -412,7 +415,7 @@ function App() {
             </form>
           )}
         </Modal>
-        <DragOverlay dropAnimation={dropAnimation}>{activeId && tasks[activeId] ? <DragOverlayCard task={tasks[activeId]} /> : null}</DragOverlay>
+        <DragOverlay>{activeId && tasks[activeId] ? <DragOverlayCard task={tasks[activeId]} /> : null}</DragOverlay>
       </div>
     </DndContext>
   );
