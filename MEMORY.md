@@ -30,9 +30,8 @@
 ### Model Priority Chain
 
 **Chat:**
-1. Gemini 2.5 Flash (AI Studio API) - FASTEST, 1M tokens
-2. MiniMax M2.1 (Primary - $20/mo, 300 prompts/5hrs)
-3. Gemini CLI (Free fallback)
+1. MiniMax M2.1 (Primary - $20/mo, 300 prompts/5hrs)
+2. Gemini 2.5 Flash (AI Studio API - Fallback)
 
 **Coding:**
 1. Gemini CLI (Free, no limits)

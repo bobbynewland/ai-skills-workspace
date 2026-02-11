@@ -3,9 +3,8 @@
 ## Model Priority Chain (OPTIMIZED)
 
 ### Chat (Telegram, WhatsApp, Webchat)
-1. **Gemini 2.5 Flash** (AI Studio API) - Fastest, 1M token context
-2. **MiniMax M2.1** - Primary brain ($20/mo, 300 prompts/5hrs)
-3. **Gemini CLI** (free tier) - Fallback
+1. **MiniMax M2.1** - Primary brain ($20/mo, 300 prompts/5hrs)
+2. **Gemini 2.5 Flash** (AI Studio API) - Fallback, 1M tokens
 
 ### Coding Tasks
 1. **Gemini CLI** (free) - No limits, runs locally
