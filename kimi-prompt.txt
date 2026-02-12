@@ -1,0 +1,52 @@
+// Generate complete Mission Control React app with Kimi K2.5
+
+const prompt = `Write a complete production-ready React App.jsx file for a Mission Control Kanban board.
+
+REQUIREMENTS:
+1. Features:
+   - Tasks tab: Kanban board with 4 columns (todo, progress, review, done)
+   - Notes tab: List of notes with types (brain_dump, meeting, idea, project)
+   - Files tab: Grid of file/folder cards
+   - Tools tab: Links to external tools (Docs, Sheets, Drive, Calendar, Gmail, Photos)
+
+2. Firebase Realtime Database:
+   - Config: apiKey="AIzaSyB3Z1WDeqO4cEBMk5Q1j9H8c2-0Z1Y8X0", databaseURL="https://winslow-756c3-default-rtdb.firebaseio.com"
+   - Path: /workspaces/winslow_main/tasks and /workspaces/winslow_main/notes
+   - Use useEffect to load data, useCallback for saves
+
+3. Desktop drag-drop:
+   - Native HTML5 draggable, onDragStart, onDragOver, onDrop
+   - Move cards between columns, update order
+
+4. Mobile touch support:
+   - touch-action: pan-y on main content (vertical scroll)
+   - touch-action: pan-x on board container (horizontal scroll)
+   - 25px movement threshold before starting drag
+   - Visual clone follows finger during drag
+   - window.scrollY for scroll position tracking
+   - NO preventDefault() in touch handlers (allows scrolling)
+
+5. UI Components:
+   - TaskCard: draggable, shows title, category badge, priority dot
+   - TaskColumn: drop target, shows task count
+   - NoteCard: shows title, type badge, content preview
+   - Modal: for add/edit forms
+   - Bottom navigation with icons
+
+6. Styling:
+   - Dark theme with purple (#a78bfa) accents
+   - Inline styles (no external CSS)
+   - Scroll indicator on left edge (fixed position, z-index 100)
+   - FAB button for adding items
+   - Status badge in header (synced/saving)
+
+7. Use modern React:
+   - useState, useEffect, useCallback, useRef
+   - Functional components
+   - No class components
+
+8. Export: export default App
+
+Return ONLY the complete App.jsx code, no markdown, no explanations. Start with import statements.`;
+
+console.log(prompt);
