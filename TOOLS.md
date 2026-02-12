@@ -69,4 +69,40 @@
 > codex "Implement the touch drag with 25px threshold"
 
 [Codex generates production code]
+
+Nvidia API Reference 
+
+
+import requests, base64
+
+invoke_url = "https://integrate.api.nvidia.com/v1/chat/completions"
+stream = True
+
+
+headers = {
+  "Authorization": "Bearer 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",
+  "Accept": "text/event-stream" if stream else "application/json"
+}
+
+payload = {
+  "model": "moonshotai/kimi-k2.5",
+  "messages": [{"role":"user","content":""}],
+  "max_tokens": 16384,
+  "temperature": 1.00,
+  "top_p": 1.00,
+  "stream": stream,
+  "chat_template_kwargs": {"thinking":True},
+}
+
+
+
+response = requests.post(invoke_url, headers=headers, json=payload)
+
+if stream:
+    for line in response.iter_lines():
+        if line:
+            print(line.decode("utf-8"))
+else:
+    print(response.json())
+
 ```
