@@ -42,7 +42,7 @@ const noteTypeColors = {
 
 const columnColors = { todo: '#f87171', progress: '#fbbf24', review: '#34d399', done: '#60a5fa' };
 
-function TaskCard({ task, onClick, onDragStart, onDragEnd, onTouchStart, onTouchMove, onTouchEnd }) {
+function TaskCard({ task, onClick, onDragStart }) {
   const catColor = categoryColors[task.category] || categoryColors.ops;
   
   return (
@@ -51,12 +51,7 @@ function TaskCard({ task, onClick, onDragStart, onDragEnd, onTouchStart, onTouch
       data-task-id={task.id}
       draggable
       onDragStart={(e) => onDragStart(e, task)}
-      onDragEnd={onDragEnd}
       onClick={onClick}
-      onTouchStart={onTouchStart}
-      onTouchMove={onTouchMove}
-      onTouchEnd={onTouchEnd}
-      style={{ touchAction: 'pan-y' }}
     >
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
         <div style={{ fontWeight: 500, fontSize: '0.875rem', lineHeight: 1.4, paddingRight: '0.5rem', flex: 1 }}>
@@ -73,7 +68,7 @@ function TaskCard({ task, onClick, onDragStart, onDragEnd, onTouchStart, onTouch
   );
 }
 
-function TaskColumn({ status, tasks, columnIcons, columnLabels, onTaskClick, onDragOver, onDragLeave, onDrop, onDragStart, onDragEnd, onTouchStart, onTouchMove, onTouchEnd, isOver }) {
+function TaskColumn({ status, tasks, columnIcons, columnLabels, onTaskClick, onDrop, isOver, onDragStart }) {
   const columnTasks = Object.values(tasks).filter(t => t.status === status).sort((a, b) => (a.order || 0) - (b.order || 0));
 
   return (
@@ -81,8 +76,7 @@ function TaskColumn({ status, tasks, columnIcons, columnLabels, onTaskClick, onD
       id={`column-${status}`}
       data-status={status}
       className={`column-layout ${isOver ? 'drag-over' : ''}`}
-      onDragOver={onDragOver}
-      onDragLeave={onDragLeave}
+      onDragOver={(e) => e.preventDefault()}
       onDrop={onDrop}
       style={{ minHeight: '150px' }}
     >
@@ -102,10 +96,6 @@ function TaskColumn({ status, tasks, columnIcons, columnLabels, onTaskClick, onD
             task={task}
             onClick={() => onTaskClick(task)}
             onDragStart={onDragStart}
-            onDragEnd={onDragEnd}
-            onTouchStart={onTouchStart}
-            onTouchMove={onTouchMove}
-            onTouchEnd={onTouchEnd}
           />
         ))}
         {columnTasks.length === 0 && (
@@ -168,16 +158,6 @@ function App() {
   const [draggingTask, setDraggingTask] = useState(null);
   const [overColumn, setOverColumn] = useState(null);
   const [scrollProgress, setScrollProgress] = useState(0);
-
-  // Touch drag state
-  const touchDragRef = useRef({
-    isDragging: false,
-    startX: 0,
-    startY: 0,
-    taskId: null,
-    draggedElement: null,
-    clone: null,
-  });
 
   // Load tasks from Firebase
   useEffect(() => {
@@ -557,14 +537,9 @@ function App() {
                 columnIcons={columnIcons}
                 columnLabels={columnLabels}
                 onTaskClick={(task) => setEditingTask(task)}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
+                onDragOver={(e) => e.preventDefault()}
                 onDrop={handleDrop}
                 onDragStart={handleDragStart}
-                onDragEnd={handleDragEnd}
-                onTouchStart={handleTouchStart}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleTouchEnd}
                 isOver={overColumn === `column-${status}`}
               />
             ))}

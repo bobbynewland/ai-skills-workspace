@@ -1,0 +1,38 @@
+#!/bin/bash
+# Kimi Strategist - Quick access to Kimi K2.5 for planning
+
+API_KEY=$(cat /root/.openclaw/workspace/.keys/nvidia.key)
+ENDPOINT="https://integrate.api.nvidia.com/v1/chat/completions"
+
+if [ -z "$1" ]; then
+    echo "Usage: kimistrat \"Your planning question here\""
+    echo "Example: kimistrat \"Plan a new feature for Mission Control\""
+    exit 1
+fi
+
+PROMPT="You are a strategic AI architect. Think through this step by step and provide:
+1. Analysis
+2. Strategic recommendations
+3. Implementation approach
+4. Potential risks
+5. Next steps
+
+Question: $1"
+
+curl -s -X POST "$ENDPOINT" \
+    -H "Authorization: Bearer $API_KEY" \
+    -H "Content-Type: application/json" \
+    -d '{
+        "model": "moonshotai/kimi-k2.5",
+        "messages": [
+            {"role": "system", "content": "You are a strategic AI architect. Think deeply and provide structured recommendations."},
+            {"role": "user", "content": "'"$PROMPT"'"}
+        ],
+        "max_tokens": 4096,
+        "temperature": 0.1
+    }' | python3 -c "
+import sys, json
+data = json.load(sys.stdin)
+content = data.get('choices', [{}])[0].get('message', {}).get('content', 'No response')
+print(content)
+"
