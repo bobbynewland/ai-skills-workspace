@@ -1,0 +1,32 @@
+Rebuild Mission Control 2.0 at /root/.openclaw/workspace/command-center-v2 with these features:
+
+1. Firebase sync - Use config from /root/.openclaw/workspace/.keys/firebase.json - connect Firebase Realtime Database for data persistence
+
+2. Google Workspace integration:
+   - Gmail integration (show unread count, recent emails)
+   - Google Calendar (show today's events)  
+   - Google Drive (show recent files)
+   Use OAuth2 flow with proper scopes
+
+3. Agent Status panel:
+   - Show agent swarm status (Scout, Builder, Artist, etc.)
+   - Live status indicators
+   - Task counts per agent
+
+4. Skills panel with these skills:
+   - Template Creator (create reusable templates)
+   - Nano Banana (mini AI tasks)
+   - Video Transcription (transcribe video files)
+   Each skill should have a UI card with action button
+
+5. Trello-style Kanban:
+   - Drag and drop cards between columns (Backlog, Todo, In Progress, Done)
+   - Add/remove cards
+   - Persist to Firebase
+
+6. Working file upload:
+   - Upload files to Firebase Storage
+   - Display uploaded files
+   - Delete files
+
+Keep the existing dark theme UI with the same navigation. Use React, Vite, Tailwind CSS, Framer Motion. Ensure proper Firebase initialization and all features work together seamlessly. Make it production-ready for Vercel deployment.
