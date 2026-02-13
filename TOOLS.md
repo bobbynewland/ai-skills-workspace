@@ -49,3 +49,39 @@
 2. **Reason** → Claude Opus 4.5 (Antigravity)  
 3. **Fallback** → MiniMax 2.5
 4. **Deploy** → Vercel
+
+---
+
+# 🕸️ Kimi Swarm (10 NVIDIA Keys)
+
+## Overview
+- 10 NVIDIA API keys configured for parallel processing
+- Each key runs Kimi K2.5 independently
+- Use for research, parallel tasks, heavy lifting
+
+## Scripts
+
+### Swarm Scheduler
+```bash
+python3 /root/.openclaw/workspace/swarm-scheduler.py status   # Show all keys
+python3 /root/.openclaw/workspace/swarm-scheduler.py get-key  # Get next available
+python3 /root/.openclaw/workspace/swarm-scheduler.py run "task" # Run with least-used
+python3 /root/.openclaw/workspace/swarm-scheduler.py use-key 3 "task" # Use specific key
+```
+
+### Kimi Worker (Direct API)
+```bash
+python3 /root/.openclaw/workspace/kimi-worker.py "prompt"           # Auto-select key
+python3 /root/.openclaw/workspace/kimi-worker.py --key 5 "prompt"  # Use key 5
+```
+
+### Kimi Spawner
+```bash
+python3 /root/.openclaw/workspace/kimi-spawn.py spawn "task" [key-index]
+python3 /root/.openclaw/workspace/kimi-spawn.py parallel "task1" "task2"
+python3 /root/.openclaw/workspace/kimi-spawn.py status
+```
+
+## Status
+- Key 1: Used
+- Keys 2-10: Ready for parallel tasks
