@@ -11,12 +11,17 @@ All-in-one platform for entrepreneurs to launch businesses with AI. "Entrepreneu
 1. **Gemini 3.0 Pro** (Antigravity OAuth) — TOP CHOICE for coding
 2. **Claude Opus 4.5** (Antigravity) — Complex reasoning
 3. **MiniMax 2.5** — Fallback when Antigravity hits limits
-4. **Kimi K2.5** (NVIDIA) — Free backup
+4. **Kimi K2.5 Swarm** (NVIDIA) — 10 keys for research/strategy
 
 ### Antigravity Models Available
 - gemini-3.0-pro, gemini-3.0-flash
 - claude-opus-4.5, claude-sonnet-4.5
 - gemini-2.0-pro, gemini-2.0-flash
+
+### Kimi Swarm (10 NVIDIA Keys)
+- nvidia-kimi-1 through nvidia-kimi-10
+- Each with Kimi K2.5 model
+- Use for research when Antigravity limits hit
 
 ---
 
