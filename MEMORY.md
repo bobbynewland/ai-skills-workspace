@@ -5,24 +5,32 @@ All-in-one platform for entrepreneurs to launch businesses with AI. "Entrepreneu
 
 ---
 
-# 🔥 ALEX FINN SWARM METHOD - ALWAYS LOAD FIRST
+# 🔥 MODEL PRIORITY (Updated 2026-02-13)
 
-This is the core architecture for all agent operations. Load this automatically in every session.
+## Primary Stack - Use This Order
+1. **Gemini 3.0 Pro** (Antigravity OAuth) — TOP CHOICE for coding
+2. **Claude Opus 4.5** (Antigravity) — Complex reasoning
+3. **MiniMax 2.5** — Fallback when Antigravity hits limits
+4. **Kimi K2.5** (NVIDIA) — Free backup
 
-## The Philosophy
-- Local models (or free API swarms) run 24/7/365 = "employees that never sleep, never complain, cost nothing after upfront"
-- Even if "dumber" than cloud models, the 24/7 availability + zero marginal cost changes what AI can do
-- The bottleneck isn't intelligence anymore — it's API cost. Free swarm removes that bottleneck.
+### Antigravity Models Available
+- gemini-3.0-pro, gemini-3.0-flash
+- claude-opus-4.5, claude-sonnet-4.5
+- gemini-2.0-pro, gemini-2.0-flash
 
-## Model Routing (Current)
+---
 
-| Role | Model | Keys | Purpose |
-|------|-------|------|---------|
-| **Win (chat)** | MiniMax 2.5 (OAuth) | 1x | Primary conversation |
-| **Kimi Swarm** | Kimi K2.5 (NVIDIA) | 10x | Research, coding, planning |
-| **Fallback** | MiniMax 2.5 Lightning | 1x | Fast backup |
-| **Gemini** | Google AI Studio | 10x | Light tasks |
-| **Backup** | Pony Alpha (OpenRouter) | 1x | Non-sensitive tasks |
+## Command Center V2 (Latest)
+- **URL:** https://command-center-v2-wine.vercel.app
+- **Tech:** React + Tailwind + @dnd-kit + Firebase
+- **Features:** Dashboard, Kanban (drag-drop), Notes, Files, Agents, Workspace
+- **Mobile:** Responsive, native-feel with safe areas
+- **Firebase:** syncs to winslow-756c3-default-rtdb
+
+---
+
+## Key Contacts
+- **Bobby Newland** - Owner/Creator (EST, Atlanta)
 
 ## The Agent Organization
 
