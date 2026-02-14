@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  -webkit-tap-highlight-color: transparent;
+  background-color: #050505;
+  height: 100dvh;
+  width: 100vw;
+  overflow: hidden;
+  overflow-x: auto; /* Allow horizontal scroll on body */
+  overflow-y: auto;
+  position: fixed;
+}
+
+#root {
+  height: 100dvh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Glassmorphism utility */
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-dark {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Custom Scrollbar for Kanban */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Snap container - disable snap on mobile for horizontal scroll */
+.kanban-snap {
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
+}
+
+@media (max-width: 768px) {
+  .kanban-snap {
+    scroll-snap-type: none;
+  }
+}
+
+.kanban-column {
+  scroll-snap-align: center;
+}
+
+/* Mobile nav bottom spacing - only target bottom nav specifically */
+.bottom-nav {
+  margin-bottom: env(safe-area-inset-bottom, 20px);
+}
+
+@media (min-width: 768px) {
+  .bottom-nav {
+    margin-bottom: 0 !important;
+  }
+}
