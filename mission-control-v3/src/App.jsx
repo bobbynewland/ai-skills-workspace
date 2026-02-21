@@ -36,6 +36,7 @@ import UnifiedSearch from './components/UnifiedSearch';
 // PricingCalculator removed - kept as standalone
 import Auth from './components/Auth';
 import OrgOS from './components/OrgOS';
+import { initGA, trackPageView } from './lib/analytics';
 
 const menuItems = [
   { id: 'dashboard', label: 'Hub', icon: LayoutDashboard },
@@ -74,7 +75,21 @@ const App = () => {
     // Check auth on mount
     const auth = localStorage.getItem('mc_auth');
     setIsAuthenticated(auth === 'true');
+    
+    // Initialize GA4
+    // Using import.meta.env for Vercel/Vite environment variables
+    const GA_ID = import.meta.env.VITE_GA_MEASUREMENT_ID;
+    if (GA_ID) {
+      initGA(GA_ID);
+    }
   }, []);
+
+  useEffect(() => {
+    // Track page view on tab change
+    if (isAuthenticated) {
+      trackPageView(activeTab);
+    }
+  }, [activeTab, isAuthenticated]);
 
   useEffect(() => {
     const media = window.matchMedia('(display-mode: standalone)');
