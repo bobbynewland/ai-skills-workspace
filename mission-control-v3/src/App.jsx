@@ -37,6 +37,7 @@ import UnifiedSearch from './components/UnifiedSearch';
 import Auth from './components/Auth';
 import OrgOS from './components/OrgOS';
 import { initGA, trackPageView } from './lib/analytics';
+import TagManager from 'react-gtm-module';
 
 const menuItems = [
   { id: 'dashboard', label: 'Hub', icon: LayoutDashboard },
@@ -77,10 +78,16 @@ const App = () => {
     setIsAuthenticated(auth === 'true');
     
     // Initialize GA4
-    // Using import.meta.env for Vercel/Vite environment variables
     const GA_ID = import.meta.env.VITE_GA_MEASUREMENT_ID;
     if (GA_ID) {
       initGA(GA_ID);
+    }
+
+    // Initialize GTM
+    const GTM_ID = import.meta.env.VITE_GTM_ID;
+    if (GTM_ID) {
+      TagManager.initialize({ gtmId: GTM_ID });
+      console.log("GTM Initialized with ID:", GTM_ID);
     }
   }, []);
 
