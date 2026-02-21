@@ -21,7 +21,8 @@ import {
   Activity as ActivityIcon,
   Database,
   Sun,
-  GitBranch
+  GitBranch,
+  TrendingUp
 } from 'lucide-react';
 import Kanban from './components/Kanban';
 import GoogleDrive from './components/GoogleDrive';
