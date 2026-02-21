@@ -36,13 +36,15 @@ import UnifiedSearch from './components/UnifiedSearch';
 // PricingCalculator removed - kept as standalone
 import Auth from './components/Auth';
 import OrgOS from './components/OrgOS';
-import { initGA, trackPageView } from './lib/analytics';
+import Analytics from './components/Analytics';
+import { initGA, trackPageView, trackEvent } from './lib/analytics';
 import TagManager from 'react-gtm-module';
 
 const menuItems = [
   { id: 'dashboard', label: 'Hub', icon: LayoutDashboard },
   { id: 'search', label: 'Search', icon: Search },
   { id: 'briefing', label: 'Briefing', icon: Sun },
+  { id: 'analytics', label: 'Intelligence', icon: TrendingUp },
   { id: 'orgos', label: 'Org OS', icon: GitBranch },
   { id: 'capture', label: 'Capture', icon: Zap },
   { id: 'kanban', label: 'Tasks', icon: KanbanIcon },
@@ -127,11 +129,13 @@ const App = () => {
   }
 
   const handleNav = (id) => {
+    trackEvent('Navigation', 'Click', id);
     setActiveTab(id);
     setMobileMenuOpen(false);
   };
 
   const handleQuickAction = (actionId) => {
+    trackEvent('Quick Action', 'Click', actionId);
     const actionMap = {
       command: 'activity',
       spawn: 'activity',
@@ -291,6 +295,7 @@ const App = () => {
           {activeTab === 'dashboard' && <Dashboard onNavigate={(tab) => { setActiveTab(tab); }} onAction={handleQuickAction} />}
           {activeTab === 'search' && <UnifiedSearch onNavigate={handleNav} />}
           {activeTab === 'briefing' && <DailyBriefing onNavigate={(tab) => setActiveTab(tab)} />}
+          {activeTab === 'analytics' && <Analytics />}
           {activeTab === 'orgos' && <OrgOS />}
           {activeTab === 'capture' && <QuickCapture />}
           {activeTab === 'kanban' && <Kanban />}
