@@ -1,0 +1,61 @@
+{
+  "name": "Bold Fashion V4 - BOLD EARTH",
+  "type": "template_pack",
+  "category": "Fashion & Lifestyle",
+  "dimensions": {
+    "width": 1024,
+    "height": 1280
+  },
+  "layers": [
+    {
+      "id": "background",
+      "type": "background",
+      "name": "Terracotta Marble Texture",
+      "description": "Warm terracotta and cream marble texture background"
+    },
+    {
+      "id": "hero",
+      "type": "hero_image",
+      "name": "Black Female Model",
+      "description": "Confident Black female model centered with empowered expression"
+    },
+    {
+      "id": "headline",
+      "type": "text",
+      "name": "BOSS Headline",
+      "description": "Bold serif typography 'BOSS' positioned at top"
+    },
+    {
+      "id": "subheadline",
+      "type": "text",
+      "name": "NEW COLLECTION Subhead",
+      "description": "Subheadline 'NEW COLLECTION' below headline"
+    },
+    {
+      "id": "cta",
+      "type": "cta",
+      "name": "SHOP NOW Button",
+      "description": "Pill-style 'SHOP NOW' button at bottom"
+    },
+    {
+      "id": "accents",
+      "type": "graphic",
+      "name": "Gold Geometric Accents",
+      "description": "Gold geometric accent lines"
+    },
+    {
+      "id": "contact",
+      "type": "footer",
+      "name": "Contact Info",
+      "description": "Website URL and hashtag"
+    }
+  ],
+  "variations": 3,
+  "layout": "hero-center",
+  "editable_fields": {
+    "headline_text": "BOSS",
+    "subheadline_text": "NEW COLLECTION",
+    "cta_text": "SHOP NOW",
+    "cta_style": "pill"
+  }
+}

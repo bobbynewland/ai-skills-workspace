@@ -1,0 +1,93 @@
+TEMPLATE VISUAL PREVIEW DESCRIPTION
+===================================
+
+FUTURISTIC HOLIDAY MARKETING TEMPLATE
+Instagram Post (1080x1080)
+
+┌─────────────────────────────────────────────┐
+│                                             │
+│     FUTURE HOLIDAY STYLE                    │
+│     Redefine Your Holiday Look              │
+│                                             │
+│  ┌─────────────────────────────────────┐    │
+│  │                                     │    │
+│  │     [PLACEHOLDER: PORTRAIT AREA]    │    │
+│  │                                     │    │
+│  │     Center: Woman with dark hair    │    │
+│  │     and bold red lips,              │    │
+│  │     futuristic styling,             │    │
+│  │     glamorous portrait              │    │
+│  │                                     │    │
+│  └─────────────────────────────────────┘    │
+│                                             │
+│     New Year. New You.                      │
+│                                             │
+│    ╔═══════════════════════════════════╗    │
+│    ║     SHOP THE LOOK                 ║    │
+│    ╚═══════════════════════════════════╝    │
+│                                             │
+└─────────────────────────────────────────────┘
+
+VISUAL ELEMENTS:
+===============
+
+TOP SECTION:
+- White text on dark background
+- "FUTURE HOLIDAY STYLE" - Montserrat Bold, 52pt, Centered
+- "Redefine Your Holiday Look" - Montserrat Regular, 28pt, Light Gray
+
+CENTER SECTION:
+- Large rectangular placeholder for portrait overlay (500x600px)
+- Aspect ratio 4:5 for Instagram portrait compatibility
+- Positioned to accommodate head-and-shoulders portrait
+
+BOTTOM SECTION:
+- Gold/yellow text: "New Year. New You." - Montserrat Medium, 36pt
+- Red CTA button with white text
+- Button dimensions: 400x60px with rounded corners (30px radius)
+
+COLOR SCHEME:
+=============
+Background: Deep Blue-Black (#0D0D1A)
+Primary Text: White (#FFFFFF)
+Secondary Text: Light Gray (#E0E0E0)
+Accent Gold: Golden Yellow (#FFD700)
+CTA Red: Deep Bold Red (#8B0000)
+
+BACKGROUND DESIGN:
+==================
+- Dark, cinematic atmosphere
+- Deep blue-black base (#0D0D1A)
+- Subtle golden light particles/neon accents
+- Geometric framing elements
+- High contrast for text readability
+- Professional marketing aesthetic
+
+TEXT PLACEMENT:
+================
+Headline Y-position: 80px from top
+Subtitle Y-position: 150px from top
+Portrait Area Y-position: 220px from top
+Holiday Text Y-position: 880px from top
+CTA Button Y-position: 950px from top
+Center X-position: 540px (centered)
+
+PLACEHOLDER SPECIFICATIONS:
+============================
+Main Image Placeholder:
+- X: 290, Y: 220
+- Width: 500, Height: 600
+- Aspect Ratio: 4:5
+- Purpose: Fashion/lifestyle portrait overlay
+- Should accommodate head-and-shoulders or full-body shots
+
+EXPECTED OUTPUT:
+================
+1. Background image (PNG, 1080x1080)
+2. Portrait image (PNG, transparent background recommended)
+3. Layered composition with text elements
+4. Final exported template (PNG, optimized for Instagram)
+
+TEMPLATE ID: tpl_futuristic_holiday_001
+VERSION: 1.0
+CREATED: 2026-02-13

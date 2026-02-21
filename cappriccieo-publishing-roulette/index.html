@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#000000" />
+  <title>Publishing Roulette — Cappriccieo Scates</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@500;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            gold: '#d4af37',
+            'gold-bright': '#ffd700',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Bebas Neue', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background: radial-gradient(ellipse at 20% 0%, rgba(212,175,55,0.15) 0%, transparent 50%),
+                  radial-gradient(ellipse at 80% 100%, rgba(212,175,55,0.1) 0%, transparent 50%),
+                  #000;
+    }
+    .glass {
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(10px);
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-up {
+      animation: fadeUp 0.8s ease forwards;
+      opacity: 0;
+    }
+    .delay-100 { animation-delay: 0.1s; }
+    .delay-200 { animation-delay: 0.2s; }
+    .delay-300 { animation-delay: 0.3s; }
+    .delay-400 { animation-delay: 0.4s; }
+    .delay-500 { animation-delay: 0.5s; }
+  </style>
+</head>
+<body class="text-white">
+  
+  <!-- Hero -->
+  <section class="min-h-screen flex items-center py-20">
+    <div class="container mx-auto px-6">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <div class="flex items-center gap-3 mb-5 animate-fade-up delay-100">
+            <span class="w-10 h-px bg-gold"></span>
+            <span class="text-gold text-xs tracking-[0.3em] uppercase">Cappriccieo Scates</span>
+          </div>
+          
+          <h1 class="font-display text-7xl md:text-8xl lg:text-[160px] leading-[0.85] mb-6 animate-fade-up delay-200">
+            PUBLISHING<br>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-gold">ROULETTE</span>
+          </h1>
+          
+          <p class="text-gray-400 text-lg md:text-xl max-w-lg mb-8 animate-fade-up delay-300">
+            The executive guide to navigating music publishing and royalties with strategy—not guesswork. For artists, managers, and labels ready to stop leaving money on the table.
+          </p>
+          
+          <!-- Bio Card -->
+          <div class="flex items-center gap-5 p-6 rounded-2xl border border-[rgba(212,175,55,0.3)] glass mb-8 animate-fade-up delay-400">
+            <img src="http://cappriccieo.com/wp-content/uploads/2016/12/capp-bio.jpg" alt="Cappriccieo" class="w-20 h-20 rounded-full border-2 border-gold object-cover">
+            <div class="text-gray-400 text-sm">
+              <strong class="text-white block mb-1">Former SESAC Senior Director</strong>
+              Ex-Mytrell Records CEO • 15+ years in publishing
+            </div>
+          </div>
+          
+          <div class="flex flex-wrap gap-4 animate-fade-up delay-500">
+            <a href="https://www.amazon.com/Royalty-Roulette-Navigating-Complex-Publishing-ebook/dp/B0GHZJ2GMN" target="_blank" class="bg-gold text-black px-8 py-4 rounded font-bold uppercase tracking-wider hover:bg-gold-bright transition-all hover:-translate-y-1 hover:shadow-[0_10px_40px_rgba(212,175,55,0.4)]">
+              Get The Book
+            </a>
+            <a href="#consulting" class="border border-[rgba(212,175,55,0.3)] text-white px-8 py-4 rounded font-bold uppercase tracking-wider hover:border-gold hover:text-gold transition-all">
+              Book Consultation
+            </a>
+          </div>
+        </div>
+        
+        <div class="relative hidden lg:block">
+          <div class="absolute inset-0 bg-gold/20 blur-[100px] rounded-full"></div>
+          <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=800&auto=format&fit=crop" alt="Publishing Roulette" class="relative rounded-lg shadow-2xl rotate-y-[-5deg] hover:rotate-0 transition-transform duration-500">
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Stats -->
+  <section class="py-16 bg-[#0f0f0f]">
+    <div class="container mx-auto px-6">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="text-center p-8 bg-[#1a1a1a] rounded">
+          <div class="font-display text-5xl md:text-6xl text-gold">15+</div>
+          <div class="text-gray-500 text-xs tracking-widest uppercase mt-2">Years Experience</div>
+        </div>
+        <div class="text-center p-8 bg-[#1a1a1a] rounded">
+          <div class="font-display text-4xl md:text-5xl text-gold">SESAC</div>
+          <div class="text-gray-500 text-xs tracking-widest uppercase mt-2">Senior Director</div>
+        </div>
+        <div class="text-center p-8 bg-[#1a1a1a] rounded">
+          <div class="font-display text-5xl md:text-6xl text-gold">$6B</div>
+          <div class="text-gray-500 text-xs tracking-widest uppercase mt-2">Catalog Value</div>
+        </div>
+        <div class="text-center p-8 bg-[#1a1a1a] rounded">
+          <div class="font-display text-5xl md:text-6xl text-gold">30+</div>
+          <div class="text-gray-500 text-xs tracking-widest uppercase mt-2">Artists Developed</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Consulting -->
+  <section id="consulting" class="py-24">
+    <div class="container mx-auto px-6">
+      <div class="text-gold text-xs tracking-[0.3em] uppercase mb-3">One-on-One</div>
+      <h2 class="font-display text-5xl md:text-7xl mb-6">Consulting Services</h2>
+      <p class="text-gray-400 text-lg max-w-xl mb-12">Personalized strategy for artists, managers, and labels ready to maximize their publishing potential.</p>
+      
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="p-10 bg-[#0f0f0f] border border-white/5 rounded-lg text-center hover:border-gold hover:-translate-y-2 transition-all group relative overflow-hidden">
+          <div class="absolute top-0 left-0 w-full h-1 bg-gold scale-x-0 group-hover:scale-x-100 transition-transform"></div>
+          <div class="text-5xl mb-6">🎤</div>
+          <h3 class="font-display text-2xl mb-4 tracking-wide">For Artists</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">Publishing audits, split clarity, PRO registration strategy, and long-term catalog building.</p>
+        </div>
+        <div class="p-10 bg-[#0f0f0f] border border-white/5 rounded-lg text-center hover:border-gold hover:-translate-y-2 transition-all group relative overflow-hidden">
+          <div class="absolute top-0 left-0 w-full h-1 bg-gold scale-x-0 group-hover:scale-x-100 transition-transform"></div>
+          <div class="text-5xl mb-6">📊</div>
+          <h3 class="font-display text-2xl mb-4 tracking-wide">For Managers</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">Roster-wide publishing analysis, royalty recovery audits, and strategic planning.</p>
+        </div>
+        <div class="p-10 bg-[#0f0f0f] border border-white/5 rounded-lg text-center hover:border-gold hover:-translate-y-2 transition-all group relative overflow-hidden">
+          <div class="absolute top-0 left-0 w-full h-1 bg-gold scale-x-0 group-hover:scale-x-100 transition-transform"></div>
+          <div class="text-5xl mb-6">🏢</div>
+          <h3 class="font-display text-2xl mb-4 tracking-wide">For Labels</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">Writer/publisher relations, distribution deals, and backend strategy.</p>
+        </div>
+      </div>
+      
+      <div class="text-center mt-12">
+        <a href="https://calendly.com/cappriccieo" target="_blank" class="inline-block bg-gold text-black px-10 py-5 rounded font-bold uppercase tracking-wider hover:bg-gold-bright transition-all hover:-translate-y-1 hover:shadow-[0_10px_40px_rgba(212,175,55,0.4)]">
+          Schedule a Call
+        </a>
+      </div>
+    </div>
+  </section>
+  
+  <!-- What's Inside -->
+  <section class="py-24 bg-[#0f0f0f]">
+    <div class="container mx-auto px-6">
+      <div class="text-gold text-xs tracking-[0.3em] uppercase mb-3">Inside The Book</div>
+      <h2 class="font-display text-5xl md:text-7xl mb-12">What You'll Learn</h2>
+      
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="p-8 border border-white/5 rounded-lg">
+          <h3 class="text-gold font-semibold mb-3">Publishing Clarity</h3>
+          <p class="text-gray-400 text-sm">Understand the structures behind songwriting splits, rights, and long-tail royalty flow.</p>
+        </div>
+        <div class="p-8 border border-white/5 rounded-lg">
+          <h3 class="text-gold font-semibold mb-3">Royalty Recovery</h3>
+          <p class="text-gray-400 text-sm">Spot leaks, missed registrations, and process gaps that keep money from reaching you.</p>
+        </div>
+        <div class="p-8 border border-white/5 rounded-lg">
+          <h3 class="text-gold font-semibold mb-3">Executive Strategy</h3>
+          <p class="text-gray-400 text-sm">Use industry-tested frameworks to make better catalog and career decisions.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Why Trust -->
+  <section class="py-24">
+    <div class="container mx-auto px-6">
+      <div class="text-gold text-xs tracking-[0.3em] uppercase mb-3">The Credentials</div>
+      <h2 class="font-display text-5xl md:text-7xl mb-12">Why Trust Cappriccieo</h2>
+      
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="p-8 border border-white/5 rounded-lg">
+          <h3 class="text-white font-semibold mb-3">Music Executive</h3>
+          <p class="text-gray-400 text-sm">President/CEO of Mytrell Records. Led label operations, distribution, and artist relations.</p>
+        </div>
+        <div class="p-8 border border-white/5 rounded-lg">
+          <h3 class="text-white font-semibold mb-3">Publishing Expert</h3>
+          <p class="text-gray-400 text-sm">Senior Director at SESAC with deep visibility into rights and royalty mechanics.</p>
+        </div>
+        <div class="p-8 border border-white/5 rounded-lg">
+          <h3 class="text-white font-semibold mb-3">Artist Developer</h3>
+          <p class="text-gray-400 text-sm">Career work with major artists, songwriters, and cross-market growth initiatives.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Footer CTA -->
+  <div class="sticky bottom-0 bg-black/95 backdrop-blur-xl border-t border-[rgba(212,175,55,0.3)] py-4 z-50">
+    <div class="container mx-auto px-6 flex justify-center">
+      <a href="https://www.amazon.com/Royalty-Roulette-Navigating-Complex-Publishing-ebook/dp/B0GHZJ2GMN" target="_blank" class="bg-gold text-black px-8 py-4 rounded font-bold uppercase tracking-wider w-full max-w-md text-center hover:bg-gold-bright transition-all">
+        Order Now on Amazon
+      </a>
+    </div>
+  </div>
+
+</body>
+</html>

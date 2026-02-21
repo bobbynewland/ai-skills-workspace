@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.1",
+  "type": "template_pack",
+  "pack": {
+    "pack_id": "mixtape-cover-pack-v1",
+    "pack_name": "Mixtape Cover Pack",
+    "pack_description": "Bold red/black cinematic mixtape cover templates with inspiration-only remixes, diverse subjects, and large text-safe zones.",
+    "category": "Music & Entertainment",
+    "tags": [
+      "mixtape",
+      "hip-hop",
+      "album-cover",
+      "red-luxury",
+      "text-safe"
+    ],
+    "drop_announcement": {
+      "headline": "New Drop: Mixtape Cover Pack",
+      "body": "3 high-impact mixtape cover templates (2 feminine, 1 masculine) with big clean typography zones and remix-safe composition."
+    },
+    "thumbnail": {
+      "filename": "mixtape-pack-thumb-4x5.png",
+      "drive_url": "https://drive.google.com/file/d/1qSTi-PgbYTX2d-Vi4slnk7pW5FyfnC4Z/view?usp=drivesdk"
+    }
+  },
+  "templates": [
+    {
+      "template_id": "mixtape-cover-female-a-v2",
+      "template_name": "Red Throne Mixtape (Female)",
+      "template_description": "Cinematic red throne setup with graffiti-heart energy and clean title/artist zones.",
+      "style_mode": "photorealistic",
+      "edit_mode": "reference_first",
+      "featured_image": "mixtape-cover-female-a-v2.png",
+      "featured_image_drive_url": "https://drive.google.com/file/d/1zxp0PBZTf0h1bxdbqi6_SXRiyLwR_PQy/view?usp=drivesdk",
+      "aspect_ratios": ["1:1", "4:5"],
+      "required_elements": ["title", "artist_name"],
+      "editable_fields": [
+        {"key": "title", "label": "Mixtape Title", "default": "MIDNIGHT HEAT"},
+        {"key": "artist_name", "label": "Artist Name", "default": "ARIA VELVET"},
+        {"key": "sticker_text", "label": "Sticker/Badge", "default": "NEW DROP"}
+      ]
+    },
+    {
+      "template_id": "mixtape-cover-female-b",
+      "template_name": "Backstage Glow Mixtape (Female)",
+      "template_description": "Afro-Latina inspired backstage glam scene with bold text-safe hierarchy.",
+      "style_mode": "photorealistic",
+      "edit_mode": "reference_first",
+      "featured_image": "mixtape-cover-female-b.png",
+      "featured_image_drive_url": "https://drive.google.com/file/d/110SylVPA8e1YwNnJMxjO_shFdb-VMo9A/view?usp=drivesdk",
+      "aspect_ratios": ["1:1", "4:5"],
+      "required_elements": ["title", "artist_name"],
+      "editable_fields": [
+        {"key": "title", "label": "Mixtape Title", "default": "HEART IN NEON"},
+        {"key": "artist_name", "label": "Artist Name", "default": "LUNA ROJA"},
+        {"key": "sticker_text", "label": "Sticker/Badge", "default": "VOL. 1"}
+      ]
+    },
+    {
+      "template_id": "mixtape-cover-male-a",
+      "template_name": "Loft Smoke Mixtape (Male)",
+      "template_description": "Masculine red/black loft aesthetic with chain-shadow mood and clean title blocks.",
+      "style_mode": "photorealistic",
+      "edit_mode": "reference_first",
+      "featured_image": "mixtape-cover-male-a.png",
+      "featured_image_drive_url": "https://drive.google.com/file/d/1JRrHZMtyIrrXiq5kBsi5MCqGP07I-AQW/view?usp=drivesdk",
+      "aspect_ratios": ["1:1", "4:5"],
+      "required_elements": ["title", "artist_name"],
+      "editable_fields": [
+        {"key": "title", "label": "Mixtape Title", "default": "KING OF RED"},
+        {"key": "artist_name", "label": "Artist Name", "default": "KXNG TORCH"},
+        {"key": "sticker_text", "label": "Sticker/Badge", "default": "EXPLICIT"}
+      ]
+    }
+  ]
+}

@@ -17,17 +17,18 @@ TOKEN_FILE = '/root/.config/gogcli/tokens.json'
 CREDS_FILE = '/root/.openclaw/workspace/.keys/google_creds.json'
 
 SCOPES = [
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/contacts.other.readonly',
     'https://www.googleapis.com/auth/gmail.modify',
-    'https://www.googleapis.com/auth/gmail.readonly',
-    'https://www.googleapis.com/auth/calendar',
-    'https://www.googleapis.com/auth/drive',
+    'https://www.googleapis.com/auth/gmail.settings.basic',
+    'https://www.googleapis.com/auth/documents',
     'https://www.googleapis.com/auth/spreadsheets',
-    'https://www.googleapis.com/auth/docs',
-    'https://www.googleapis.com/auth/forms',
-    'https://www.googleapis.com/auth/forms.body',
-    'https://www.googleapis.com/auth/forms.responses.readonly',
-    'https://www.googleapis.com/auth/slides',
+    'https://www.googleapis.com/auth/calendar',
+    'https://www.googleapis.com/auth/gmail.settings.sharing',
+    'https://www.googleapis.com/auth/directory.readonly',
     'https://www.googleapis.com/auth/contacts',
+    'https://www.googleapis.com/auth/drive',
+    'openid',
 ]
 
 def get_creds():
@@ -39,10 +40,16 @@ def get_creds():
         data = json.load(f)
     
     accounts = data.get('accounts', {})
+    if not accounts:
+        raise Exception("No accounts found in token file")
+        
     email = list(accounts.keys())[0]
     account_data = accounts[email]
     
     # Load client credentials
+    if not os.path.exists(CREDS_FILE):
+         raise Exception(f"Creds file not found: {CREDS_FILE}")
+
     with open(CREDS_FILE, 'r') as f:
         creds_data = json.load(f)
     
@@ -62,7 +69,7 @@ def get_creds():
 
 def refresh_if_needed(creds):
     """Refresh token if expired"""
-    if creds.expired:
+    if creds.expired or not creds.valid:
         creds.refresh(Request())
         save_tokens(creds)
     return creds
@@ -186,17 +193,19 @@ def calendar_create_event(summary, description, start_time, end_time, location=N
 
 # ============ DRIVE ============
 
-def drive_list(query=None, max_results=20):
+def drive_list(query=None, max_results=100):
     """List Drive files"""
     creds, email = get_creds()
     creds = refresh_if_needed(creds)
     
     service = build('drive', 'v3', credentials=creds)
     
+    fields = 'files(id,name,mimeType,modifiedTime,webViewLink,parents,size)'
+    
     if query:
-        results = service.files().list(q=query, pageSize=max_results, fields='files(id,name,mimeType,modifiedTime)').execute()
+        results = service.files().list(q=query, pageSize=max_results, fields=fields).execute()
     else:
-        results = service.files().list(pageSize=max_results, fields='files(id,name,mimeType,modifiedTime)').execute()
+        results = service.files().list(pageSize=max_results, fields=fields).execute()
     
     return results.get('files', [])
 
@@ -247,159 +256,6 @@ def drive_create_folder(name, parent_id=None):
     result = service.files().create(body=file_metadata, fields='id,name,webViewLink').execute()
     return result
 
-# ============ SHEETS ============
-
-def sheets_read(sheet_id, range):
-    """Read from Sheet"""
-    creds, email = get_creds()
-    creds = refresh_if_needed(creds)
-    
-    service = build('sheets', 'v4', credentials=creds)
-    result = service.spreadsheets().values().get(spreadsheetId=sheet_id, range=range).execute()
-    return result.get('values', [])
-
-def sheets_write(sheet_id, range, values):
-    """Write to Sheet"""
-    creds, email = get_creds()
-    creds = refresh_if_needed(creds)
-    
-    service = build('sheets', 'v4', credentials=creds)
-    
-    body = {'values': values}
-    result = service.spreadsheets().values().update(
-        spreadsheetId=sheet_id, 
-        range=range, 
-        valueInputOption='USER_ENTERED',
-        body=body
-    ).execute()
-    return result
-
-def sheets_create(title, folder_id=None):
-    """Create new Sheet"""
-    creds, email = get_creds()
-    creds = refresh_if_needed(creds)
-    
-    service = build('sheets', 'v4', credentials=creds)
-    
-    spreadsheet = {'properties': {'title': title}}
-    result = service.spreadsheets().create(body=spreadsheet, fields='spreadsheetId, spreadsheetUrl').execute()
-    return result
-
-# ============ DOCS ============
-
-def docs_get(doc_id):
-    """Get Doc content"""
-    creds, email = get_creds()
-    creds = refresh_if_needed(creds)
-    
-    service = build('docs', 'v1', credentials=creds)
-    result = service.documents().get(documentId=doc_id).execute()
-    return result
-
-def docs_create(title, folder_id=None):
-    """Create new Doc"""
-    creds, email = get_creds()
-    creds = refresh_if_needed(creds)
-    
-    service = build('docs', 'v1', credentials=creds)
-    result = service.documents().create(body={'title': title}).execute()
-    return result
-
-# ============ SLIDES ============
-
-def slides_list():
-    """List presentations (via Drive)"""
-    creds, email = get_creds()
-    creds = refresh_if_needed(creds)
-    
-    service = build('drive', 'v3', credentials=creds)
-    results = service.files().list(
-        q="mimeType='application/vnd.google-apps.presentation'",
-        pageSize=50,
-        fields='files(id,name,modifiedTime)'
-    ).execute()
-    return results.get('files', [])
-
-def slides_get(presentation_id):
-    """Get slide content"""
-    creds, email = get_creds()
-    creds = refresh_if_needed(creds)
-    
-    service = build('slides', 'v1', credentials=creds)
-    result = service.presentations().get(presentationId=presentation_id).execute()
-    return result
-
-def slides_create(title):
-    """Create new presentation"""
-    creds, email = get_creds()
-    creds = refresh_if_needed(creds)
-    
-    service = build('slides', 'v1', credentials=creds)
-    result = service.presentations().create(body={'title': title}).execute()
-    return result
-
-# ============ FORMS ============
-
-def forms_list():
-    """List forms (via Drive)"""
-    creds, email = get_creds()
-    creds = refresh_if_needed(creds)
-    
-    service = build('drive', 'v3', credentials=creds)
-    results = service.files().list(
-        q="mimeType='application/vnd.google-apps.form'",
-        pageSize=50,
-        fields='files(id,name,modifiedTime)'
-    ).execute()
-    return results.get('files', [])
-
-def forms_get(form_id):
-    """Get form details"""
-    creds, email = get_creds()
-    creds = refresh_if_needed(creds)
-    
-    service = build('forms', 'v1', credentials=creds)
-    result = service.forms().get(formId=form_id).execute()
-    return result
-
-def forms_responses(form_id):
-    """Get form responses"""
-    creds, email = get_creds()
-    creds = refresh_if_needed(creds)
-    
-    service = build('forms', 'v1', credentials=creds)
-    result = service.forms().responses().list(formId=form_id).execute()
-    return result.get('responses', [])
-
-def forms_create(title, questions=None):
-    """Create new form"""
-    creds, email = get_creds()
-    creds = refresh_if_needed(creds)
-    
-    service = build('forms', 'v1', credentials=creds)
-    
-    form = {'info': {'title': title}}
-    if questions:
-        form['items'] = questions
-    
-    result = service.forms().create(body=form).execute()
-    return result
-
-# ============ CONTACTS ============
-
-def contacts_list(max_results=100):
-    """List contacts"""
-    creds, email = get_creds()
-    creds = refresh_if_needed(creds)
-    
-    service = build('people', 'v1', credentials=creds)
-    results = service.people().connections().list(
-        resourceName='people/me',
-        personFields='names,emailAddresses,phoneNumbers',
-        pageSize=max_results
-    ).execute()
-    return results.get('connections', [])
-
 # ============ MAIN ============
 
 if __name__ == '__main__':
@@ -407,140 +263,22 @@ if __name__ == '__main__':
     
     if len(sys.argv) < 2:
         print("Usage: python3 google_workspace.py <command> [args]")
-        print("\n📧 GMAIL:")
-        print("  gmail send <to> <subject> <body>")
-        print("  gmail search <query>")
-        print("\n📅 CALENDAR:")
-        print("  calendar list")
-        print("  calendar events [days]")
-        print("  calendar create <summary> <desc> <start> <end>")
-        print("\n💾 DRIVE:")
-        print("  drive list [query]")
-        print("  drive upload <filename> [name]")
-        print("  drive folder <name> [parent_id]")
-        print("\n📊 SHEETS:")
-        print("  sheets read <sheet_id> <range>")
-        print("  sheets write <sheet_id> <range> <json_values>")
-        print("  sheets create <title>")
-        print("\n📝 DOCS:")
-        print("  docs get <doc_id>")
-        print("  docs create <title>")
-        print("\n🎬 SLIDES:")
-        print("  slides list")
-        print("  slides get <id>")
-        print("  slides create <title>")
-        print("\n📋 FORMS:")
-        print("  forms list")
-        print("  forms get <form_id>")
-        print("  forms responses <form_id>")
-        print("  forms create <title>")
-        print("\n👥 CONTACTS:")
-        print("  contacts list")
         sys.exit(1)
     
     cmd = sys.argv[1]
     
     try:
-        if cmd == 'gmail' and len(sys.argv) >= 3:
+        if cmd == 'drive' and len(sys.argv) >= 3:
             subcmd = sys.argv[2]
-            if subcmd == 'send' and len(sys.argv) >= 5:
-                result = gmail_send(sys.argv[3], sys.argv[4], sys.argv[5])
-                print(f"✅ Sent! Message ID: {result.get('id')}")
-            elif subcmd == 'search':
-                results = gmail_search(sys.argv[3] if len(sys.argv) > 3 else '')
-                for r in results:
-                    print(f"[{r['date']}] {r['snippet']}...")
-        
-        elif cmd == 'calendar':
-            if len(sys.argv) >= 3 and sys.argv[2] == 'list':
-                cals = calendar_list()
-                for c in cals:
-                    print(f"📅 {c.get('summary')} ({c.get('id')})")
-            elif len(sys.argv) >= 3 and sys.argv[2] == 'events':
-                days = int(sys.argv[3]) if len(sys.argv) > 3 else 7
-                events = calendar_events(max_results=days)
-                for e in events:
-                    print(f"📅 {e.get('summary')} ({e.get('start', {}).get('dateTime', 'TBD')[:10]})")
-            elif len(sys.argv) >= 7 and sys.argv[2] == 'create':
-                result = calendar_create_event(sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
-                print(f"✅ Created! Event ID: {result.get('id')}")
-        
-        elif cmd == 'drive':
-            if len(sys.argv) >= 3 and sys.argv[2] == 'list':
+            if subcmd == 'list':
                 query = sys.argv[3] if len(sys.argv) > 3 else None
                 files = drive_list(query)
+                # Map parents list to parentId for frontend compatibility
                 for f in files:
-                    icon = '📁' if 'folder' in f.get('mimeType') else '📄'
-                    print(f"{icon} {f.get('name')}")
-            elif len(sys.argv) >= 3 and sys.argv[2] == 'upload':
-                name = sys.argv[4] if len(sys.argv) > 4 else None
-                result = drive_upload(sys.argv[3], name)
-                print(f"✅ Uploaded! File ID: {result.get('id')}")
-            elif len(sys.argv) >= 3 and sys.argv[2] == 'folder':
-                parent = sys.argv[3] if len(sys.argv) > 3 and not sys.argv[3].isdigit() else None
-                name_idx = 3 if not parent else 4
-                if len(sys.argv) > name_idx:
-                    result = drive_create_folder(sys.argv[name_idx], parent)
-                    print(f"✅ Created folder! ID: {result.get('id')}")
-        
-        elif cmd == 'sheets':
-            if len(sys.argv) >= 5 and sys.argv[2] == 'read':
-                values = sheets_read(sys.argv[3], sys.argv[4])
-                print(json.dumps(values))
-            elif len(sys.argv) >= 5 and sys.argv[2] == 'write':
-                values = json.loads(sys.argv[5])
-                result = sheets_write(sys.argv[3], sys.argv[4], values)
-                print(f"✅ Wrote! Cells updated: {result.get('updatedCells')}")
-            elif len(sys.argv) >= 3 and sys.argv[2] == 'create':
-                result = sheets_create(sys.argv[3])
-                print(f"✅ Created! Sheet ID: {result.get('spreadsheetId')}")
-        
-        elif cmd == 'docs':
-            if len(sys.argv) >= 3 and sys.argv[2] == 'get':
-                result = docs_get(sys.argv[3])
-                print(f"Title: {result.get('title')}")
-            elif len(sys.argv) >= 3 and sys.argv[2] == 'create':
-                result = docs_create(sys.argv[3])
-                print(f"✅ Created! Doc ID: {result.get('documentId')}")
-        
-        elif cmd == 'slides':
-            if len(sys.argv) >= 3 and sys.argv[2] == 'list':
-                slides = slides_list()
-                for s in slides:
-                    print(f"🎬 {s.get('title')} ({s.get('presentationId')})")
-            elif len(sys.argv) >= 3 and sys.argv[2] == 'get':
-                result = slides_get(sys.argv[3])
-                print(f"Title: {result.get('title')}, Slides: {len(result.get('slides', []))}")
-            elif len(sys.argv) >= 3 and sys.argv[2] == 'create':
-                result = slides_create(sys.argv[3])
-                print(f"✅ Created! ID: {result.get('presentationId')}")
-        
-        elif cmd == 'forms':
-            if len(sys.argv) >= 3 and sys.argv[2] == 'list':
-                forms = forms_list()
-                for f in forms:
-                    print(f"📋 {f.get('title')} ({f.get('formId')})")
-            elif len(sys.argv) >= 3 and sys.argv[2] == 'get':
-                result = forms_get(sys.argv[3])
-                print(f"Title: {result.get('info', {}).get('title')}")
-            elif len(sys.argv) >= 3 and sys.argv[2] == 'responses':
-                responses = forms_responses(sys.argv[3])
-                print(f"Responses: {len(responses)}")
-                for r in responses[:3]:
-                    print(f"  - {r.get('createTime')}")
-            elif len(sys.argv) >= 3 and sys.argv[2] == 'create':
-                result = forms_create(sys.argv[3])
-                print(f"✅ Created! Form ID: {result.get('formId')}")
-        
-        elif cmd == 'contacts':
-            contacts = contacts_list()
-            for c in contacts[:10]:
-                name = c.get('names', [{}])[0].get('displayName', 'Unknown')
-                emails = [e.get('value') for e in c.get('emailAddresses', [])]
-                print(f"👤 {name}: {', '.join(emails)}")
-        
+                    if 'parents' in f and f['parents']:
+                        f['parentId'] = f['parents'][0]
+                print(json.dumps(files))
         else:
-            print("Unknown command or missing args")
-    
+            print("Unknown command")
     except Exception as e:
         print(f"❌ Error: {e}")

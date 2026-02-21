@@ -8,14 +8,33 @@ import sys
 import json
 import base64
 import requests
+import subprocess
 from pathlib import Path
 
 API_KEY_FILE = '/root/.openclaw/workspace/.keys/fal_ai.key'
 API_ENDPOINT = 'https://fal.run/fal-ai/bytedance/seedream/v4.5/text-to-image'
+ARCHIVER = '/root/.openclaw/workspace/auto_drive_archive.py'
 
 def get_api_key():
     with open(API_KEY_FILE, 'r') as f:
         return f.read().strip()
+
+def archive_output(output_path):
+    """Upload to Drive + delete local file (VPS storage saver)."""
+    try:
+        proc = subprocess.run(
+            [ARCHIVER, output_path],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if proc.stdout:
+            print(proc.stdout.strip())
+        if proc.returncode != 0 and proc.stderr:
+            print(proc.stderr.strip())
+    except Exception as e:
+        print(f"Archive step skipped: {e}")
+
 
 def generate_image(prompt, output_path, width=1080, height=1920):
     """
@@ -64,6 +83,7 @@ def generate_image(prompt, output_path, width=1080, height=1920):
         size_kb = len(image_data) / 1024
         print(f"✅ Image saved: {output_path}")
         print(f"📊 Size: {size_kb:.1f} KB")
+        archive_output(output_path)
         return output_path
         
     except Exception as e:

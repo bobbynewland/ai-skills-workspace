@@ -1,0 +1,61 @@
+{
+  "name": "Bold Fashion V4 - JEWEL TONES",
+  "type": "template_pack",
+  "category": "Fashion & Lifestyle",
+  "dimensions": {
+    "width": 1024,
+    "height": 1280
+  },
+  "layers": [
+    {
+      "id": "background",
+      "type": "background",
+      "name": "Emerald Purple Gradient Mesh",
+      "description": "Emerald and royal purple gradient mesh with subtle smoke texture"
+    },
+    {
+      "id": "hero",
+      "type": "hero_image",
+      "name": "Asian Female Model",
+      "description": "Sophisticated Asian model emerging from bottom, soft glam lighting"
+    },
+    {
+      "id": "headline",
+      "type": "text",
+      "name": "POWER Headline",
+      "description": "Massive chiseled serif typography 'POWER' dominant at top"
+    },
+    {
+      "id": "subheadline",
+      "type": "text",
+      "name": "EXCLUSIVE COLLECTION Subhead",
+      "description": "Subheadline 'EXCLUSIVE COLLECTION' below headline"
+    },
+    {
+      "id": "cta",
+      "type": "cta",
+      "name": "CLAIM NOW Button",
+      "description": "Minimal style 'CLAIM NOW' button"
+    },
+    {
+      "id": "accents",
+      "type": "graphic",
+      "name": "Gold Leaf Accents",
+      "description": "Gold accent elements for luxury feel"
+    },
+    {
+      "id": "contact",
+      "type": "footer",
+      "name": "Contact Info",
+      "description": "Website URL and hashtag"
+    }
+  ],
+  "variations": 3,
+  "layout": "hero-bottom-text-top",
+  "editable_fields": {
+    "headline_text": "POWER",
+    "subheadline_text": "EXCLUSIVE COLLECTION",
+    "cta_text": "CLAIM NOW",
+    "cta_style": "minimal"
+  }
+}

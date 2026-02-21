@@ -138,6 +138,11 @@ function TaskCard({ task, onEdit }) {
     low: 'text-emerald-400 bg-emerald-400/10',
   }
   
+  const handleEditClick = (e) => {
+    e.stopPropagation()
+    onEdit(task)
+  }
+
   return (
     <div ref={setNodeRef} style={style} className="group">
       <div className={`bg-[#18181B] rounded-lg border border-[#27272A] p-3 hover:border-indigo-500/50 transition-all cursor-grab active:cursor-grabbing ${isDragging ? 'opacity-50' : ''}`}>
@@ -145,7 +150,7 @@ function TaskCard({ task, onEdit }) {
           <button {...attributes} {...listeners} className="mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
             <GripHorizontal size={14} className="text-zinc-500" />
           </button>
-          <div className="flex-1 min-w-0" onClick={() => onEdit(task)}>
+          <div className="flex-1 min-w-0" onClick={handleEditClick}>
             <p className="text-sm text-zinc-200 font-medium truncate">{task.title}</p>
             <div className="flex items-center gap-2 mt-2">
               <span className={`text-xs px-2 py-0.5 rounded-full ${priorityColors[task.priority]}`}>
@@ -153,7 +158,7 @@ function TaskCard({ task, onEdit }) {
               </span>
             </div>
           </div>
-          <button onClick={() => onEdit(task)} className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-zinc-800 rounded">
+          <button onClick={handleEditClick} className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-zinc-800 rounded">
             <Edit3 size={12} className="text-zinc-500" />
           </button>
         </div>
@@ -209,14 +214,28 @@ function KanbanColumn({ column, tasks, onAdd, onEdit }) {
 
 // Edit Modal
 function EditModal({ task, onClose, onSave, onDelete }) {
-  const [title, setTitle] = useState(task?.title || '')
-  const [priority, setPriority] = useState(task?.priority || 'medium')
-  const [status, setStatus] = useState(task?.status || 'todo')
+  // Initialize state directly from task prop to avoid race conditions
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [category, setCategory] = useState('')
+  const [priority, setPriority] = useState('medium')
+  const [status, setStatus] = useState('todo')
+  
+  // Update form when task changes (for when switching between different tasks)
+  useEffect(() => {
+    if (task) {
+      setTitle(task.title || '')
+      setDescription(task.desc || task.description || '')
+      setCategory(task.category || '')
+      setPriority(task.priority || 'medium')
+      setStatus(task.status || task.column || 'todo')
+    }
+  }, [task])
   
   if (!task) return null
   
   const handleSave = () => {
-    onSave({ ...task, title, priority, status })
+    onSave({ ...task, title, desc: description, category, priority, status })
     onClose()
   }
   
@@ -227,6 +246,7 @@ function EditModal({ task, onClose, onSave, onDelete }) {
         initial={{ opacity: 0, scale: 0.95 }} 
         animate={{ opacity: 1, scale: 1 }}
         className="relative w-full max-w-md bg-[#18181B] border border-[#27272A] rounded-xl shadow-2xl overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between p-4 border-b border-[#27272A]">
           <h3 className="text-lg font-semibold text-white">Edit Task</h3>
@@ -240,6 +260,25 @@ function EditModal({ task, onClose, onSave, onDelete }) {
               value={title} 
               onChange={e => setTitle(e.target.value)}
               className="w-full px-3 py-2 bg-[#0D0D0F] border border-[#27272A] rounded-lg text-white focus:border-indigo-500 outline-none transition-colors" 
+            />
+          </div>
+          <div>
+            <label className="block text-sm text-zinc-400 mb-2">Description</label>
+            <textarea 
+              value={description} 
+              onChange={e => setDescription(e.target.value)}
+              rows={3}
+              className="w-full px-3 py-2 bg-[#0D0D0F] border border-[#27272A] rounded-lg text-white focus:border-indigo-500 outline-none transition-colors resize-none" 
+            />
+          </div>
+          <div>
+            <label className="block text-sm text-zinc-400 mb-2">Category</label>
+            <input 
+              type="text" 
+              value={category} 
+              onChange={e => setCategory(e.target.value)}
+              placeholder="e.g., Work, Personal, etc."
+              className="w-full px-3 py-2 bg-[#0D0D0F] border border-[#27272A] rounded-lg text-white placeholder-zinc-500 focus:border-indigo-500 outline-none transition-colors" 
             />
           </div>
           <div>
@@ -474,6 +513,7 @@ function ProjectsView({ tasks, setTasks }) {
       </DndContext>
       
       <EditModal 
+        key={editingTask?.id || 'new'}
         task={editingTask} 
         onClose={() => setEditingTask(null)} 
         onSave={saveTask} 
@@ -485,44 +525,108 @@ function ProjectsView({ tasks, setTasks }) {
 
 // Workspace View - Google Workspace Integration
 function WorkspaceView() {
-  const [gmail, setGmail] = useState({ unreadCount: 0, recentEmails: [], connected: false })
-  const [calendar, setCalendar] = useState({ events: [], connected: false })
-  const [drive, setDrive] = useState({ files: [], connected: false })
-  const [loading, setLoading] = useState(true)
+  // Initialize state from localStorage - try to restore previous connection
+  // Add error handling for corrupted localStorage data
+  const [gmail, setGmail] = useState(() => {
+    try {
+      const saved = localStorage.getItem('mc_gmail')
+      return saved ? JSON.parse(saved) : { unreadCount: 0, recentEmails: [], connected: false }
+    } catch (e) {
+      console.warn('Failed to load gmail from localStorage:', e)
+      return { unreadCount: 0, recentEmails: [], connected: false }
+    }
+  })
+  const [calendar, setCalendar] = useState(() => {
+    try {
+      const saved = localStorage.getItem('mc_calendar')
+      return saved ? JSON.parse(saved) : { events: [], connected: false }
+    } catch (e) {
+      console.warn('Failed to load calendar from localStorage:', e)
+      return { events: [], connected: false }
+    }
+  })
+  const [drive, setDrive] = useState(() => {
+    try {
+      const saved = localStorage.getItem('mc_drive')
+      return saved ? JSON.parse(saved) : { files: [], connected: false }
+    } catch (e) {
+      console.warn('Failed to load drive from localStorage:', e)
+      return { files: [], connected: false }
+    }
+  })
+  const [loading, setLoading] = useState(false)
 
+  // Save to localStorage when state changes
   useEffect(() => {
-    // Simulate loading Google Workspace data
-    // In production, this would call the actual Google APIs
-    setTimeout(() => {
-      setGmail({
-        unreadCount: 5,
-        recentEmails: [
-          { id: '1', subject: 'Project Update', from: 'team@aiskills.studio', snippet: 'Latest updates on the new feature...' },
-          { id: '2', subject: 'Meeting Tomorrow', from: 'bobby@framelensmedia.com', snippet: 'Don\'t forget our standup at 9am...' },
-          { id: '3', subject: 'Invoice #1234', from: 'billing@company.com', summary: 'Your invoice is ready for review' },
-        ],
-        connected: true
-      })
-      setCalendar({
-        events: [
-          { id: '1', summary: 'Team Standup', start: { dateTime: '09:00' }, end: { dateTime: '09:30' }, color: '#6366F1' },
-          { id: '2', summary: 'Project Review', start: { dateTime: '14:00' }, end: { dateTime: '15:00' }, color: '#F59E0B' },
-          { id: '3', summary: 'Client Call', start: { dateTime: '16:00' }, end: { dateTime: '16:30' }, color: '#10B981' },
-        ],
-        connected: true
-      })
-      setDrive({
-        files: [
-          { id: '1', name: 'Q1 Roadmap.pdf', mimeType: 'application/pdf', modifiedTime: '2 hours ago' },
-          { id: '2', name: 'Design Assets.zip', mimeType: 'application/zip', modifiedTime: 'Yesterday' },
-          { id: '3', name: 'Meeting Notes.docx', mimeType: 'application/vnd.google-apps.document', modifiedTime: '2 days ago' },
-          { id: '4', name: 'Project Specs', mimeType: 'application/vnd.google-apps.folder', modifiedTime: '1 week ago' },
-        ],
-        connected: true
-      })
-      setLoading(false)
-    }, 500)
+    localStorage.setItem('mc_gmail', JSON.stringify(gmail))
+  }, [gmail])
+  useEffect(() => {
+    localStorage.setItem('mc_calendar', JSON.stringify(calendar))
+  }, [calendar])
+  useEffect(() => {
+    localStorage.setItem('mc_drive', JSON.stringify(drive))
+  }, [drive])
+
+  // Check for existing token on mount and try to restore connection
+  useEffect(() => {
+    const restoreConnection = async () => {
+      // Check if we have a saved connected state
+      const savedGmail = localStorage.getItem('mc_gmail')
+      if (savedGmail) {
+        const parsed = JSON.parse(savedGmail)
+        if (parsed.connected) {
+          // Token should be in googleWorkspace service's localStorage
+          const hasToken = googleWorkspace.loadToken()
+          if (hasToken) {
+            // Try to fetch real data
+            try {
+              setLoading(true)
+              const data = await googleWorkspace.getAllData()
+              setGmail(data.gmail)
+              setCalendar(data.calendar)
+              setDrive(data.drive)
+            } catch (e) {
+              console.warn('Failed to restore workspace data:', e)
+              // Keep the saved connected state
+            } finally {
+              setLoading(false)
+            }
+          }
+        }
+      }
+    }
+    restoreConnection()
   }, [])
+
+  // Connect to Google Workspace using the googleWorkspace module
+  const connectWorkspace = async () => {
+    setLoading(true)
+    try {
+      await googleWorkspace.authorize()
+      const data = await googleWorkspace.getAllData()
+      setGmail({ ...data.gmail, connected: true })
+      setCalendar({ ...data.calendar, connected: true })
+      setDrive({ ...data.drive, connected: true })
+    } catch (error) {
+      console.error('Failed to connect:', error)
+      alert('Failed to connect to Google. Please check OAuth settings in Google Cloud Console.')
+      setGmail({ unreadCount: 0, recentEmails: [], connected: false })
+      setCalendar({ events: [], connected: false })
+      setDrive({ files: [], connected: false })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Disconnect from Google Workspace
+  const disconnectWorkspace = () => {
+    googleWorkspace.clearToken()
+    setGmail({ unreadCount: 0, recentEmails: [], connected: false })
+    setCalendar({ events: [], connected: false })
+    setDrive({ files: [], connected: false })
+  }
+
+  const isConnected = gmail.connected && calendar.connected && drive.connected
 
   if (loading) {
     return (
@@ -537,12 +641,49 @@ function WorkspaceView() {
 
   return (
     <div className="p-4 md:p-6 space-y-4 md:space-y-6">
-      <div>
-        <h1 className="text-xl md:text-2xl font-bold text-white">Google Workspace</h1>
-        <p className="text-zinc-500 mt-1 text-sm">Your connected apps and files</p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h1 className="text-xl md:text-2xl font-bold text-white">Google Workspace</h1>
+          <p className="text-zinc-500 mt-1 text-sm">Your connected apps and files</p>
+        </div>
+        {isConnected ? (
+          <button 
+            onClick={disconnectWorkspace}
+            className="flex items-center gap-2 px-4 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors text-sm"
+          >
+            <LogIn size={16} className="rotate-180" />
+            Disconnect
+          </button>
+        ) : (
+          <button 
+            onClick={connectWorkspace}
+            disabled={loading}
+            className="flex items-center gap-2 px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-colors text-sm disabled:opacity-50"
+          >
+            <LogIn size={16} />
+            {loading ? 'Connecting...' : 'Connect Google Workspace'}
+          </button>
+        )}
       </div>
 
-      {/* Gmail */}
+      {/* Show message if not connected */}
+      {!isConnected && (
+        <div className="bg-[#18181B] rounded-xl border border-[#27272A] p-8 text-center">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-indigo-500/20 flex items-center justify-center">
+            <LogIn size={32} className="text-indigo-400" />
+          </div>
+          <h2 className="text-lg font-semibold text-white mb-2">Connect Google Workspace</h2>
+          <p className="text-zinc-500 mb-4">Connect your Google account to see Gmail, Calendar, and Drive in Mission Control.</p>
+          <button 
+            onClick={connectWorkspace}
+            className="inline-flex items-center gap-2 px-6 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-colors"
+          >
+            <LogIn size={18} />
+            Connect Now
+          </button>
+        </div>
+      )}
+
       <div className="bg-[#18181B] rounded-xl border border-[#27272A] p-4">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">

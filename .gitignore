@@ -1,39 +1,42 @@
-# Keys & Secrets
-.keys/
-*.key
-*.pem
-.env
-
-# Node modules
+# System/Env
 node_modules/
-npm-debug.log*
+.env
+.keys/
+.claude-mem/
+credentials/
+.git/
 
-# OS files
-.DS_Store
-Thumbs.db
-
-# Logs
-logs/
-*.log
-
-# Temp files
-tmp/
-temp/
+# Workspace Junk
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.db
+.sqlite
+.log
 *.tmp
+*.temp
 
-# Large generated files (optional - keep if you want in repo)
-# *.png
-# *.jpg
+# Large Data/Media
+backups/
+media/
+template_packs/**/*.png
+template_packs/**/*.jpg
+mission-control-v3/dist/
+mission-control/dist/
+command-center-v2/dist/
+venv/
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
+# Active Work/Drafts
+drafts/
+mc-new/
+simple-test/
+test-page/
+presentation-landing/
 
-# Dependencies
-package-lock.json
-yarn.lock
-*.json
-.vercel
-.env*.local
+# Secrets (Double check)
+cookies.txt
+*.key
+*.token
+client_secret_*.json
+command-center-v2/src/googleWorkspace.js

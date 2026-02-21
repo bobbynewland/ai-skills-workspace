@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Activity - All Agents & Workflows</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { 
+      background: #0a0a0a; 
+      color: #fff; 
+      font-family: -apple-system, system-ui, sans-serif;
+      padding: 20px;
+    }
+    h1 { 
+      color: #eab308; 
+      font-size: 24px; 
+      margin-bottom: 20px;
+    }
+    .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+    .tab { 
+      padding: 8px 16px; 
+      background: #222; 
+      border: none; 
+      color: #888; 
+      border-radius: 8px; 
+      cursor: pointer;
+    }
+    .tab.active { background: #eab308; color: #000; }
+    .card {
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+    }
+    .task { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+    .meta { font-size: 12px; color: #888; }
+    .status-badge {
+      font-size: 11px; padding: 4px 8px; border-radius: 4px; text-transform: uppercase; font-weight: 600;
+    }
+    .running { background: #eab30822; color: #eab308; }
+    .completed { background: #22c55e22; color: #22c55e; }
+    .failed { background: #ef444422; color: #ef4444; }
+    .pending { background: #333; color: #888; }
+    .steps { display: flex; gap: 4px; margin-top: 12px; }
+    .step { flex: 1; height: 6px; border-radius: 3px; background: #333; }
+    .step.completed { background: #22c55e; }
+    .step.running { background: #eab308; }
+    .section-title { font-size: 14px; color: #eab308; margin: 20px 0 10px; text-transform: uppercase; }
+    .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
+    .stat { background: #111; border: 1px solid #333; border-radius: 12px; padding: 16px; text-align: center; }
+    .stat-num { font-size: 24px; font-weight: bold; color: #eab308; }
+    .stat-label { font-size: 12px; color: #888; }
+    .agent { background: #111; border: 1px solid #333; border-radius: 8px; padding: 12px; display: flex; justify-content: space-between; }
+    .agent-name { font-weight: 600; }
+    .agent-role { font-size: 12px; color: #888; }
+    .online { color: #22c55e; }
+    .offline { color: #ef4444; }
+    .empty { text-align: center; padding: 40px; color: #666; }
+    .note { background: #222; border: 1px solid #444; padding: 12px; border-radius: 8px; font-size: 12px; color: #888; margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+  <h1>🎯 Activity Center</h1>
+  
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('workflows')">Workflows</button>
+    <button class="tab" onclick="showTab('agents')">Agents</button>
+  </div>
+
+  <div id="workflows-tab">
+    <div class="note">
+      <strong>Note:</strong> Workflows with all steps "pending" are stuck. The workflow engine has a threading bug that needs fixing.
+    </div>
+    <div class="stat-grid">
+      <div class="stat"><div class="stat-num" id="total-runs">0</div><div class="stat-label">Total Runs</div></div>
+      <div class="stat"><div class="stat-num" id="running-now">0</div><div class="stat-label">Running</div></div>
+    </div>
+    <p class="count" id="workflow-count">Loading...</p>
+    <div id="workflows"></div>
+  </div>
+
+  <div id="agents-tab" style="display:none">
+    <div class="section-title">System Agents</div>
+    <div id="agents"></div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+    import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD0Z7R2J8kF3L5N9P1Q2R4S6V8X0Y2Z4",
+      authDomain: "winslow-756c3.firebaseapp.com",
+      databaseURL: "https://winslow-756c3-default-rtdb.firebaseio.com",
+      projectId: "winslow-756c3",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const steps = ['analyze', 'plan', 'implement', 'verify', 'test'];
+    
+    const agents = [
+      { name: 'Main Agent', status: 'online', role: 'Coordinator' },
+      { name: 'Kimi Swarm', status: 'online', role: 'Research + Engineering' },
+      { name: 'MiniMax', status: 'online', role: 'Fallback AI' },
+      { name: 'Workflow Engine', status: 'online', role: 'Custom Pipeline' },
+    ];
+    
+    function formatTime(ts) {
+      if (!ts) return '';
+      const diff = Math.floor((Date.now() - ts) / 1000);
+      if (diff < 60) return `${diff}s ago`;
+      if (diff < 3600) return `${Math.floor(diff/60)}m ago`;
+      if (diff < 86400) return `${Math.floor(diff/3600)}h ago`;
+      return `${Math.floor(diff/86400)}d ago`;
+    }
+
+    window.showTab = function(tab) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById('workflows-tab').style.display = tab === 'workflows' ? 'block' : 'none';
+      document.getElementById('agents-tab').style.display = tab === 'agents' ? 'block' : 'none';
+    }
+
+    function renderAgents() {
+      document.getElementById('agents').innerHTML = agents.map(a => `
+        <div class="agent">
+          <div>
+            <div class="agent-name">${a.name}</div>
+            <div class="agent-role">${a.role}</div>
+          </div>
+          <span class="${a.status === 'online' ? 'online' : 'offline'}">● ${a.status}</span>
+        </div>
+      `).join('');
+    }
+
+    function render(data) {
+      const container = document.getElementById('workflows');
+      const countEl = document.getElementById('workflow-count');
+      
+      if (!data || Object.keys(data).length === 0) {
+        container.innerHTML = '<div class="empty">No workflows running. Start one from Mission Control.</div>';
+        document.getElementById('total-runs').textContent = '0';
+        document.getElementById('running-now').textContent = '0';
+        countEl.textContent = '';
+        return;
+      }
+
+      const entries = Object.entries(data).reverse();
+      const running = entries.filter(([_, r]) => r.status === 'running').length;
+      
+      document.getElementById('total-runs').textContent = entries.length;
+      document.getElementById('running-now').textContent = running;
+      countEl.textContent = '';
+
+      container.innerHTML = entries.map(([id, run]) => {
+        const stepBars = steps.map(s => {
+          const status = run.steps?.[s] || 'pending';
+          return `<div class="step ${status}"></div>`;
+        }).join('');
+
+        return `
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="task">${run.task || 'Unknown'}</div>
+                <div class="meta">${run.workflow} • ${formatTime(run.updated)}</div>
+              </div>
+              <span class="status-badge ${run.status}">${run.status}</span>
+            </div>
+            <div class="steps">${stepBars}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function loadAll() {
+      fetch('https://winslow-756c3-default-rtdb.firebaseio.com/workflows.json')
+        .then(r => r.json())
+        .then(data => {
+          render(data);
+          renderAgents();
+        });
+    }
+
+    loadAll();
+    
+    onValue(ref(db, 'workflows'), (snapshot) => {
+      render(snapshot.val());
+    });
+  </script>
+</body>
+</html>

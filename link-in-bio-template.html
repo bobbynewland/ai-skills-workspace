@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link in Bio | Your Name</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #030307;
+            --bg-secondary: #0a0a12;
+            --bg-card: rgba(255,255,255,0.03);
+            --bg-card-hover: rgba(255,255,255,0.08);
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            --accent-primary: #6366f1;
+            --accent-secondary: #8b5cf6;
+            --accent-tertiary: #ec4899;
+            --accent-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+            --border-subtle: rgba(255,255,255,0.08);
+            --border-hover: rgba(255,255,255,0.15);
+            --glow-color: rgba(99, 102, 241, 0.4);
+            --font-display: 'Space Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            min-height: 100vh;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated background */
+        .bg-effects {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-gradient {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.3;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .bg-gradient-1 {
+            top: -200px;
+            right: -100px;
+            background: var(--accent-primary);
+            animation-delay: 0s;
+        }
+
+        .bg-gradient-2 {
+            bottom: -200px;
+            left: -100px;
+            background: var(--accent-tertiary);
+            animation-delay: -10s;
+        }
+
+        .bg-gradient-3 {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            height: 400px;
+            background: var(--accent-secondary);
+            opacity: 0.15;
+            animation: pulse 15s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.05); }
+            66% { transform: translate(-20px, 20px) scale(0.95); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.15; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.25; transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        /* Grid pattern overlay */
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Main container */
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 40px 20px 60px;
+            min-height: 100vh;
+        }
+
+        /* Profile header */
+        .profile {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        /* 3D Avatar container */
+        .avatar-wrapper {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 24px;
+        }
+
+        .avatar-ring {
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            background: var(--accent-gradient);
+            animation: rotate 4s linear infinite;
+        }
+
+        .avatar-ring::before {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            border-radius: 50%;
+            background: var(--bg-primary);
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .avatar {
+            position: absolute;
+            inset: 6px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid rgba(255,255,255,0.1);
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 3D floating element behind avatar */
+        .avatar-glow {
+            position: absolute;
+            inset: -20px;
+            background: radial-gradient(circle, var(--glow-color) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: glow-pulse 3s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes glow-pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent-gradient);
+            animation: blink 2s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        /* Bold typography name */
+        .name {
+            font-family: var(--font-display);
+            font-size: clamp(36px, 10vw, 48px);
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -1px;
+            margin-bottom: 12px;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 60px var(--glow-color);
+        }
+
+        /* Tagline */
+        .tagline {
+            font-size: 16px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+
+        /* Social links */
+        .social-row {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 28px;
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 18px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .social-link::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--accent-gradient);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .social-link:hover {
+            transform: translateY(-4px) scale(1.05);
+            border-color: var(--accent-primary);
+            box-shadow: 0 10px 40px -10px var(--glow-color);
+        }
+
+        .social-link:hover::before {
+            opacity: 0.15;
+        }
+
+        .social-link span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Divider */
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-subtle), transparent);
+            margin: 36px 0;
+        }
+
+        /* Section title */
+        .section-title {
+            font-family: var(--font-display);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            color: var(--text-muted);
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        /* Links */
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .link-btn {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 18px 22px;
+            background: var(--bg-card);
+            border-radius: 20px;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 15px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--border-subtle);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .link-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--accent-gradient);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .link-btn:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-hover);
+            transform: translateX(8px);
+            box-shadow: 0 8px 32px -8px rgba(0,0,0,0.4);
+        }
+
+        .link-btn:hover::before {
+            opacity: 0.05;
+        }
+
+        .link-btn:hover .link-icon {
+            transform: scale(1.1);
+            background: var(--accent-gradient);
+            color: white;
+        }
+
+        .link-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+            font-weight: 600;
+            background: rgba(255,255,255,0.08);
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .link-text {
+            position: relative;
+            z-index: 1;
+            flex: 1;
+        }
+
+        .link-arrow {
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+            color: var(--text-muted);
+        }
+
+        .link-btn:hover .link-arrow {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Featured/Large CTA */
+        .cta-featured {
+            margin-top: 28px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-primary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 20px 28px;
+            background: var(--accent-gradient);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 60px -20px var(--glow-color);
+        }
+
+        .cta-primary .arrow {
+            transition: transform 0.3s ease;
+        }
+
+        .cta-primary:hover .arrow {
+            transform: translateX(4px);
+        }
+
+        /* Glow effect behind CTA */
+        .cta-glow {
+            position: absolute;
+            inset: 0;
+            background: var(--accent-gradient);
+            filter: blur(20px);
+            opacity: 0.4;
+            border-radius: 20px;
+            z-index: 0;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 44px;
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 500;
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 16px 50px;
+            }
+
+            .avatar-wrapper {
+                width: 100px;
+                height: 100px;
+                margin-bottom: 20px;
+            }
+
+            .name {
+                font-size: 32px;
+            }
+
+            .tagline {
+                font-size: 14px;
+            }
+
+            .social-link {
+                width: 44px;
+                height: 44px;
+                font-size: 16px;
+            }
+
+            .link-btn {
+                padding: 16px 18px;
+                font-size: 14px;
+            }
+
+            .link-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+        }
+
+        /* Small devices */
+        @media (max-width: 360px) {
+            .name {
+                font-size: 28px;
+            }
+
+            .link-btn {
+                padding: 14px 16px;
+            }
+
+            .link-icon {
+                width: 36px;
+                height: 36px;
+            }
+        }
+
+        /* Animation on load */
+        .container > * {
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+        }
+
+        .profile { animation-delay: 0.1s; }
+        .divider { animation-delay: 0.2s; }
+        .section-title { animation-delay: 0.25s; }
+        .links .link-btn:nth-child(1) { animation-delay: 0.3s; }
+        .links .link-btn:nth-child(2) { animation-delay: 0.35s; }
+        .links .link-btn:nth-child(3) { animation-delay: 0.4s; }
+        .links .link-btn:nth-child(4) { animation-delay: 0.45s; }
+        .links .link-btn:nth-child(5) { animation-delay: 0.5s; }
+        .cta-featured { animation-delay: 0.55s; }
+        .footer { animation-delay: 0.6s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Effects -->
+    <div class="bg-effects">
+        <div class="bg-gradient bg-gradient-1"></div>
+        <div class="bg-gradient bg-gradient-2"></div>
+        <div class="bg-gradient bg-gradient-3"></div>
+    </div>
+    <div class="grid-overlay"></div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Profile Section -->
+        <header class="profile">
+            <div class="avatar-wrapper">
+                <div class="avatar-glow"></div>
+                <div class="avatar-ring"></div>
+                <div class="avatar">
+                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&h=400&fit=crop&crop=face" alt="Profile">
+                </div>
+            </div>
+            
+            <div class="badge">
+                <span class="badge-dot"></span>
+                <span>Available for Projects</span>
+            </div>
+            
+            <h1 class="name">YOUR NAME</h1>
+            <p class="tagline">
+                Digital Creator & Content Strategist<br>
+                Building brands that stand out
+            </p>
+            
+            <!-- Social Links -->
+            <div class="social-row">
+                <a href="https://instagram.com" class="social-link" title="Instagram" target="_blank" rel="noopener">
+                    <span>📷</span>
+                </a>
+                <a href="https://tiktok.com" class="social-link" title="TikTok" target="_blank" rel="noopener">
+                    <span>♪</span>
+                </a>
+                <a href="https://youtube.com" class="social-link" title="YouTube" target="_blank" rel="noopener">
+                    <span>▶</span>
+                </a>
+                <a href="https://twitter.com" class="social-link" title="X/Twitter" target="_blank" rel="noopener">
+                    <span>𝕏</span>
+                </a>
+                <a href="https://linkedin.com" class="social-link" title="LinkedIn" target="_blank" rel="noopener">
+                    <span>in</span>
+                </a>
+            </div>
+        </header>
+
+        <div class="divider"></div>
+
+        <!-- Links Section -->
+        <p class="section-title">Explore</p>
+        
+        <div class="links">
+            <a href="#" class="link-btn" target="_blank" rel="noopener">
+                <div class="link-icon">▶</div>
+                <span class="link-text">Latest YouTube Video</span>
+                <span class="link-arrow">→</span>
+            </a>
+            
+            <a href="#" class="link-btn" target="_blank" rel="noopener">
+                <div class="link-icon">↗</div>
+                <span class="link-text">Shop My Favorites</span>
+                <span class="link-arrow">→</span>
+            </a>
+            
+            <a href="#" class="link-btn" target="_blank" rel="noopener">
+                <div class="link-icon">★</div>
+                <span class="link-text">Exclusive Discount Code</span>
+                <span class="link-arrow">→</span>
+            </a>
+            
+            <a href="#" class="link-btn" target="_blank" rel="noopener">
+                <div class="link-icon">✉</div>
+                <span class="link-text">Collaborate With Me</span>
+                <span class="link-arrow">→</span>
+            </a>
+            
+            <a href="#" class="link-btn" target="_blank" rel="noopener">
+                <div class="link-icon">★</div>
+                <span class="link-text">Join My Newsletter</span>
+                <span class="link-arrow">→</span>
+            </a>
+        </div>
+
+        <!-- Featured CTA -->
+        <div class="cta-featured">
+            <div class="cta-glow"></div>
+            <a href="#" class="cta-primary" target="_blank" rel="noopener">
+                Book a Collaboration
+                <span class="arrow">→</span>
+            </a>
+        </div>
+
+        <footer class="footer">
+            © 2026 All Rights Reserved
+        </footer>
+    </div>
+</body>
+</html>

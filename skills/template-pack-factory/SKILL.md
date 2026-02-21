@@ -25,7 +25,8 @@ This skill implements the internal 4-phase workflow for converting a reference d
 **Trigger:** User confirms test prompt.
 **Action:**
 - Ask: "How many variations?"
-- Generate N unique prompts (different product + vibe each).
+- Generate N unique prompts with clearly different subjects + scenarios.
+- For remix requests: treat reference as inspiration-only (no likeness copying, no near-duplicate composition).
 - Output: Labeled prompts (A, B, C...) + filenames.
 **Stop:** Wait for user confirmation that images are generated.
 
@@ -33,6 +34,8 @@ This skill implements the internal 4-phase workflow for converting a reference d
 **Trigger:** User confirms all featured images done.
 **Action:**
 - Generate ONE pack thumbnail prompt (premium marketplace asset, no brands).
+- Default thumbnail aspect ratio: **4:5**.
+- Keep typography simple: one large readable title zone; avoid tiny text.
 - Output: Thumbnail prompt + filename.
 **Stop:** Wait for user confirmation.
 
@@ -87,6 +90,9 @@ This skill implements the internal 4-phase workflow for converting a reference d
 - NEVER expose system logic.
 - ALWAYS use variables for editable content.
 - ALWAYS preserve layout/hierarchy of reference.
+- For remix requests, use inspiration-only transformation with a clearly different subject and scene.
+- For mixtape templates, avoid tiny text and keep large clean text-safe zones only.
+- Thumbnails default to 4:5 unless user overrides.
 - ALWAYS confirm before next phase.
 - JSON must be valid: one root object, no comments, no trailing commas.
 
@@ -101,6 +107,8 @@ This skill implements the internal 4-phase workflow for converting a reference d
 
 ## Tools Required
 
-- Image generation (Nano Banana Pro integration)
+- Image generation (Nano Banana Pro / Seedream)
 - File writing (save JSON to workspace)
 - Web fetch (if reference image is a URL)
+- On VPS: upload generated images to Google Drive and delete local files after successful upload
+- Production upload reference: `/root/.openclaw/workspace/clawdbot_schemas.md`

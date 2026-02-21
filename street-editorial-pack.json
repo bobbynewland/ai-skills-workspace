@@ -1,0 +1,29 @@
+{
+  "pack": {
+    "name": "Street Editorial",
+    "description": "High-fashion studio editorial meets raw street art. This pack features stunning Black models layered with oversized, chaotic graffiti and bold brush-stroke typography for a gritty, professional aesthetic.",
+    "thumbnail_url": "https://drive.google.com/uc?export=download&id=1ls5223A1Nnir7wN0wV9--aJTUYCOaHRF"
+  },
+  "templates": [
+    {
+      "title": "Street Editorial - Silver Puffer",
+      "prompt_text": "A photorealistic high-fashion studio editorial photo of a stunning Black woman with a confident pose, wearing a chrome-silver puffer jacket. The background is a neutral grey studio wall covered in oversized, messy hand-drawn graffiti text in electric yellow and black. Layered over the image is bold, aggressive brush-stroke typography and scribbles in white. The lighting is sharp and professional. The overall aesthetic is edgy and futuristic street-style. --ar 4:5",
+      "image_url": "https://drive.google.com/uc?export=download&id=1z_a0X9h2Egx36kECeeul-5Zifnhu6H7N"
+    },
+    {
+      "title": "Street Editorial - Leather Coat",
+      "prompt_text": "A photorealistic high-fashion studio editorial photo of a handsome Black man in a high-fashion oversized leather coat and wide-leg trousers. The background is a neutral grey studio wall covered in oversized, messy hand-drawn graffiti text in neon green and white. Layered over the image is bold, aggressive brush-stroke typography and scribbles in black. The lighting is sharp and professional. The overall aesthetic is gritty and authoritative. --ar 4:5",
+      "image_url": "https://drive.google.com/uc?export=download&id=13EC-cs3HcQ8DxjFpXiLv22eKDpwOnDaM"
+    },
+    {
+      "title": "Street Editorial - Red Architecture",
+      "prompt_text": "A photorealistic high-fashion studio editorial photo of a stunning Black woman in a flowing, architectural red dress. The background is a neutral grey studio wall covered in oversized, messy hand-drawn graffiti text in soft purple and orange. Layered over the image is bold, aggressive brush-stroke typography and scribbles in white. The lighting is sharp and professional, highlighting the fabric's movement. The overall aesthetic is high-fashion elegance meets raw street art. --ar 4:5",
+      "image_url": "https://drive.google.com/uc?export=download&id=1Il6gnHivEaovRCB8rPxyU4zXiWViyOXY"
+    },
+    {
+      "title": "Street Editorial - Neon Suit",
+      "prompt_text": "A photorealistic high-fashion studio editorial photo of a handsome Black man in a tailored neon-accented suit with designer sneakers. The background is a neutral grey studio wall covered in oversized, messy hand-drawn graffiti text in classic red and black. Layered over the image is bold, aggressive brush-stroke typography and scribbles in white. The lighting is sharp and professional. The overall aesthetic is corporate-rebel and bold professional. --ar 4:5",
+      "image_url": "https://drive.google.com/uc?export=download&id=1DTkiGtY-spdJJEXlCHiiOCrUWrH0R2dc"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "pack": {
+    "name": "Surrealist Nature",
+    "description": "High-fashion models in extreme, minimalist landscapes with out-of-place architectural props. This pack embodies the Jacquemus-inspired surrealist aesthetic—dreamlike, high-contrast, and permanently iconic.",
+    "thumbnail_url": "https://drive.google.com/uc?export=download&id=1_Xau0cjceaLrxjJSKGf8OlX2Pcws1TwD"
+  },
+  "templates": [
+    {
+      "title": "Surreal - Desert Pink",
+      "prompt_text": "A photorealistic high-fashion editorial photo. A stylish Black model in a flowing silk dress sitting on an oversized hot-pink velvet sofa in the middle of a vast, white salt flat desert. Blue sky, minimalist composition, surrealist Jacquemus aesthetic. 4:5 aspect ratio.",
+      "image_url": "https://drive.google.com/uc?export=download&id=1ib9VmzqjUURSs3-dvt9yiyoiZR0N7tvu"
+    },
+    {
+      "title": "Surreal - Poppy Mirror",
+      "prompt_text": "A photorealistic high-fashion editorial photo. A handsome Black man in a tailored lime-green suit standing in a field of bright red poppies, holding a large, ornate silver mirror that reflects a different landscape. Surrealist nature vibe. 4:5 aspect ratio.",
+      "image_url": "https://drive.google.com/uc?export=download&id=1MveZllVGITmnFzwQRwQd4Ok7QRc9o8Xg"
+    },
+    {
+      "title": "Surreal - Ocean Giant Books",
+      "prompt_text": "A photorealistic high-fashion editorial photo. A Black woman in an architectural white gown posing on a rocky ocean cliff next to a stack of giant, oversized books. Mist and dramatic lighting, ethereal surrealism. 4:5 aspect ratio.",
+      "image_url": "https://drive.google.com/uc?export=download&id=1ccMN5mGePF9r1ktwc1zlQ7IQLss6wn75"
+    },
+    {
+      "title": "Surreal - Forest Bubble",
+      "prompt_text": "A photorealistic high-fashion editorial photo. Close-up of a luxury leather handbag resting on a giant, floating transparent bubble in a serene forest setting. Soft dappled sunlight, magical realism aesthetic. 4:5 aspect ratio.",
+      "image_url": "https://drive.google.com/uc?export=download&id=1cNfv3Wz-56nQnO0XihTJ4KDFYHq87ksQ"
+    }
+  ]
+}

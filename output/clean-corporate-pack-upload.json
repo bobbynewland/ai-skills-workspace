@@ -1,0 +1,32 @@
+{
+  "pack": {
+    "name": "Clean Corporate Pack",
+    "slug": "clean-corporate-pack-1771417532",
+    "access_level": "free",
+    "is_published": false,
+    "thumbnail_url": "https://drive.google.com/uc?export=view&id=1MMtdiOQdz4Mlqh9akCvFYHPl0mJdtfdL",
+    "category": "Business"
+  },
+  "templates": [
+    {
+      "title": "Clean Corporate 02 - Consulting Authority",
+      "prompt_text": "Headline + subheadline + CTA only. Corporate consulting ad with face-safe layout and no text overlap.",
+      "image_url": "https://drive.google.com/uc?export=view&id=1MMtdiOQdz4Mlqh9akCvFYHPl0mJdtfdL"
+    },
+    {
+      "title": "Clean Corporate 04 - Tax Premium",
+      "prompt_text": "Headline + subheadline + CTA only. Premium tax prep ad with unobstructed subject face and lower text panel.",
+      "image_url": "https://drive.google.com/uc?export=view&id=1-2OtjFMbVZhDrSr-_qSHoUJyywkMiBsU"
+    },
+    {
+      "title": "Clean Corporate 06 - Tax Deadline",
+      "prompt_text": "Headline + subheadline + CTA only. Deadline-driven tax promo with clear hierarchy and clean composition.",
+      "image_url": "https://drive.google.com/uc?export=view&id=1Nzcg3fX81ffnOrab4E6YxvVLqgygLF2b"
+    },
+    {
+      "title": "Clean Corporate 07 - Credit Confidence",
+      "prompt_text": "Headline + subheadline + CTA only. Credit repair promo with right-rail copy and face-safe subject framing.",
+      "image_url": "https://drive.google.com/uc?export=view&id=19mluyvFLZ2L91UO5lmTLVwtj8GR9aVDs"
+    }
+  ]
+}

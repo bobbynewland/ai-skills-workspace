@@ -1,0 +1,1272 @@
+{
+  "80bf0758b072e2a7d60adb5b27f915110a9e38719ffe9cd3aa5a031bfd8c5d01": {
+    "first_seen": "2026-01-15",
+    "source": "/root/.openclaw/workspace/life/areas/people/example-user/items.json",
+    "normalized": "prefers video calls over phone calls  complex technical discussions"
+  },
+  "a5995d6191df9076e7b9d8156b496cfc676f2cd40c7a3ad42b06a027913a3e33": {
+    "first_seen": "2026-01-28",
+    "source": "/root/.openclaw/workspace/life/areas/people/example-user/items.json",
+    "normalized": "launched ai-powered customer insights dashboard that increased user engagement  35%"
+  },
+  "57711a08bb12950372cb7bc93ba3f588d1269c86fe0645a1d76c69ebd04fa332": {
+    "first_seen": "2025-12-01",
+    "source": "/root/.openclaw/workspace/life/areas/people/example-user/items.json",
+    "normalized": "works  techflow inc as senior product manager promoted q4 2025"
+  },
+  "0fce545f05af052fdf83ed47ce4cd9ce95d0e15cad5795a59f376b47b33fd833": {
+    "first_seen": "2026-02-05",
+    "source": "/root/.openclaw/workspace/life/areas/people/example-user/items.json",
+    "normalized": "uses notion  project documentation and linear  sprint planning"
+  },
+  "3fc1063e4feaf3d44a1116c74ba1029864eea97f40939f039a6dcf9978cc9476": {
+    "first_seen": "2026-02-12",
+    "source": "/root/.openclaw/workspace/life/areas/people/example-user/items.json",
+    "normalized": "interested  exploring ai tooling partnerships  their platform"
+  },
+  "203bbe38533df261c7e713ec871c0774f8ede29e9efd360bde6410f4307b7c9e": {
+    "first_seen": "2026-02-10",
+    "source": "/root/.openclaw/workspace/life/areas/people/example-user/items.json",
+    "normalized": "speaking  productcon sf  march 2026 about ai integration patterns"
+  },
+  "a104044328d4c65e09f909124f1bcb30a78310abdee23af9990d26098de182c6": {
+    "first_seen": "2026-02-16",
+    "source": "/root/.openclaw/workspace/memory/2026-02-16.md",
+    "normalized": "# daily log - february 16 2026"
+  },
+  "238f89d1937c187a54c79da2f87c11ad943299fbef3cbda7f0bbb64eadf70743": {
+    "first_seen": "2026-02-16",
+    "source": "/root/.openclaw/workspace/memory/2026-02-16.md",
+    "normalized": "## mission control os updates - added quick capture tab  fast task/note/idea entry - added daily bri..."
+  },
+  "ea55cde4dda20410b59e4bc833123b6b8ba190a84b7fa7669e72ce33c5cbad42": {
+    "first_seen": "2026-02-16",
+    "source": "/root/.openclaw/workspace/memory/2026-02-16.md",
+    "normalized": "## kimi swarm - updated rate limiting  30 rpm (from 40)  stability - load balancing improved"
+  },
+  "1130af34492750d41788eecd6907fb7a119e2579c16ced2d33a595b92995757c": {
+    "first_seen": "2026-02-16",
+    "source": "/root/.openclaw/workspace/memory/2026-02-16.md",
+    "normalized": "## glm swarm - added rate limiting (30 rpm) - ready  use glm-5"
+  },
+  "d0d6ec0fc13ad0aa503eb89b43f96d1081ba38bf02e6cfcdc50c8a67413e902d": {
+    "first_seen": "2026-02-16",
+    "source": "/root/.openclaw/workspace/memory/2026-02-16.md",
+    "normalized": "## landing pages - b natural hair care https//b-natural-hairvercelapp - mobile-first design - luxury..."
+  },
+  "8431c9a8a4234578e17931f032124c4c666d3d256cd5caa82f7fdc71487f292f": {
+    "first_seen": "2026-02-16",
+    "source": "/root/.openclaw/workspace/memory/2026-02-16.md",
+    "normalized": "## mission control url - https//mission-control-v3-pearlvercelapp"
+  },
+  "5c21396b494368797cee2820e0fe3b168b15e5b69ce303f17ffcc0db42e89f48": {
+    "first_seen": "2026-02-16",
+    "source": "/root/.openclaw/workspace/memory/2026-02-16.md",
+    "normalized": "## b natural hair care project - research report created  natural hair growth serum - premium 9-slid..."
+  },
+  "a2b0343f01bcd746191bbb8dc2fc86e45f11f85d70961ab940884b64f706e9bb": {
+    "first_seen": "2026-02-16",
+    "source": "/root/.openclaw/workspace/memory/2026-02-16.md",
+    "normalized": "## ai skills studio - url https//wwwaiskillsstudio - bobby pushed  production - needs lessons/conten..."
+  },
+  "2c75284a9602413860792f87ab9941ba444f6515cb8e4f9c9a4f8a1daccc4dca": {
+    "first_seen": "2026-02-16",
+    "source": "/root/.openclaw/workspace/memory/2026-02-16.md",
+    "normalized": "## model status - **gemini** (antigravity) \u2014 working via api key - **kimi** (nvidia) \u2014 rate limited ..."
+  },
+  "a26526db47fa24e1b15e33e51242f65edfee0e00ceabac2ab5cbe7eafff39812": {
+    "first_seen": "2026-02-16",
+    "source": "/root/.openclaw/workspace/memory/2026-02-16.md",
+    "normalized": "## mission control - url https//mission-control-v3-pearlvercelapp - password newlandbobby1983@@"
+  },
+  "2bfaa0ed4d3ccb2b6365954da337005861a672aef7a8e7a3cc67c91b1d68f465": {
+    "first_seen": "2026-02-16",
+    "source": "/root/.openclaw/workspace/memory/2026-02-16.md",
+    "normalized": "## needs from bobby - openai api key  credits - postgresql database ( os features) - ai skills studi..."
+  },
+  "ccbc59f98896a8a8ef0b4251b24a64cf1fb3d6fb841477b023f6e4281741d9d2": {
+    "first_seen": "2026-02-09",
+    "source": "/root/.openclaw/workspace/memory/2026-02-09.md",
+    "normalized": "# 2026-02-09 - daily notes"
+  },
+  "f1c34f29586c72f3c950b6dcc9c29b24a5844ee54cf1043819c32fefd6e93b5f": {
+    "first_seen": "2026-02-09",
+    "source": "/root/.openclaw/workspace/memory/2026-02-09.md",
+    "normalized": "### gateway recovery - server was reset gateway went down - successfully restarted openclaw-gateway ..."
+  },
+  "9094966aa05497a088bcbf06d1315908ec5f3e68cc8c02a08b145cd3a94ec706": {
+    "first_seen": "2026-02-09",
+    "source": "/root/.openclaw/workspace/memory/2026-02-09.md",
+    "normalized": "### heygen training videos - found heygen api key  `/root/openclaw/workspace/keys/heygenkey` - creat..."
+  },
+  "dfae007dc552b70d6559e4580bbe67ac5dd9623d4fba396ef7aa2ba487aa1171": {
+    "first_seen": "2026-02-09",
+    "source": "/root/.openclaw/workspace/memory/2026-02-09.md",
+    "normalized": "### openrouter / pony alpha integration - openrouter api key found `sk-or-v1-f40a6e15e855230ea38c85d..."
+  },
+  "b9982380854a1d7a0784095308eff2ab43f5e183542ad6d9027384a68fba6ed8": {
+    "first_seen": "2026-02-09",
+    "source": "/root/.openclaw/workspace/memory/2026-02-09.md",
+    "normalized": "### link  bio page created - created yasin ahmed link  bio page - purple & green botanical theme - f..."
+  },
+  "1615eb075e09e20703a633c741a5e033beca8487a27188284f8bb0b43a7307f9": {
+    "first_seen": "2026-02-09",
+    "source": "/root/.openclaw/workspace/memory/2026-02-09.md",
+    "normalized": "### google workspace oauth issue - slides scope (`https//wwwgoogleapiscom/auth/slides`) invalid - ot..."
+  },
+  "15def6a0dcbd2c0cd2f7d3c6ba59efb6bcabe94c570400800fe81948f88c762b": {
+    "first_seen": "2026-02-09",
+    "source": "/root/.openclaw/workspace/memory/2026-02-09.md",
+    "normalized": "## api keys - heygen `/root/openclaw/workspace/keys/heygenkey` \u2705 - openrouter `/root/openclaw/worksp..."
+  },
+  "f8dad2e3328de3dc2cea147e557dd4fc045fb2808aa2436f67edfa61fd1e24fe": {
+    "first_seen": "model-routing",
+    "source": "/root/.openclaw/workspace/memory/model-routing.md",
+    "normalized": "# model routing strategy - updated 2026-02-06"
+  },
+  "9687dd04a01649749f178305b98e78029a460301a25bc8ee9aa2ea6a8a302bda": {
+    "first_seen": "model-routing",
+    "source": "/root/.openclaw/workspace/memory/model-routing.md",
+    "normalized": "## strict routing rules"
+  },
+  "6ee48ccd5bde645455644c832415257836bafd57de0378e14af6072b9d291c79": {
+    "first_seen": "model-routing",
+    "source": "/root/.openclaw/workspace/memory/model-routing.md",
+    "normalized": "**kimi (moonshot/kimi-k25) - chat only** - use only  direct conversation/chat responses - no file op..."
+  },
+  "50b67da6071d2069e52848a9e46eff1e54eb8e210f09f020f215f57891ce7a55": {
+    "first_seen": "model-routing",
+    "source": "/root/.openclaw/workspace/memory/model-routing.md",
+    "normalized": "**gemini flash (vertex/gemini-3-flash-preview) - light tasks** - file operations (move copy organize..."
+  },
+  "a2e9794607f9149d78749dee87f837c64a737f297b55de968ed39a11c8fcd0be": {
+    "first_seen": "model-routing",
+    "source": "/root/.openclaw/workspace/memory/model-routing.md",
+    "normalized": "**gemini 25 pro (google/gemini-25-pro) - coding** - code generation - code review - debugging - tech..."
+  },
+  "6a96fc31e17069b6a9a4845c1280b5f19280299f23db7b0b6a7f0d5e0a8241cb": {
+    "first_seen": "model-routing",
+    "source": "/root/.openclaw/workspace/memory/model-routing.md",
+    "normalized": "**gemini 3 pro (vertex/gemini-3-pro-preview) - complex** - complex analysis - research synthesis - s..."
+  },
+  "e4a58663b7994c50fef3449fb9ac437861f363fce63cf42b0f5ab0f53b0f3378": {
+    "first_seen": "model-routing",
+    "source": "/root/.openclaw/workspace/memory/model-routing.md",
+    "normalized": "## spawn rules - if task is not pure chat \u2192 spawn sub-agent - always specify model  spawn - use \"thi..."
+  },
+  "60c0de7fd7f40e2636e68ee820c13d0985f63688d41514515a39f556bbfe6077": {
+    "first_seen": "model-routing",
+    "source": "/root/.openclaw/workspace/memory/model-routing.md",
+    "normalized": "last updated 2026-02-06 2101 utc"
+  },
+  "7e68e9fe3ce1833945df7fc5f8bd8e5ae3c8762f88ac34a5ab2541d13f6d8201": {
+    "first_seen": "2026-02-05",
+    "source": "/root/.openclaw/workspace/memory/2026-02-05.md",
+    "normalized": "# 2026-02-05 - session log"
+  },
+  "1c012343521a0ba1dfcbcfb8661fef668de0ae2ec0700a1d279bea676c7e4189": {
+    "first_seen": "2026-02-05",
+    "source": "/root/.openclaw/workspace/memory/2026-02-05.md",
+    "normalized": "## \ud83c\udfaf major accomplishments"
+  },
+  "6309ac9d899c1abcc1eea6102b37373e4059afc25ff813d0121c064678fdb7e0": {
+    "first_seen": "2026-02-05",
+    "source": "/root/.openclaw/workspace/memory/2026-02-05.md",
+    "normalized": "### \u2705 small business elite template pack - created 5 high-end small business templates  diverse repr..."
+  },
+  "672793d65608d5034d59eccb2dad1c3f3a315a309b8b029db3d1ac576f89853b": {
+    "first_seen": "2026-02-05",
+    "source": "/root/.openclaw/workspace/memory/2026-02-05.md",
+    "normalized": "### \ud83d\udc8e gemini pro coding workflow - created `gemini_coding_workflowmd` - complete guide  using gemini..."
+  },
+  "fe16be482815e822eef06c3260947864cfa452ea7be49e5bdefe83e32a45a203": {
+    "first_seen": "2026-02-05",
+    "source": "/root/.openclaw/workspace/memory/2026-02-05.md",
+    "normalized": "### \ud83d\udd0d command board enhancements - added **global search** - search all tasks  title description cat..."
+  },
+  "22507553ec6c27984a84a37b20ac39c5410339f04d3293f0069ed8cd14a31adc": {
+    "first_seen": "2026-02-05",
+    "source": "/root/.openclaw/workspace/memory/2026-02-05.md",
+    "normalized": "### \ud83d\udce6 github updates - all changes committed  `githubcom/bobbynewland/ai-skills-workspace` - reposit..."
+  },
+  "73083ee803f8f0c5b540b8f8bf36f59e610fd962d50532a1fa57db576e162d88": {
+    "first_seen": "2026-02-05",
+    "source": "/root/.openclaw/workspace/memory/2026-02-05.md",
+    "normalized": "1 **gemini  coding** switched  gemini pro/flash  code generation  preserve kimi credits  complex rea..."
+  },
+  "f443dae370006483dc32ed8e821bf5aacc7476108854330bfb3e4319172e7cda": {
+    "first_seen": "2026-02-05",
+    "source": "/root/.openclaw/workspace/memory/2026-02-05.md",
+    "normalized": "## \ud83d\udcca active projects"
+  },
+  "66d5e22506f64afac2dd2e19ab3e2baa973c2c3973188e6a4aa0cba4acfe6ec8": {
+    "first_seen": "2026-02-05",
+    "source": "/root/.openclaw/workspace/memory/2026-02-05.md",
+    "normalized": "| project | status | notes | |---------|--------|-------| | template factory | \ud83d\udfe2 active | small busi..."
+  },
+  "f3e1e47a8ae062cf28189d79e999c606d5954428292e8c380ff8e77c2636d044": {
+    "first_seen": "2026-02-05",
+    "source": "/root/.openclaw/workspace/memory/2026-02-05.md",
+    "normalized": "## \ud83d\udd17 important links"
+  },
+  "958612d0f864d917b0d8edca8eafc7d28ac4c56b02c9004fd4d8f5d00a8fa06c": {
+    "first_seen": "2026-02-05",
+    "source": "/root/.openclaw/workspace/memory/2026-02-05.md",
+    "normalized": "- **command board** `http//14793401888080/command-board/indexhtml` - **memory search** `http//147934..."
+  },
+  "27229e39dc2b2587993cde8f31e27de8466bc4018adfe6c7972eafb91e5e8e9f": {
+    "first_seen": "2026-02-05",
+    "source": "/root/.openclaw/workspace/memory/2026-02-05.md",
+    "normalized": "## \ud83d\udcb0 cost optimizations"
+  },
+  "b5cdf5f0c8f5b9703ad9aed03995b5a96dcf31bf27e052808f9b28af9fb0f334": {
+    "first_seen": "2026-02-05",
+    "source": "/root/.openclaw/workspace/memory/2026-02-05.md",
+    "normalized": "- gemini flash free tier (60 req/min 1m tokens/day) - kimi reserved  complex reasoning only - falai ..."
+  },
+  "34ec8b28ad1d61250a6c3ff2f3c6748c764a14ee27bd29894952bd78a94bfaff": {
+    "first_seen": "2026-02-05",
+    "source": "/root/.openclaw/workspace/memory/2026-02-05.md",
+    "normalized": "## \ud83d\udcdd next priorities"
+  },
+  "cdd10c7f534273f478637be1af1cbf4e07ba6dd20d97c7cb86ffa9e2e20bc009": {
+    "first_seen": "2026-02-05",
+    "source": "/root/.openclaw/workspace/memory/2026-02-05.md",
+    "normalized": "1 complete vercel deployment (404 fix) 2 download ai avatar video from heygen 3 configure firebase c..."
+  },
+  "aa1c7aeac91ff6d150b8d1e65eaa59f2d9cf10dd90435c8382925851c53dfaca": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "# premium saas dashboard design research report ## mission control dashboard - 2025-2026 design guid..."
+  },
+  "5ed9912695da80335d3805c2beb63f4bcf27b59dcca205dc9b25bca58a053f42": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "## 1 top dashboard ui patterns  2025-2026"
+  },
+  "4bd272454831023fcd75fe43bb54b666e07b1c29bbe3d78457d96e00646f1174": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 11 command palette pattern **used ** raycast linear spotlight command+k interfaces"
+  },
+  "2ca69614fd6965bca86c6c0dd58379c5b35f5380c0f936c7f3dee87a759229c1": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "command palette has become  primary navigation method  power users - **trigger** `cmd+k` / `ctrl+k` ..."
+  },
+  "fdf96bea568aea92b0c5d46e72d26479fee94e5b4a1dfe7593b670fc467a5981": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 12 bento grid layout **used ** apple linear stripe"
+  },
+  "3727b1f4173ed4b1100c725df6cdafe99b975a5bbeb54477152a0f3a163ad914": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "modular card-based system  consistent spacing - **grid** 12-column  16-24px gutters - **cards** roun..."
+  },
+  "a253be6e0699d976a2ada92e615950d2ff4f701f1e158064373476bc6625a629": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 13 real-time activity streams **used ** stripe datadog sentry"
+  },
+  "6ab3978f3d374d9e11288172ceca1e2cfb68a1912d285523d244f64b7be8db9c": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "live-updating feeds  optimistic ui - **animation** new items slide  from top  fade (150ms) - **visua..."
+  },
+  "72386307da966e39e5e3b75f432afef5b5dd0cf66f4a98dc2a6ce5c0cebdcd26": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 14 skeleton loading states **used ** all premium saas (linear stripe vercel)"
+  },
+  "b569cee6353b92a9815e2063cd43f23bba234b07983f0276908cbfc49be909b8": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "replaces spinners  shimmer animations - **colors** use base surface colors  8-10% lighter overlay - ..."
+  },
+  "2baaab614f2487accaeedd8b42e9a72c62ffaa27015381b07e141099ff99eaa4": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 15 collapsible sidebar **used ** notion linear most saas"
+  },
+  "2b9819ae6027ef2560a9d851543f4d6c1be9e5bdce60a1a550c068f1af25e209": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "adaptive navigation - **expanded** 240-280px width  icons + labels - **collapsed** 60-72px width  ic..."
+  },
+  "ff74516594c3dc6c512f718e28cb5d4780802841c97b13b1e0188ef2ea55aa0a": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "## 2 mobile-first design trends"
+  },
+  "83ce3adf6b2e3d04213de535f602ed681da77240db74e2c0becb65286eed82ac": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 21 touch-optimized targets - **minimum tap target** 44x44px (apple hig) 48x48px (material) - **s..."
+  },
+  "d04080c979c20922a0e08e03fa97c3d1a59c97c478a580de837f8e0b3a9de05a": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 22 responsive breakpoints ```css /* recommended breakpoints */ --breakpoint-sm 640px /* large ph..."
+  },
+  "b3a410fb1b6788201757586e118571a2507f3747c2b5616515d37974dad80721": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 23 mobile navigation patterns | pattern | best  | examples | |---------|----------|----------| |..."
+  },
+  "caa45ba57e91a1129cd22c0daed7c5850ca501332d85f846e0f9e4fef684729a": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 24 mobile-first card design - **full-width cards**  16px horizontal margins - **vertical stackin..."
+  },
+  "2ecd05ac6978f6ad7a5c57e416f8fec7a2f3189fd88a7c6bb7b8d2c22d1d4b75": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "## 3 premium saas aesthetics"
+  },
+  "04f856e43a6decdd08485b4031d9fa68c4febc1ff9aafc8685124580ea7d4489": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 31 stripe **design philosophy** data-dense but scannable professional finance-grade"
+  },
+  "4599d88975e1ef7f733ccf98ed8cacc277b14a95914b4f7eb9e67c58d8fddcb9": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "- **layout** 3-column dashboard dense but breathable - **typography** stripe's custom font (stripe p..."
+  },
+  "75534f0ac2e95e8762f9d651e0250720cd6423f096a59cde1d9c3fcdc4e3b5e1": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 32 linear **design philosophy** keyboard-driven speed-focused minimal"
+  },
+  "3643d559df69f17eeb72056470c5f261c54ef41cf3442cf9853ba1ec8e06bdca": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "- **layout** full-width content collapsible sidebar - **typography** inter 14-15px base tight tracki..."
+  },
+  "ea1a4d5469eaea621a43f23718567fa379e1c61adb2372d9531252a785d0bde1": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 33 raycast **design philosophy** native macos extension command-first"
+  },
+  "c46122a12fa61fb200c7d0ef801ec6c5694da3f896d79f3020f057902f2c5b4c": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "- **layout** floating panel 600px max-width - **typography** sf pro (system) 13-14px - **colors** vi..."
+  },
+  "dd4ed9838a633753eacd7693d22e713dfd5ed024f280aab72aba5954d6061089": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 34 height **design philosophy** warm friendly yet professional"
+  },
+  "bb8bd44a6e0eaf6251545eef59c0459fdf282f6196f5879e7fdd340898de59a4": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "- **layout** split view list + detail - **typography** satoshi or general sans-serif - **colors** wa..."
+  },
+  "608f257895b32ec1d925c9d1a562cfc8e061e0c331d03bba0d17467498c72261": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "## 4 color schemes & typography"
+  },
+  "6628e13b085fc049834c0402edde4284d3f4b8779938b2eadcf8d6752c1c254d": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 41 recommended color palette (dark mode primary)"
+  },
+  "f73fd6d8a414fe3079e7e38d3d78b2aeb01826b4dd4f2056602596b043187c16": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "#### background colors ```css /* dark mode backgrounds */ --bg-primary #0a0a0b /* main background */..."
+  },
+  "217ee32f6cd64ad56808908b055d992dbb4aed7b3b4cb076d4f2e5cce4fcde29": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "/* light mode backgrounds */ --bg-primary-light #ffffff --bg-secondary-light #f9fafb --bg-tertiary-l..."
+  },
+  "fa1122fb9ce16aeeb80c7813acd80304bee1c3493442d8395711aad99d8b0728": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "#### accent colors ```css /* primary brand colors */ --accent-primary #6366f1 /* indigo - primary ac..."
+  },
+  "30591598b7dfb6da6345b6128a93ecf2de5f724989be04cfb5418c7e40a7855e": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "/* gradients (use sparingly) */ --gradient-primary linear-gradient(135deg #6366f1 0% #8b5cf6 100%) -..."
+  },
+  "2e0db0899320d91df2dcda78d1c4e04b2d1639041d6a2d9f9d94430b11751a19": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "#### text colors ```css /* dark mode text */ --text-primary #fafafa --text-secondary #a1a1aa --text-..."
+  },
+  "ee0763bd416c06ac9147ff6acbb64353fc695cf0f3b976bb65ebd9d94061c408": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "/* light mode text */ --text-primary-light #18181b --text-secondary-light #52525b --text-tertiary-li..."
+  },
+  "1340591da459c5ecb4765231b6b28870695b9975c4df76c3ba01bd90935d7b78": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "#### border & divider colors ```css /* dark mode borders */ --border-default #27272a --border-subtle..."
+  },
+  "33783718288e8b5e47e402a2b63dd918b468e4c1b1f7c7f5feae5dcd88dcce85": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "/* light mode borders */ --border-default-light #e4e4e7 --border-subtle-light #f4f4f5 ```"
+  },
+  "4c31debf4b92f18984b39a0d137a45987e822b3d1032db06476ddbf3b1a3ba21": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 42 typography recommendations"
+  },
+  "ccf3aad30089207a26698f7392add75a8c0e1d5ba5308a63f06a1752e9c0d6f9": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "#### font stack ```css /* primary (recommended  dashboards) */ font-family 'inter' -apple-system bli..."
+  },
+  "95bfcc22010963f441955e14401663dfb1b9fdbe2e2ecb2fd7547db1ccbd5187": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "/* alternative premium options */ font-family 'geist' 'geist mono' system-ui sans-serif /* vercel's ..."
+  },
+  "3394350b9fac18354e2f6900b40c1abbc4589f4dcc18669d17a6cfae150e7151": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "#### type scale ```css /* font sizes (mobile-first) */ --text-xs 075rem /* 12px - labels captions */..."
+  },
+  "f0a0fb2b6d3727300354679781970ce930f7556625aa58f81b652adcfa945a44": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "/* font weights */ --font-normal 400 --font-medium 500 --font-semibold 600 --font-bold 700"
+  },
+  "feaa1877beb729f3b8a00088f36b8aa9d2228f2f16021fdac4190a9a6aaa8d0f": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "/* line heights */ --leading-tight 125 --leading-normal 15 --leading-relaxed 1625"
+  },
+  "26992e9cdd7d47cf0d180bc9fdbafbb1887525cd038d8c0554f81c21dc6235a2": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "/* letter spacing */ --tracking-tight -0025em --tracking-normal 0 --tracking-wide 0025em ```"
+  },
+  "9a3ae2b7f1010dba7ee7cb043d76306fa0e9c0f408aab4c3443953cd64a8dfdb": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 43 dashboard-specific typography - **kpi numbers** 32-48px font-weight 600 tight tracking - **se..."
+  },
+  "e8eae966ea53d557f4ec9840db564b70a5a92b14cb82f14248fd0cdca537741d": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "## 5 animations & motion design"
+  },
+  "f09ef5c16de73e41d552c6ac09023781d148b6d184ee07dd40c8339625f7b6ad": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 51 animation principles | principle | description | example | |-----------|-------------|-------..."
+  },
+  "e032926c38e73fa886f1bdc83a00710a92e62b156c715fcbc66ee29453c5fd54": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 52 recommended easing curves ```css /* standard ease-out (most transitions) */ --ease-out cubic-..."
+  },
+  "84d784ea3604614281a418449ff49606b388d8a8b5fffdf41ebd5eeafb5503c3": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "/* ease--out (complex animations) */ --ease--out cubic-bezier(04 00 02 1)"
+  },
+  "0d896a371a17ed4bc0c9b7a812bc2e155356a43da1ee1f34efb3236d14568343": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "/* spring-like (interactive elements) */ --ease-spring cubic-bezier(034 156 064 1)"
+  },
+  "40b60e8e1e24965f0b412b136154e8c1de37ecc48146414132b5bb92cf1322e2": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "/* sharp (dismissal) */ --ease-sharp cubic-bezier(04 00 02 1) ```"
+  },
+  "c7b5a9363173935d51e56ac64901c9cb511f19b91d7c6a40504f8b3aad3fc63d": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 53 animation durations  type ```css /* micro-interactions (hover focus) */ --duration-instant 10..."
+  },
+  "d1ec1fd7dded194ccc8979a4fe032cffc1bb58226268eb2d78c1c6d04bbc6ae4": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "/* component transitions */ --duration-slow 300ms --duration-page 400ms"
+  },
+  "1e416d3be47ef79f7bd58ac4e9a637031bdf21eedd8ecec591741166c46c36c6": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "/* page/view transitions */ --duration-screen 500ms ```"
+  },
+  "db1da429026425ec9f11f08c719cb09e429a1a914d71f28abd46175cc6a6944a": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 54 common animation patterns"
+  },
+  "fbc1a0ba76c0378d147f17b7c646f6b4a88ab7de78e2469e322b2433fe40fa6d": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "#### fade + slide  (cards list items) ```css @keyframes fadeslidein { from { opacity 0 transform tra..."
+  },
+  "d7298b67d54cff2d34145fdda927fd19a1897553eca700ac3fe35b708fa79376": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "#### skeleton shimmer ```css @keyframes shimmer { 0% { transform translatex(-100%) } 100% { transfor..."
+  },
+  "f34c94e5db2aa0a0fd3850d8dde96d088e1dea48da453d51b0d48b2fc6fab7e6": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "#### scale press (buttons) ```css @keyframes press { 0% { transform scale(1) } 50% { transform scale..."
+  },
+  "42134179f6e3d008b6aecd809c09b5bad1badb9e3ed920ab9181898839e16d30": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "#### blur reveal (command palette) ```css @keyframes blurreveal { from { opacity 0 backdrop-filter b..."
+  },
+  "d8893ec0bb891763513bcb6df0e24d9ee7a898232fbf6631ecb423ddd27e4cbc": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "## 6 dark mode best practices"
+  },
+  "9edea1df8a6ed2d93e62f798c31ae5c3b6de925de15443db06548a3303c3eb2b": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 61 why dark mode matters - **user preference** 76%  developers/creatives prefer dark mode (2024 ..."
+  },
+  "9d42f902fbaa7c45054406f40a76154d4391bec0e662f648480c3e15a8e22db8": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 62 dark mode color strategy"
+  },
+  "c8d8a06bcdf8de89249122bc74b8bb2501f21993ba7b0536ed4839af5251afb5": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "#### don't just lighten - recolor ```css /* \u274c wrong simply making it dark */ --bg-dark #ffffff --tex..."
+  },
+  "57791579f9adc0b475069a09bb984d45a4b0690c5e56d5e4ff518e4d67931acb": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "/* \u2705 right intentional dark palette */ --bg-dark #0a0a0b --text-dark #fafafa ```"
+  },
+  "72d492f587938061017d7a04daaedc191ba1ac2ec284d29bcdbcb866aa6b78a7": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "#### elevate  lighter colors ```css /* hierarchy  dark mode */ surface-1 { background #0a0a0b } /* b..."
+  },
+  "6dba0f98e2f6cae03a5af3a8c704e578a2cd2be5cb1ff867e7e446c0e3c0863e": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 63 common dark mode pitfalls"
+  },
+  "c0672b6f5f7cffd1448d43d8e83815ce1908514a78ac6b361aaca0a71fe851b0": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "| pitfall | solution | |---------|----------| | pure black backgrounds (#000) | use near-black (#0a0..."
+  },
+  "ba0fdc8be0c9bf1092ac58957f71f6c84896edffd6b8852d0a3ebe84cc8b17a8": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 64 implementing dark mode"
+  },
+  "40c9e8cee1a93b043fec532d99dbd15f0d9ee6ffa6e59916fc0acebb1790f529": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "#### css custom properties approach ```css root { /* light mode (default) */ --bg-primary #ffffff --..."
+  },
+  "a880f9b5664207b36a57f30850744ce14d6c51d6180b51440f7767eab4bcadd6": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "[data-theme=\"dark\"] { --bg-primary #0a0a0b --bg-secondary #101013 --text-primary #fafafa --text-seco..."
+  },
+  "e5056d1cf1b652c0ff768cbacdcc3eb418b5791651bbad9cc33172e04322c22f": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "#### tailwind dark mode ```javascript // tailwindconfigjs moduleexports = { darkmode 'class' // or '..."
+  },
+  "f1074d4a150f96776133259abbb1f41b33456c47d26c1092776e8a367b7ea8d1": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 65 dark mode toggle - **position** top-right or  user settings - **icon** sun/moon  smooth rotat..."
+  },
+  "f0c72f77b5e3104289f9eb3a8f3091332cb83ebfc7e1f4f0ad28b3b6b35cda07": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "## 7 navigation patterns"
+  },
+  "2ac5dc64aa56bbacf24f1c75a8692b00c51c9a730d946c45996f1f86cd5cb65e": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 71 sidebar navigation (desktop)"
+  },
+  "1a27c829ab94259cf56bdaaede3d43418aa8832c73ba3ef96327d5e56f32272e": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "#### standard sidebar ```css sidebar { width 260px /* expanded */ width 64px /* collapsed */ transit..."
+  },
+  "e37af1d5660e423704a61d7bc312dc909b84a709839600212f911edeab44851d": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "#### navigation item states ```css nav-item { /* default */ color var(--text-secondary) background t..."
+  },
+  "8fdf7502142773c508dd77e7c772ff3b3676099473b890317bb58fd52aa9f02a": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 72 top navigation bar - **height** 56-64px - **elements** logo search notifications user menu - ..."
+  },
+  "be7ce7f6bb75fb9f960044537258daa17c3d642c965726c2e0afaba10d6330f9": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 73 command palette navigation"
+  },
+  "d0c3e9eb12625dbad2683488d366bb7d89c019ed4651a5bc0551e5578a893db1": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "#### structure ```typescript interface commanditem { id string title string subtitle string icon rea..."
+  },
+  "9c5ca52e1b4f086254d26a96d2a1fadbdc11207daeeafbbfe75a6e24049af02d": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "#### ux guidelines - show 6-8 results max scrollable - highlight first result  default - enter  exec..."
+  },
+  "621cc6ec9b59b8488372d53de5aaae3d10f6eaa5ace45f61f5f540acf903f210": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 74 breadcrumb navigation - **format** home / section / current page - **truncation** show first ..."
+  },
+  "428bb524fb0b19f54f197878d58484a4f801d3de3d2725cfedd7bf40b49253f6": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 75 mobile navigation"
+  },
+  "43c068f64e57313acd84480da657670e7bc9372821ce04228b802bba3d35fa12": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "#### bottom tab bar ```css bottom-nav { height 64px + safe-area-inset-bottom background var(--bg-sec..."
+  },
+  "8a12d9366fc7579a76b9b9dc778d8a73fc64471a1bf06a95caad0ffe21cad0c9": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "#### tab bar items ```css tab-item { flex 1 display flex flex-direction column align-items center ga..."
+  },
+  "c330b8c2c9c785d963595f38a6479b6909654c53f5bc0c909254be1860dbd730": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "## 8 component patterns  mission control dashboard"
+  },
+  "d12a09511b1334e93fdfe1e97c35b9c628e247b2b85c57ecd0a52ea9a5e0c446": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 81 kpi card ```tsx <kpicard label=\"total revenue\" value=\"$124563\" change={+125} trend=\"up\" icon=..."
+  },
+  "de5bfe85621d22f1ff4c61394e6bd8dce9063089b15ab6bbac3664f3b35ab226": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 82 data table - **features** sortable columns row selection inline actions - **sticky header** y..."
+  },
+  "9e06d0e9a4e58c00f6369d062e39dd563ba919a894d8cad3cf9c309a34c3d4cc": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 83 chart components - **library recommendations** recharts tremor chartjs - **style** minimal ax..."
+  },
+  "e2658631280e7799985f87f22b4c12363547e3fb386cab7882bf97ea6a245416": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 84 status badge ```css badge { padding 4px 8px border-radius 9999px font-size 12px font-weight 5..."
+  },
+  "ab75f95d0e5e0124bf31d8b20005ad9d5e9639ea4d7ff21efd1024e6987dc167": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "badge-success { background rgba(16 185 129 015) color #10b981 } badge-warning { background rgba(245 ..."
+  },
+  "4a32dda71cb0f4a2f46252ecdbebe1d44218873aa6faf5143a882f86dee08c71": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 85 activity feed - **layout** vertical list newest first - **item height** auto min 48px - **tim..."
+  },
+  "33274c7ad2bb0478d24afd5da5f47b1b7bab1f73a8fea5cf1272b67cb9a818ac": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "## 9 implementation recommendations"
+  },
+  "b411353e1893f8d0c05363f4712ce14d6f0481f1ee53f72cf4884899a1c3fb68": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 91 tech stack - **framework** react nextjs or vue 3 - **styling** tailwind css (recommended) or ..."
+  },
+  "3798b29a73d6c3158ffcb3b4b0b686ec759ad40affaa672d43e72af415fafe08": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 92 shadcn/ui recommendation - built  radix ui (accessible) - tailwind-based (customizable) - dar..."
+  },
+  "153df0ab58da03b0ffaf44f0d0495e2d3cba8236746d0ee826659ec504f17865": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### 93 performance considerations - **virtualization**  long lists (react-window) - **lazy loading**..."
+  },
+  "672dfa5abf36ab0db78c2ad05174ea041a6926f56df3f44a8c1162b6ce5fa46a": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "## 10 quick reference summary"
+  },
+  "a3c1e42a71801850344b75f4df4c864c22da30766e8a1d2d2f543ff637064f3e": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### color summary (dark mode) | purpose | hex code | |---------|----------| | background | #0a0a0b |..."
+  },
+  "4b37609a51624c4765894459f290167bd8f5c52b9838d350f367a048d5eb7356": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### typography summary | element | size | weight | |---------|------|--------| | kpi value | 32-48px..."
+  },
+  "9ba0945bc6a61bb8793091187e01b1e805a01e284e8c4733877b4771c7fa632e": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "### animation summary | type | duration | easing | |------|----------|--------| | hover | 150ms | ea..."
+  },
+  "8bbba3205bf964229ff1b662fd73d2163a63a3941e92250486fed24fc9dc076b": {
+    "first_seen": "research-saas-dashboards",
+    "source": "/root/.openclaw/workspace/memory/research-saas-dashboards.md",
+    "normalized": "*report generated february 2026* *research sources stripe linear raycast height vercel notion design..."
+  },
+  "d0a546362f44ba4221cc23d08106447c8aaa0fae4a33808a5158cc8259374a08": {
+    "first_seen": "2026-02-12",
+    "source": "/root/.openclaw/workspace/memory/2026-02-12.md",
+    "normalized": "# 2026-02-12 - alex finn swarm + minimax mcp + image vision"
+  },
+  "082c44a8256df8c5ffc337754edbc7bbf81c2f3dfd7f87f0c8192fc8896229fe": {
+    "first_seen": "2026-02-12",
+    "source": "/root/.openclaw/workspace/memory/2026-02-12.md",
+    "normalized": "## minimax mcp skill created - built skill  `skills/minimax-mcp/`  vision + web search - uses direct..."
+  },
+  "655901f863603a835533b577aab86be1b4eae3a38247c4b067ad84148494a214": {
+    "first_seen": "2026-02-12",
+    "source": "/root/.openclaw/workspace/memory/2026-02-12.md",
+    "normalized": "## image analysis demo analyzed luxury bedroom fashion ad - scene dark sophisticated bedroom taupe v..."
+  },
+  "ecf82e367c5cffa18a94c27d4b3ae61f061e12fb8e7245d07b920548060ed3f5": {
+    "first_seen": "2026-02-12",
+    "source": "/root/.openclaw/workspace/memory/2026-02-12.md",
+    "normalized": "## alex finn swarm architecture committed  memory - memorymd updated  full swarm method - auto-loads..."
+  },
+  "c5c39108393215957150d73f8b52f3c61096546d7eda5425bc9ddd46710a333f": {
+    "first_seen": "2026-02-12",
+    "source": "/root/.openclaw/workspace/memory/2026-02-12.md",
+    "normalized": "## command center refresh - old version was buggy  minimax 21 - building fresh  kimi swarm integrati..."
+  },
+  "4a7dc7211f2652218ac87c52c53c25597f701c4e4ef402844caf1150fc00a631": {
+    "first_seen": "2026-02-12",
+    "source": "/root/.openclaw/workspace/memory/2026-02-12.md",
+    "normalized": "## command center name - **name** mission control 20 - building fresh  premium saas design (linear/s..."
+  },
+  "4c9934b354f9a8a4a457ec5c620e41abb0814e58ba12bcbf429b25166bf7834f": {
+    "first_seen": "2026-02-12",
+    "source": "/root/.openclaw/workspace/memory/2026-02-12.md",
+    "normalized": "## mission control 20 deployed - **urls** - kimi-built https//command-center-smoky-twovercelapp - ma..."
+  },
+  "128a0cb3d3f99c2a0ee0fa7b5013d5d8ff16fc1f7515ca829e4f967dc929150c": {
+    "first_seen": "2026-02-12",
+    "source": "/root/.openclaw/workspace/memory/2026-02-12.md",
+    "normalized": "## model routing confirmed"
+  },
+  "c17e9c252100c189e03dcaa9085f1e1dddab4b377d17546c8ea4ba43f3b2680e": {
+    "first_seen": "2026-02-12",
+    "source": "/root/.openclaw/workspace/memory/2026-02-12.md",
+    "normalized": "## mission control 20 - connected version - **url** https//command-center-v2-winevercelapp - feature..."
+  },
+  "4845b736d271ed3cdeb92b1a6e82083e53e983701ddbb17e61c036da395667f4": {
+    "first_seen": "2026-02-12",
+    "source": "/root/.openclaw/workspace/memory/2026-02-12.md",
+    "normalized": "## model status - **minimax m25** primary (working 0/300 used) - **kimi swarm** 3 keys works via /ro..."
+  },
+  "179c5bdcf6aa320d553183416812996cd70e4998fd83d1531beb8fdbd202ef9d": {
+    "first_seen": "2026-02-12",
+    "source": "/root/.openclaw/workspace/memory/2026-02-12.md",
+    "normalized": "## todo - **win (chat)** minimax 25 oauth \u2705 - **kimi** 10x nvidia keys (400 rpm total) \u2705 - **fallbac..."
+  },
+  "ea3a7196422afd753d9d1751091ce02964924177da29514408e8619357f838a2": {
+    "first_seen": "2026-02-12",
+    "source": "/root/.openclaw/workspace/memory/2026-02-12.md",
+    "normalized": "## minimax usage - 0 / 300 prompts (fresh cycle) - all good"
+  },
+  "8bc01e91045945855ad95582302641cffb79e405757be9279bb6f4cf9d2c6d27": {
+    "first_seen": "2026-02-08",
+    "source": "/root/.openclaw/workspace/memory/2026-02-08.md",
+    "normalized": "## 2026-02-08 - google workspace oauth complete + toolkit built"
+  },
+  "b35c195184eb48706f48305e99f94fc02e9f6f6aa789698d6185eed1ceb1ab14": {
+    "first_seen": "2026-02-08",
+    "source": "/root/.openclaw/workspace/memory/2026-02-08.md",
+    "normalized": "### oauth authentication - successfully completed google oauth flow  `framelensmedia@gmailcom` - man..."
+  },
+  "454e4209231f7c0511b480c920fdab2392494ac3430dc9aa7806608c8140823f": {
+    "first_seen": "2026-02-08",
+    "source": "/root/.openclaw/workspace/memory/2026-02-08.md",
+    "normalized": "### command board integration - **firebase url** `https//winslow-756c3-default-rtdbfirebaseiocom` - ..."
+  },
+  "e6c78cce012bbf76a2b32e8d06d7f1280ffc1f9fee95f1feba607545b0205294": {
+    "first_seen": "2026-02-08",
+    "source": "/root/.openclaw/workspace/memory/2026-02-08.md",
+    "normalized": "**commands** ```bash # via command center python3 command_centerpy board # list all tasks python3 co..."
+  },
+  "9360bc202adace13494e20fcebffd4196e26c0c4818788f8f73006786a3dc236": {
+    "first_seen": "2026-02-08",
+    "source": "/root/.openclaw/workspace/memory/2026-02-08.md",
+    "normalized": "# direct python3 command_boardpy tasks python3 command_boardpy add \"task name\" \"description\" python3..."
+  },
+  "e50fb9b8ffe05d437a82129021b332a7e774184f522d1ba78339d14865496a3b": {
+    "first_seen": "2026-02-08",
+    "source": "/root/.openclaw/workspace/memory/2026-02-08.md",
+    "normalized": "### google drive backup strategy - **2tb google pro plan** configured  media storage - **github** \u2192 ..."
+  },
+  "7b0557972958929cec9f290e5575644cebfecb08682249cc0b5dcfc908346968": {
+    "first_seen": "2026-02-08",
+    "source": "/root/.openclaw/workspace/memory/2026-02-08.md",
+    "normalized": "### template upload workflow 1 generate templates  seedream4k 2 upload  drive folder `template packs..."
+  },
+  "cbcd6f4cd81ac2262baef083d50460c47b76bf2b9ac43c2aecf068f529a935f5": {
+    "first_seen": "2026-02-08",
+    "source": "/root/.openclaw/workspace/memory/2026-02-08.md",
+    "normalized": "### brain dump notes system - **location** google docs (`ai skills studio - brain dumps`) - **script..."
+  },
+  "884d309c419a0cff2499e2b004fa4c759c08499324d8a9ce80db528b3f3ea834": {
+    "first_seen": "2026-02-08",
+    "source": "/root/.openclaw/workspace/memory/2026-02-08.md",
+    "normalized": "### workflow 1 brain dump anytime \u2192 https//docsgooglecom/document/d/1pusg5vfyvp8e78j3qxpgip19dlpevko..."
+  },
+  "7d3ff13babd8c8c84b17cf801958ca648f64dc1b6613b8ae05dca53a471028d4": {
+    "first_seen": "2026-02-08",
+    "source": "/root/.openclaw/workspace/memory/2026-02-08.md",
+    "normalized": "### github push issue resolved - initial push blocked due  embedded oauth secrets  code - fixed  loa..."
+  },
+  "4f78982d8be03daae329c5351963a40b87670fdf13ff07f215674da73400f3b3": {
+    "first_seen": "2026-02-08",
+    "source": "/root/.openclaw/workspace/memory/2026-02-08.md",
+    "normalized": "### key technical notes - api scopes configured  all required services - token auto-refresh implemen..."
+  },
+  "7f3f7c11b7352ec12c0ba3f49120277e4e05e3071e6bdf54b77ff062841885c0": {
+    "first_seen": "2026-02-13",
+    "source": "/root/.openclaw/workspace/memory/2026-02-13.md",
+    "normalized": "# 2026-02-13 - winslow working log"
+  },
+  "6f2fb6a5bb7efb0ab0a6141874829995cb0013e5761cc9b75983c38ede7a4375": {
+    "first_seen": "2026-02-13",
+    "source": "/root/.openclaw/workspace/memory/2026-02-13.md",
+    "normalized": "## mission control v3 (fresh build) - **url** https//mission-control-v3-winslowvercelapp - **tech** ..."
+  },
+  "3c27976820057528b3ba8865bdba1e60bf26665d0e245cc58a09611febf47cd1": {
+    "first_seen": "2026-02-13",
+    "source": "/root/.openclaw/workspace/memory/2026-02-13.md",
+    "normalized": "## features live 1 **mobile kanban** horizontal scroll drag-and-drop (reordering + cross-column) 2 *..."
+  },
+  "bd43952c4a7bb431a4dd5183c55b2cd96d8d67583b9d5ca071e66b221ddb4702": {
+    "first_seen": "2026-02-13",
+    "source": "/root/.openclaw/workspace/memory/2026-02-13.md",
+    "normalized": "## issues fixed - kanban jitter (reordering vs dragging conflict) - drop  new column  desktop - text..."
+  },
+  "9214c2c9f4d5f1faa94adb332119d6f377073040c4c333c282c641cceaef0dc5": {
+    "first_seen": "2026-02-13",
+    "source": "/root/.openclaw/workspace/memory/2026-02-13.md",
+    "normalized": "## quick commands - **deploy** `cd /root/openclaw/workspace/mission-control-v3 && npm run build && n..."
+  },
+  "6fef991ed5ca224e2945dc7004be55354dc26e6368569ef11c8eb9b855c094b5": {
+    "first_seen": "2026-02-13",
+    "source": "/root/.openclaw/workspace/memory/2026-02-13.md",
+    "normalized": "## current status - mission control v3 is live and stable - minimax usage 0/300 prompts (clean slate..."
+  },
+  "a5e49ad19cdacdbdca670166b1c8698c03ca11d27bca1790c9b1a133691a38b9": {
+    "first_seen": "2026-02-06",
+    "source": "/root/.openclaw/workspace/memory/2026-02-06.md",
+    "normalized": "# session update - 2026-02-06 (continued)"
+  },
+  "40f16be1bb0614c9d004f697874a8cd62aa82bf31309ee2d63610a43298dcf86": {
+    "first_seen": "2026-02-06",
+    "source": "/root/.openclaw/workspace/memory/2026-02-06.md",
+    "normalized": "## server deployment - affiliate system"
+  },
+  "ce450ba22235c9e2f2bab7936c42cfa6e247b15c2b2486408c34eaca88dc000f": {
+    "first_seen": "2026-02-06",
+    "source": "/root/.openclaw/workspace/memory/2026-02-06.md",
+    "normalized": "### \u2705 server status online - **url** http//14793401885000 - **type** affiliate tracking system (flas..."
+  },
+  "520b5123da81343a9ac6098fa9b5a4391c66f86c654ff5730497895c0465399b": {
+    "first_seen": "2026-02-06",
+    "source": "/root/.openclaw/workspace/memory/2026-02-06.md",
+    "normalized": "### \ud83d\udcca endpoints available"
+  },
+  "d18a1b21ae567637baab8d89a6c34684a70f5a45cb96c61a6a1c5a03d8038baf": {
+    "first_seen": "2026-02-06",
+    "source": "/root/.openclaw/workspace/memory/2026-02-06.md",
+    "normalized": "**api endpoints** - post `/api/affiliate/register` - register new affiliate - get `/api/affiliate/{i..."
+  },
+  "47469121ce3b8b326c21417cd238b45b0720c04af8c19bebc7191538b183728f": {
+    "first_seen": "2026-02-06",
+    "source": "/root/.openclaw/workspace/memory/2026-02-06.md",
+    "normalized": "**dashboard** - get `/dashboard/{affiliate_id}` - affiliate dashboard"
+  },
+  "5425872e9580584383820f29d120a44a0a058854b238338f8f8cbb93e609a282": {
+    "first_seen": "2026-02-06",
+    "source": "/root/.openclaw/workspace/memory/2026-02-06.md",
+    "normalized": "### \ud83e\uddea test results successfully registered test affiliate - affiliate id 2 - referral code `demoaffi..."
+  },
+  "3b8968321ffd7cf42a685f1282f14d983778f9a14b3d8268f8d3e06dd8af96fe": {
+    "first_seen": "2026-02-06",
+    "source": "/root/.openclaw/workspace/memory/2026-02-06.md",
+    "normalized": "### \ud83d\udee0\ufe0f tech stack - python flask - sqlite database (affiliatesdb) - virtual environment (venv) - bac..."
+  },
+  "cd019bba11025b951766ad7385ad1f8ae9c57b0c3b1c4fca3e7b1b20641ce024": {
+    "first_seen": "2026-02-06",
+    "source": "/root/.openclaw/workspace/memory/2026-02-06.md",
+    "normalized": "### \ud83d\udcdd commands  manage server ```bash # check if running ps aux | grep affiliate_system"
+  },
+  "7b7bb7a9e5caf0ed0e0a07f9e2a572cba75c4365570ccfaad13ca2f61c78de44": {
+    "first_seen": "2026-02-06",
+    "source": "/root/.openclaw/workspace/memory/2026-02-06.md",
+    "normalized": "# view logs tail -f /tmp/affiliate_serverlog"
+  },
+  "954e790476c0add97ec1a36c18b1abe7e178002b8ca419252c572f799c1f9355": {
+    "first_seen": "2026-02-06",
+    "source": "/root/.openclaw/workspace/memory/2026-02-06.md",
+    "normalized": "# restart cd /root/openclaw/workspace/tools source venv/bin/activate pkill -f affiliate_system pytho..."
+  },
+  "e568794f617536dadbda9bcff1a078bfb7cb71eef9981d4baf2efb018951ba6b": {
+    "first_seen": "2026-02-06",
+    "source": "/root/.openclaw/workspace/memory/2026-02-06.md",
+    "normalized": "# test api curl http//localhost5000/api/affiliate/1 curl http//localhost5000/dashboard/1 ```"
+  },
+  "2b78c2361aad1ab3903c2c12de5854adccd44c369b981fceaad3c32ecb75f5fa": {
+    "first_seen": "2026-02-06",
+    "source": "/root/.openclaw/workspace/memory/2026-02-06.md",
+    "normalized": "### \ud83d\udd10 next steps 1 set up reverse proxy (nginx)  port 80/443 2 configure domain (affiliatesai-skills..."
+  },
+  "7795b0ad2b13de99f416a285c540418d8f0f909d01e4eca8f3dceace009335c3": {
+    "first_seen": "2026-02-06",
+    "source": "/root/.openclaw/workspace/memory/2026-02-06.md",
+    "normalized": "### \ud83d\udcc1 related files - `/root/openclaw/workspace/tools/affiliate_systempy` - `/root/openclaw/workspac..."
+  },
+  "a524c17dbb66d9f533bee1f2293641da870440d4089059a776ec1ba979667259": {
+    "first_seen": "2026-02-04",
+    "source": "/root/.openclaw/workspace/memory/2026-02-04.md",
+    "normalized": "# session log 2026-02-04"
+  },
+  "c2d2ad01df8a41233081ea08a7447619cd9ab4631ec1b7a1e2327ae5a04ac578": {
+    "first_seen": "2026-02-04",
+    "source": "/root/.openclaw/workspace/memory/2026-02-04.md",
+    "normalized": "## major accomplishments"
+  },
+  "ade2e36a0fa0efa99d51daa8efe02d7ead56ce4bcb4bd9ffd8a7885e653db63b": {
+    "first_seen": "2026-02-04",
+    "source": "/root/.openclaw/workspace/memory/2026-02-04.md",
+    "normalized": "### 1 infrastructure complete - \u2705 google drive integration via `gog` skill (winslowdeveloper974@gmai..."
+  },
+  "31cdd438769128ca1150d1435772a0df246511f171e7e136a76b62c0f997b410": {
+    "first_seen": "2026-02-04",
+    "source": "/root/.openclaw/workspace/memory/2026-02-04.md",
+    "normalized": "### 2 template factory operational created **20+ templates** across 4 packs - **luxury beauty collec..."
+  },
+  "704f25680b0dc8d847f5d87bf51e34cb36d2f2658b62989fdeb3d8fbdcf28c21": {
+    "first_seen": "2026-02-04",
+    "source": "/root/.openclaw/workspace/memory/2026-02-04.md",
+    "normalized": "all uploaded  cms as drafts  approval"
+  },
+  "e89f0e4e5e101554dd604e20520ddaaf708cb9139c4b69443f84802fa9fc6c06": {
+    "first_seen": "2026-02-04",
+    "source": "/root/.openclaw/workspace/memory/2026-02-04.md",
+    "normalized": "### 3 command board v30  firebase - real-time sync across devices - offline support  localstorage fa..."
+  },
+  "a2ce809079975f4d9729a1fbe7388c25bfd83244eaac21d344aadb3be42bdff2": {
+    "first_seen": "2026-02-04",
+    "source": "/root/.openclaw/workspace/memory/2026-02-04.md",
+    "normalized": "### 4 github repo structure - github cli installed - git repo initialized  skills - github integrati..."
+  },
+  "98fc64bad1a59ce9110340033dde6ed4bd50e527cb68efc73a9f9a7aef8898d1": {
+    "first_seen": "2026-02-04",
+    "source": "/root/.openclaw/workspace/memory/2026-02-04.md",
+    "normalized": "### 5 automation tools - `create_packpy` - one-command pack + thumbnail generation - api integration..."
+  },
+  "98a068d3f5b14cab08661961151a4e8e14374f0df3ab07e6ea67169f52e24b74": {
+    "first_seen": "2026-02-04",
+    "source": "/root/.openclaw/workspace/memory/2026-02-04.md",
+    "normalized": "## key learnings - seedream v45 via falai ~$0003/image vs more expensive models - full-bleed designs..."
+  },
+  "4abdf805d71bc23f8569b739f6e8b98a49fdc6915e0ac9e94a08123f26febe2e": {
+    "first_seen": "2026-02-04",
+    "source": "/root/.openclaw/workspace/memory/2026-02-04.md",
+    "normalized": "## next steps - connect firebase project  command board - push github repo - generate more template ..."
+  },
+  "93a1bbc20b3b53af61bf8cd76daf370cabeef0cb8fc2436fe1d4934458f39def": {
+    "first_seen": "2026-02-10",
+    "source": "/root/.openclaw/workspace/memory/2026-02-10.md",
+    "normalized": "# 2026-02-10 - mission control firebase + free gemini models"
+  },
+  "eca0d08445dbf96172f9b8605f9150344a23d08c780f3193dcab162594b42d71": {
+    "first_seen": "2026-02-10",
+    "source": "/root/.openclaw/workspace/memory/2026-02-10.md",
+    "normalized": "## mission control fixes - **fixed localstorage issue** tasks were saving locally instead  firebase ..."
+  },
+  "3632ff8c10889b4399717afa70a6b30c3546006f591fbca66558dcd7820195c1": {
+    "first_seen": "2026-02-10",
+    "source": "/root/.openclaw/workspace/memory/2026-02-10.md",
+    "normalized": "## firebase integration details - real-time sync across devices - connection status indicator (conne..."
+  },
+  "81220600dfb2a9a6ad8348caa36043568513c446c4296ff59cdfe75f3aeec49e": {
+    "first_seen": "2026-02-10",
+    "source": "/root/.openclaw/workspace/memory/2026-02-10.md",
+    "normalized": "## google models discovery - **issue found** `google_ai_studiokey` contains placeholder `your_gemini..."
+  },
+  "7db31f9b684d143351b80816a8e6440e499d9b0e51374edb2ac886065434722f": {
+    "first_seen": "2026-02-10",
+    "source": "/root/.openclaw/workspace/memory/2026-02-10.md",
+    "normalized": "## minimax usage tracking (added 0024 utc) - **tracker script** `/root/openclaw/workspace/minimax-tr..."
+  },
+  "d8095f6b31f4023ccbdc5024066dd34796cabc2b6c005f453d9da71d9da6d5f7": {
+    "first_seen": "2026-02-10",
+    "source": "/root/.openclaw/workspace/memory/2026-02-10.md",
+    "normalized": "**current status** 1 prompt / 300 (299 remaining) - tokens  24 - tokens out 526"
+  },
+  "600e15279318647e3a82160a163cf9c179ae459370ea51baab2b32e7771c906a": {
+    "first_seen": "2026-02-10",
+    "source": "/root/.openclaw/workspace/memory/2026-02-10.md",
+    "normalized": "## available free google models 1 **gemini 15 flash** - fast generous free tier (15 req/min 1m token..."
+  },
+  "dd9e1c60f2206fe6658434503d7f8f47ddae842dea55ebed6505edaaa2765dba": {
+    "first_seen": "2026-02-10",
+    "source": "/root/.openclaw/workspace/memory/2026-02-10.md",
+    "normalized": "## next steps - add google ai studio api key  `/root/openclaw/workspace/keys/google_ai_studiokey` - ..."
+  },
+  "cf1dd1c22dcdc7c78e7c65a86b35f1b9dc8c0aca781aaa6c1ebf43b9d7358fc2": {
+    "first_seen": "2026-02-10",
+    "source": "/root/.openclaw/workspace/memory/2026-02-10.md",
+    "normalized": "## connections - telegram @theblockchaintrapper (id 1234548067) curl workaround operational - whatsa..."
+  },
+  "ee09fa949b250bd7358a6ef3602216306a747f31b65a969733a104bd0d8e9aae": {
+    "first_seen": "behance-inspiration",
+    "source": "/root/.openclaw/workspace/memory/behance-inspiration.md",
+    "normalized": "# behance website design inspiration"
+  },
+  "90050485656d92b628584ee5d317336922d8ec6f23b83566629c3ef78bb00791": {
+    "first_seen": "behance-inspiration",
+    "source": "/root/.openclaw/workspace/memory/behance-inspiration.md",
+    "normalized": "## top website design trends (2026)"
+  },
+  "61595130476969ae27758db5e3ce6d1a3992bfb08b8789e032725477ccb6628f": {
+    "first_seen": "behance-inspiration",
+    "source": "/root/.openclaw/workspace/memory/behance-inspiration.md",
+    "normalized": "### popular projects  reference - **agency sites** nymera naau agency 30 reload waxyweb - **fintech*..."
+  },
+  "c367caa892b673fe7a547408a540b4c14f60c8d865c6243b59b81dc92eaac2ac": {
+    "first_seen": "behance-inspiration",
+    "source": "/root/.openclaw/workspace/memory/behance-inspiration.md",
+    "normalized": "### design elements  incorporate - bold typography (boss|own it|power style) - dark themes  accent c..."
+  },
+  "538c882e92030f61e4627279f077bd65a3a28b0a3e795c3adcde667ff8cc4399": {
+    "first_seen": "behance-inspiration",
+    "source": "/root/.openclaw/workspace/memory/behance-inspiration.md",
+    "normalized": "### inspiration sites - https//wwwbehancenet/search/projects/website%20design"
+  },
+  "9f0db135a1a172f3eb505cd02109f4f5d331c92c13cb9dac34fde866e88e90e3": {
+    "first_seen": "2026-02-15",
+    "source": "/root/.openclaw/workspace/memory/2026-02-15.md",
+    "normalized": "## workflow engine v2 - rebuilt from scratch"
+  },
+  "3ccf45a72a2b7e4310489654c183093ed9881dd0959d558291063569a27d4241": {
+    "first_seen": "2026-02-15",
+    "source": "/root/.openclaw/workspace/memory/2026-02-15.md",
+    "normalized": "### what we did - rebuilt custom workflow engine (`workflow_v2py`)  fix threading issues - uses kimi..."
+  },
+  "a09319e8bed2f43dab5d19db703873bf107e47cd58a4e8fbbb174bc9832b03d3": {
+    "first_seen": "2026-02-15",
+    "source": "/root/.openclaw/workspace/memory/2026-02-15.md",
+    "normalized": "### key fixes - changed from threading  synchronous execution (more reliable) - fixed api key loadin..."
+  },
+  "0b9ddcaa981e9d1fd04342868a8aa79a776e1b25f5a200f3bc1a08fa10ec3edb": {
+    "first_seen": "2026-02-15",
+    "source": "/root/.openclaw/workspace/memory/2026-02-15.md",
+    "normalized": "### current status (0012 utc) - server running  port 3334 - activity page https//custom-workflows-du..."
+  },
+  "3fe8bdb139b7881b03e592bace8b06a1a1a167afd6c266a42b7a50d0773324ec": {
+    "first_seen": "2026-02-15",
+    "source": "/root/.openclaw/workspace/memory/2026-02-15.md",
+    "normalized": "### issues - kimi api extremely unstable - rate limited frequently - glm also rate limited after tes..."
+  },
+  "905351aadfcdbf88460c09a2c362808e953ab3d495c7c4a8ede7bb4f05888d28": {
+    "first_seen": "2026-02-15",
+    "source": "/root/.openclaw/workspace/memory/2026-02-15.md",
+    "normalized": "### files - `/root/openclaw/workspace/custom-workflows/workflow_v2py` - main engine - `/root/opencla..."
+  },
+  "180e8c660cd7d331083633af975ccae2760024e662553681155be1dc3ff437ad": {
+    "first_seen": "2026-02-15",
+    "source": "/root/.openclaw/workspace/memory/2026-02-15.md",
+    "normalized": "### mission control updates - removed footer menu - added horizontal tab nav  top - activity tab emb..."
+  },
+  "0dd8672d75364404d96cdbb5edcd30df4f9b06bf5b89898206ed4af731b78f44": {
+    "first_seen": "2026-02-15",
+    "source": "/root/.openclaw/workspace/memory/2026-02-15.md",
+    "normalized": "## openai embeddings discussion (2026-02-16) - bobby asked about openai embeddings - used  semantic ..."
+  },
+  "74e8e2f83046bbe47e50d189990f49bffec133b45aae95835bb7e3c314795b23": {
+    "first_seen": "2026-02-15",
+    "source": "/root/.openclaw/workspace/memory/2026-02-15.md",
+    "normalized": "- bobby getting openai api key  embeddings - will enable reliable memory_search - need  add key  con..."
+  },
+  "4dba8ae42ee2b378c8ca2db6d268d61b950f8959578ab0870c24fe8e8b4ecbbe": {
+    "first_seen": "2026-02-21",
+    "source": "/root/.openclaw/workspace/memory/2026-02-21.md",
+    "normalized": "# 2026-02-21 daily notes"
+  },
+  "15fda4947b22b7392542bf8f89bfa0c22be0397688268e0a2112aa242b240ec2": {
+    "first_seen": "session-handoff",
+    "source": "/root/.openclaw/workspace/memory/session-handoff.md",
+    "normalized": "# session handoff (temporary)"
+  },
+  "ede63b5557fcdf803ca52c2fdf54736a9a37984bf060dbd20557c1df841373e2": {
+    "first_seen": "session-handoff",
+    "source": "/root/.openclaw/workspace/memory/session-handoff.md",
+    "normalized": "_last updated 2026-02-17 utc_"
+  },
+  "84603ab2cd86862576da682a553a4ab6b39b8edc86a21f401d5b34b6175ada10": {
+    "first_seen": "session-handoff",
+    "source": "/root/.openclaw/workspace/memory/session-handoff.md",
+    "normalized": "## 1) current objective - define and enforce  no-limit model routing strategy  mission control clean..."
+  },
+  "3c2e20ab10886c5c81556af642ee1be4ab73bdef8724c788ba0e637ecd97cd66": {
+    "first_seen": "session-handoff",
+    "source": "/root/.openclaw/workspace/memory/session-handoff.md",
+    "normalized": "## 2) decisions made - backup policy changed  keep only  latest backup artifact - standard model str..."
+  },
+  "f30d14431d7cb73a895481963848abf758d25e904425963ceb78ee390dc24bbf": {
+    "first_seen": "session-handoff",
+    "source": "/root/.openclaw/workspace/memory/session-handoff.md",
+    "normalized": "## 3) completed - updated `/root/openclaw/workspace/backupsh` retention from 24 backups  1 - added c..."
+  },
+  "150636bf28b2a089e6cb8b16c1ba8ddf05b712e8f1670db38b5574d134eed26b": {
+    "first_seen": "session-handoff",
+    "source": "/root/.openclaw/workspace/memory/session-handoff.md",
+    "normalized": "## 4) open tasks - convert model routing into concrete mission control task matrix (lanes + ownershi..."
+  },
+  "b9974ec3eb0d21f0667433a76b0fbc9d138953413008435fdc76e51085190b4d": {
+    "first_seen": "session-handoff",
+    "source": "/root/.openclaw/workspace/memory/session-handoff.md",
+    "normalized": "## 5) exact next step - build  router policy document  explicit \"if/then\" dispatch rules and task la..."
+  },
+  "78bc402681ba6c078a719bafef970343f46c0ff5f26ffd220948811675c1cb90": {
+    "first_seen": "2026-02-14",
+    "source": "/root/.openclaw/workspace/memory/2026-02-14.md",
+    "normalized": "## mission control v3 - mobile touch fixes"
+  },
+  "e99909e0d1e7ef817ae29550bb8a4b9912b6c10f6982b9ffed7c9ca5ea576dd1": {
+    "first_seen": "2026-02-14",
+    "source": "/root/.openclaw/workspace/memory/2026-02-14.md",
+    "normalized": "### problem only hub/dashboard page worked  mobile other pages (kanban drive config) didn't scroll o..."
+  },
+  "a58a9c2f6c1e447d3c0084665a4267164f832cdfec345a42522278fb1c81a24e": {
+    "first_seen": "2026-02-14",
+    "source": "/root/.openclaw/workspace/memory/2026-02-14.md",
+    "normalized": "### root causes found & fixed"
+  },
+  "3674b0211278fcbc74cd9bed60b74c2bc9510b8e0f5adab9de9749672e06bb06": {
+    "first_seen": "2026-02-14",
+    "source": "/root/.openclaw/workspace/memory/2026-02-14.md",
+    "normalized": "1 **indexhtml inline styles** - had `overflow hidden`  html body #root and body class - fixed remove..."
+  },
+  "6a2ea55b27bd9bb24d1911531c07629541d846ecbdc5365a164eebf4d57e2ca8": {
+    "first_seen": "2026-02-14",
+    "source": "/root/.openclaw/workspace/memory/2026-02-14.md",
+    "normalized": "2 **indexcss** - had `overflow hidden position fixed`  body - fixed changed  `overflow auto -webkit-..."
+  },
+  "512c475568e331ca620004efa3831e248083c21573ee7e46fc82c456a51d5694": {
+    "first_seen": "2026-02-14",
+    "source": "/root/.openclaw/workspace/memory/2026-02-14.md",
+    "normalized": "3 **kanbanjsx** - had `overflow-y-hidden`  scroll container - fixed changed  `overflow-auto` (allows..."
+  },
+  "ea98755fbe256e302d065b6533bc10f859754cdf9a2c1b0526527b2695806afd": {
+    "first_seen": "2026-02-14",
+    "source": "/root/.openclaw/workspace/memory/2026-02-14.md",
+    "normalized": "### files modified - `/root/openclaw/workspace/mission-control-v3/indexhtml` - `/root/openclaw/works..."
+  },
+  "2a669c604b094ee48446b990c8e58cb3353a336ec54dc92aa173454d7d2a933c": {
+    "first_seen": "2026-02-14",
+    "source": "/root/.openclaw/workspace/memory/2026-02-14.md",
+    "normalized": "### deployment - url https//mission-control-v3-pearlvercelapp"
+  },
+  "8a328eda8fa577d8570861250b4b73e56c7ad28da8fa1b24d65c7ce2bca94065": {
+    "first_seen": "2026-02-14",
+    "source": "/root/.openclaw/workspace/memory/2026-02-14.md",
+    "normalized": "### minimax usage - 0/300 prompts (all clear)"
+  },
+  "ebdd432183d8ceeac3a4c5d38ae3dbd2022708ae4114aff60b1ad386b4de36ff": {
+    "first_seen": "2026-02-11",
+    "source": "/root/.openclaw/workspace/memory/2026-02-11.md",
+    "normalized": "# 2026-02-11 - mission control mobile fixes"
+  },
+  "5fcf469194b22427fd031c93955d9d9d7c0f2c360094a723533e4d85fb65c5e7": {
+    "first_seen": "2026-02-11",
+    "source": "/root/.openclaw/workspace/memory/2026-02-11.md",
+    "normalized": "## mobile touch drag & scroll issues fixed"
+  },
+  "b926b111ced90997d518cc8d119f1a60f7d403c00e06381b19bed7fec30b7957": {
+    "first_seen": "2026-02-11",
+    "source": "/root/.openclaw/workspace/memory/2026-02-11.md",
+    "normalized": "### problems solved 1 **vertical scroll blocking** - cards were moving instead  scrolling 2 **touch ..."
+  },
+  "2c5c68478940aa5773fb812751878a241761e67fcce72d438af0d44fd8f95aab": {
+    "first_seen": "2026-02-11",
+    "source": "/root/.openclaw/workspace/memory/2026-02-11.md",
+    "normalized": "### technical fixes applied - removed `epreventdefault()` from touch handlers (was blocking scroll) ..."
+  },
+  "82b7a072f7cfadda8f212f3f85f311b15cbe3114e7a005f3c71e59246b175e01": {
+    "first_seen": "2026-02-11",
+    "source": "/root/.openclaw/workspace/memory/2026-02-11.md",
+    "normalized": "### context cleanup - reduced core context files from ~6900 tokens  ~750 tokens (89% reduction) - cr..."
+  },
+  "3cf372ed72597f129fc62353e6b6d4f9ec21093d6306527c37d1fc776d515de1": {
+    "first_seen": "2026-02-11",
+    "source": "/root/.openclaw/workspace/memory/2026-02-11.md",
+    "normalized": "### key lessons - native html5 drag-drop works  desktop touch needs custom handlers - `touch-action ..."
+  },
+  "b3684b4187b0c58b4a770138c2b064f163c6a60db609affc77157d5a629a8610": {
+    "first_seen": "2026-02-11",
+    "source": "/root/.openclaw/workspace/memory/2026-02-11.md",
+    "normalized": "### deploy url - https//ai-skills-workspacevercelapp - firebase sync  `winslow-756c3-default-rtdb`"
+  },
+  "70266e7a5686ad18de992ae7e8f5d9aa221fb035612eb5931ec28e61e18aef11": {
+    "first_seen": "mission-control-briefing-2026-02-19",
+    "source": "/root/.openclaw/workspace/memory/mission-control-briefing-2026-02-19.md",
+    "normalized": "# morning briefing \u2014 2026-02-19 (730 am est)"
+  },
+  "abb6d155ffb879be154d9325675e2428d410001e969e2671f2b981840f4d3bcd": {
+    "first_seen": "mission-control-briefing-2026-02-19",
+    "source": "/root/.openclaw/workspace/memory/mission-control-briefing-2026-02-19.md",
+    "normalized": "## 1) top tech/ai news - reliance announced  **$110b ai investment plan**  multi-gigawatt data cente..."
+  },
+  "0543c39c0a718a7100f60a98cd025f24a231aad2ae68323cdf767c5d87f95699": {
+    "first_seen": "mission-control-briefing-2026-02-19",
+    "source": "/root/.openclaw/workspace/memory/mission-control-briefing-2026-02-19.md",
+    "normalized": "## 2) financing + stock market movers - **walmart** posted strong holiday growth but forward earning..."
+  },
+  "49b47672a8fb849e51504c6fb56d2bcc9ce2d24439df9075d8e82bf06a27865d": {
+    "first_seen": "mission-control-briefing-2026-02-19",
+    "source": "/root/.openclaw/workspace/memory/mission-control-briefing-2026-02-19.md",
+    "normalized": "## 3) crypto market headlines - coindesk daybook sentiment is cautious \"markets feel  chill\"  l2 lan..."
+  },
+  "ce23dd511d4a1213d1eb1b947e369574f3c2858a3c0e69b2731adcc81b92cd9a": {
+    "first_seen": "mission-control-briefing-2026-02-19",
+    "source": "/root/.openclaw/workspace/memory/mission-control-briefing-2026-02-19.md",
+    "normalized": "## 4) atlanta weather - current snapshot **\u26c5 +17\u00b0c** (wttrin)"
+  },
+  "0c44bee158bcdc5584e7ffc42344a3bb04935ce8daa03791923d3e96cb4d9406": {
+    "first_seen": "mission-control-briefing-2026-02-19",
+    "source": "/root/.openclaw/workspace/memory/mission-control-briefing-2026-02-19.md",
+    "normalized": "## 5) top entrepreneur/business/finance tweets (key voices) - public indexed x data was partially ac..."
+  },
+  "0a22547fa97fbdab27d9a266b4421e7b46a1f468b479c06e5cf95159bb31d698": {
+    "first_seen": "mission-control-briefing-2026-02-19",
+    "source": "/root/.openclaw/workspace/memory/mission-control-briefing-2026-02-19.md",
+    "normalized": "## what matters  ai skills studio growth today (3 moves) 1 **ship one credibility asset today** publ..."
+  },
+  "f2db20113968884ea0d68636c20173adda817f5b7438db6fee36d11907f8ab61": {
+    "first_seen": "mission-control-briefing-2026-02-19",
+    "source": "/root/.openclaw/workspace/memory/mission-control-briefing-2026-02-19.md",
+    "normalized": "--- sources used techcrunch rss cnbc us top news rss coindesk rss wttrin atlanta brave web index  x ..."
+  }
+}

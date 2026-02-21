@@ -9,8 +9,8 @@ import json
 import requests
 
 # Config
-OPENROUTER_KEY = open('/root/.openclaw/workspace/.keys/openrouter.key').read().strip()
-CODEX_MODEL = "openai/codex"
+OPENROUTER_KEY = open('/root/.openclaw/workspace/.keys/openrouter.key').readline().strip()
+CODEX_MODEL = "openai/gpt-5.2-codex"
 BASE_URL = "https://openrouter.ai/api/v1"
 
 headers = {

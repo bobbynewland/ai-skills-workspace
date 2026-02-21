@@ -1,0 +1,61 @@
+{
+  "name": "Bold Fashion V4 - NEON NOIR",
+  "type": "template_pack",
+  "category": "Fashion & Lifestyle",
+  "dimensions": {
+    "width": 1024,
+    "height": 1280
+  },
+  "layers": [
+    {
+      "id": "background",
+      "type": "background",
+      "name": "Dark Concrete with Neon Accents",
+      "description": "Dark concrete texture with hot pink and lime neon gradient overlay"
+    },
+    {
+      "id": "hero",
+      "type": "hero_image",
+      "name": "Latina Female Model",
+      "description": "Fierce Latina model on left side, urban edgy aesthetic"
+    },
+    {
+      "id": "headline",
+      "type": "text",
+      "name": "OWN IT Headline",
+      "description": "Massive italic sans-serif typography 'OWN IT' on right"
+    },
+    {
+      "id": "subheadline",
+      "type": "text",
+      "name": "LIMITED DROP Subhead",
+      "description": "Subheadline 'LIMITED DROP' below headline"
+    },
+    {
+      "id": "cta",
+      "type": "cta",
+      "name": "GET YOURS Button",
+      "description": "Solid style 'GET YOURS' button"
+    },
+    {
+      "id": "accents",
+      "type": "graphic",
+      "name": "Electric Blue Neon Lines",
+      "description": "Diagonal geometric lines with electric blue neon"
+    },
+    {
+      "id": "contact",
+      "type": "footer",
+      "name": "Contact Info",
+      "description": "Website URL and hashtag"
+    }
+  ],
+  "variations": 3,
+  "layout": "hero-left-text-right",
+  "editable_fields": {
+    "headline_text": "OWN IT",
+    "subheadline_text": "LIMITED DROP",
+    "cta_text": "GET YOURS",
+    "cta_style": "solid"
+  }
+}

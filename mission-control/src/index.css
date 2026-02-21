@@ -268,3 +268,57 @@ body {
   transition: all 0.2s ease;
 }
 .grid-card:hover { border-color: rgba(139, 92, 246, 0.4); transform: translateY(-2px); }
+
+/* Command Center New Styles */
+.health-card {
+  background: rgba(31, 41, 55, 0.6);
+  border: 1px solid rgba(55, 65, 81, 0.4);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  transition: all 0.2s ease;
+}
+.health-card:hover { border-color: rgba(139, 92, 246, 0.4); }
+
+.key-card {
+  background: rgba(31, 41, 55, 0.6);
+  border: 1px solid rgba(55, 65, 81, 0.4);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  transition: all 0.2s ease;
+}
+.key-card:hover { border-color: rgba(139, 92, 246, 0.4); }
+
+.client-card {
+  background: rgba(31, 41, 55, 0.6);
+  border: 1px solid rgba(55, 65, 81, 0.4);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.client-card:hover { border-color: rgba(139, 92, 246, 0.4); transform: translateY(-2px); }
+
+.project-card {
+  background: rgba(31, 41, 55, 0.6);
+  border: 1px solid rgba(55, 65, 81, 0.4);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  transition: all 0.2s ease;
+}
+.project-card:hover { border-color: rgba(139, 92, 246, 0.4); }
+
+.deployment-card {
+  background: rgba(31, 41, 55, 0.6);
+  border: 1px solid rgba(55, 65, 81, 0.4);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  transition: all 0.2s ease;
+}
+.deployment-card:hover { border-color: rgba(139, 92, 246, 0.4); }
+
+.status-badge.active { background: rgba(52, 211, 153, 0.15); color: #34d399; }
+.status-badge.paused { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
+.status-badge.prospect { background: rgba(96, 165, 250, 0.15); color: #60a5fa; }
+.status-badge.healthy { background: rgba(52, 211, 153, 0.15); color: #34d399; }
+.status-badge.warning { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
+.status-badge.error { background: rgba(239, 68, 68, 0.15); color: #ef4444; }

@@ -1,0 +1,32 @@
+#!/bin/bash
+# GLM-5 Swarm - Load balancer across multiple Modal API keys
+
+KEYS_DIR="/root/.openclaw/workspace/.keys"
+ENDPOINT="https://api.us-west-2.modal.direct/v1/chat/completions"
+MODEL="zai-org/GLM-5-FP8"
+
+# Get all GLM keys (from glm.key file, one per line)
+ALL_KEYS=$(grep "^modalresearch" "$KEYS_DIR"/glm.key 2>/dev/null | sort -u)
+
+KEY_COUNT=$(echo "$ALL_KEYS" | wc -w)
+
+if [ -z "$ALL_KEYS" ]; then
+    echo "No GLM keys found!"
+    exit 1
+fi
+
+# Round-robin select
+SELECT_NUM=$(( ($$ % KEY_COUNT) + 1))
+SELECTED_KEY=$(echo "$ALL_KEYS" | sed -n "${SELECT_NUM}p")
+
+echo "GLM Keys: $KEY_COUNT | Using key #$SELECT_NUM"
+
+if [ -z "$1" ]; then
+    echo "Usage: GLM5 'prompt here'"
+    exit 1
+fi
+
+curl -s --max-time 120 -X POST "$ENDPOINT" \
+    -H "Authorization: Bearer $SELECTED_KEY" \
+    -H "Content-Type: application/json" \
+    -d "{\"model\":\"$MODEL\",\"messages\":[{\"role\":\"user\",\"content\":\"$1\"}],\"max_tokens\":4096,\"temperature\":0.1}"

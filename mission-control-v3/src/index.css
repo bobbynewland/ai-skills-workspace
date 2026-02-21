@@ -6,23 +6,32 @@
   color-scheme: dark;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
 body {
   margin: 0;
   -webkit-tap-highlight-color: transparent;
   background-color: #050505;
   height: 100dvh;
-  width: 100vw;
-  overflow: hidden;
-  overflow-x: auto; /* Allow horizontal scroll on body */
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
   overflow-y: auto;
-  position: fixed;
+  -webkit-overflow-scrolling: touch;
 }
 
 #root {
   height: 100dvh;
-  width: 100vw;
+  width: 100%;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
 }
 
 /* Glassmorphism utility */
@@ -47,25 +56,111 @@ body {
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
-  overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
 }
 
-/* Snap container - disable snap on mobile for horizontal scroll */
-.kanban-snap {
-  scroll-snap-type: x mandatory;
+/* Enable horizontal touch panning */
+.touch-pan-x {
   -webkit-overflow-scrolling: touch;
   touch-action: pan-x;
+  overscroll-behavior-x: contain;
 }
 
-@media (max-width: 768px) {
-  .kanban-snap {
+
+.touch-pan-y {
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  overscroll-behavior-y: contain;
+}
+
+/* Embla mobile pager */
+.embla {
+  overflow: hidden;
+}
+
+.embla__container {
+  display: flex;
+  height: 100%;
+}
+
+.embla__slide {
+  min-width: 100%;
+  max-width: 100%;
+  flex: 0 0 100%;
+  overflow: hidden;
+}
+
+.pb-safe {
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0.5rem));
+}
+
+/* Kanban desktop paging */
+.kanban-track {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-snap-stop: always;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  touch-action: pan-x pinch-zoom;
+  padding-inline: 0;
+}
+
+.kanban-track-page {
+  flex: 0 0 100%;
+  width: 100%;
+  min-width: 100%;
+  height: 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  padding: 0.25rem 0.75rem 0.9rem;
+}
+
+.kanban-page {
+  height: 100%;
+  min-width: 0;
+}
+
+.kanban-column-scroll {
+  min-width: 0;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  touch-action: pan-y;
+  scrollbar-width: none;
+}
+
+.kanban-column-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.kanban-drag-handle {
+  touch-action: none;
+  cursor: grab;
+}
+
+.kanban-drag-handle:active {
+  cursor: grabbing;
+}
+
+.kanban-track-dragging {
+  scroll-snap-type: none;
+}
+
+@media (min-width: 1024px) {
+  .kanban-track {
+    gap: 0.75rem;
+    padding-inline: 1.5rem;
     scroll-snap-type: none;
   }
-}
 
-.kanban-column {
-  scroll-snap-align: center;
+  .kanban-track-page {
+    flex: 0 0 320px;
+    min-width: 320px;
+    max-width: 360px;
+    padding: 0.25rem 0.1rem 1rem;
+  }
 }
 
 /* Mobile nav bottom spacing - only target bottom nav specifically */
@@ -76,5 +171,42 @@ body {
 @media (min-width: 768px) {
   .bottom-nav {
     margin-bottom: 0 !important;
+  }
+}
+
+/* Safe area padding for bottom nav */
+.safe-area-pb {
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0.5rem));
+}
+
+/* Touch-friendly: larger tap targets */
+@media (max-width: 768px) {
+  button, 
+  [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Prevent zoom on input focus */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  
+  /* Kanban should feel like native paged screens on mobile */
+  .kanban-mobile-track {
+    padding-inline: 0 !important;
+    gap: 0 !important;
+    scroll-padding-inline: 0 !important;
+  }
+
+  .kanban-column {
+    min-width: 100vw !important;
+    width: 100vw !important;
+    padding-inline: 0.75rem;
+  }
+
+  /* Hide horizontal scroll indicators that break mobile */
+  .scroll-indicator {
+    display: none !important;
   }
 }

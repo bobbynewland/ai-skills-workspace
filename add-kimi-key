@@ -1,0 +1,23 @@
+#!/bin/bash
+# Add a new Kimi API key to the swarm
+# Usage: add-kimi-key "nvapi-xxxxx"
+
+KEYS_DIR="/root/.openclaw/workspace/.keys"
+KEY_FILE="$KEYS_DIR/kimi-$(ls "$KEYS_DIR"/kimi-*.key 2>/dev/null | wc -l).key"
+
+if [ -z "$1" ]; then
+    echo "Usage: add-kimi-key \"nvapi-your-key-here\""
+    echo "Or paste key and run: add-kimi-key"
+    exit 1
+fi
+
+# If no argument, read from stdin
+if [ "$1" = "-" ]; then
+    read KEY
+else
+    KEY="$1"
+fi
+
+echo "$KEY" > "$KEY_FILE"
+echo "✅ Added key: $KEY_FILE"
+echo "   Swarm now has $(ls "$KEYS_DIR"/kimi-*.key 2>/dev/null | wc -l) keys"

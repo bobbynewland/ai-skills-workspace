@@ -1,0 +1,110 @@
+{
+  "templateId": "tpl_futuristic_holiday_001",
+  "name": "Futuristic Holiday - Woman Portrait",
+  "description": "Futuristic holiday marketing template featuring a woman with dark hair and bold red lips at center",
+  "type": "instagram-post",
+  "category": "fashion-lifestyle",
+  "dimensions": {
+    "width": 1080,
+    "height": 1080,
+    "unit": "px"
+  },
+  "layers": [
+    {
+      "id": "background",
+      "type": "image",
+      "src": "futuristic_holiday_bg.png",
+      "position": {"x": 0, "y": 0},
+      "size": {"width": 1080, "height": 1080},
+      "zIndex": 0,
+      "editable": false
+    },
+    {
+      "id": "headline",
+      "type": "text",
+      "placeholder": "Headline Text",
+      "defaultText": "FUTURE HOLIDAY STYLE",
+      "position": {"x": 540, "y": 80},
+      "font": {
+        "family": "Montserrat",
+        "size": 52,
+        "weight": "bold",
+        "color": "#FFFFFF",
+        "align": "center"
+      },
+      "maxLength": 25,
+      "editable": true,
+      "zIndex": 2
+    },
+    {
+      "id": "subtitle",
+      "type": "text",
+      "placeholder": "Subtitle Text",
+      "defaultText": "Redefine Your Holiday Look",
+      "position": {"x": 540, "y": 150},
+      "font": {
+        "family": "Montserrat",
+        "size": 28,
+        "weight": "normal",
+        "color": "#E0E0E0",
+        "align": "center"
+      },
+      "maxLength": 35,
+      "editable": true,
+      "zIndex": 2
+    },
+    {
+      "id": "main-image",
+      "type": "image-placeholder",
+      "position": {"x": 290, "y": 220},
+      "size": {"width": 500, "height": 600},
+      "placeholder": "Add your portrait image",
+      "aspectRatio": "4:5",
+      "editable": true,
+      "zIndex": 1
+    },
+    {
+      "id": "holiday-text",
+      "type": "text",
+      "placeholder": "Holiday Message",
+      "defaultText": "New Year. New You.",
+      "position": {"x": 540, "y": 880},
+      "font": {
+        "family": "Montserrat",
+        "size": 36,
+        "weight": "medium",
+        "color": "#FFD700",
+        "align": "center"
+      },
+      "maxLength": 20,
+      "editable": true,
+      "zIndex": 2
+    },
+    {
+      "id": "cta-button",
+      "type": "button",
+      "placeholder": "Call to Action",
+      "defaultText": "SHOP THE LOOK",
+      "position": {"x": 340, "y": 950},
+      "size": {"width": 400, "height": 60},
+      "style": {
+        "backgroundColor": "#FF0000",
+        "textColor": "#FFFFFF",
+        "borderRadius": 30,
+        "fontSize": 20,
+        "fontWeight": "bold"
+      },
+      "editable": true,
+      "zIndex": 3
+    }
+  ],
+  "metadata": {
+    "createdAt": "2026-02-13T12:36:00Z",
+    "style": "futuristic",
+    "colors": ["#0D0D1A", "#8B0000", "#FFD700", "#FFFFFF"],
+    "tags": ["futuristic", "holiday", "fashion", "portrait", "marketing"],
+    "complexity": "simple",
+    "targetAudience": "fashion-forward adults"
+  },
+  "version": "1.0"
+}

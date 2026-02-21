@@ -25,12 +25,13 @@ All-in-one platform for entrepreneurs to launch businesses with AI. "Entrepreneu
 
 ---
 
-## Command Center V2 (Latest)
-- **URL:** https://command-center-v2-wine.vercel.app
-- **Tech:** React + Tailwind + @dnd-kit + Firebase
-- **Features:** Dashboard, Kanban (drag-drop), Notes, Files, Agents, Workspace
-- **Mobile:** Responsive, native-feel with safe areas
-- **Firebase:** syncs to winslow-756c3-default-rtdb
+## Active Projects (Use These URLs)
+- **Mission Control V3:** https://mission-control-v3-pearl.vercel.app
+- **Command Center V2:** https://command-center-v2-wine.vercel.app
+
+## Vercel Rules
+- Always check `npx vercel projects list` before deploying
+- Use existing projects with "pearl/wine" aliases - don't create new ones
 
 ---
 
@@ -81,6 +82,18 @@ All-in-one platform for entrepreneurs to launch businesses with AI. "Entrepreneu
 - Main session stays free for immediate response
 - Sub-agent pings back when done
 
+### Context Window Rollover Rule (85%)
+- When session context reaches ~85%, create/update a temporary handoff summary at:
+  - `/root/.openclaw/workspace/memory/session-handoff.md`
+- Summary should include:
+  1. Current objective
+  2. Decisions made
+  3. What is done
+  4. Open tasks
+  5. Exact next step
+- Start a fresh session and immediately reload this handoff summary to continue.
+- Overwrite this file at each rollover so it stays fresh and avoids memory bloat.
+
 ### Command Center (Fresh Build)
 - Fresh Vercel deployment
 - Multi-agent task pipeline
@@ -96,6 +109,27 @@ All-in-one platform for entrepreneurs to launch businesses with AI. "Entrepreneu
 - Each agent has persistent memory
 - Relationships evolve over time (like Alex's water cooler conversations)
 - Lessons learned persist across sessions
+
+---
+
+## Antfarm (Installed 2026-02-15)
+Multi-agent workflow system for OpenClaw.
+
+**Install:**
+```
+curl -fsSL https://raw.githubusercontent.com/snarktank/antfarm/v0.5.1/scripts/install.sh | bash
+```
+
+**Available workflows:**
+- bug-fix
+- feature-dev
+- security-audit
+
+**Fix for auth error:**
+- Copy main auth to sub-agents: `cp /root/.openclaw/agents/main/agent/auth-profiles.json /root/.openclaw/agents/*/agent/`
+- Update workflows to use google-antigravity: `model: google-antigravity/claude-opus-4.5`
+
+**Dashboard:** http://localhost:3333
 
 ---
 
@@ -137,3 +171,19 @@ All-in-one platform for entrepreneurs to launch businesses with AI. "Entrepreneu
 - [ ] Apply creative director research
 - [ ] Generate enhanced template designs
 - [ ] Create Link in Bio page templates
+
+## User Preferences (2026-02-16)
+- On VPS, generated images should be uploaded to Google Drive immediately and deleted from local disk to save storage.
+- ALWAYS set Google Drive links to public ("anyone" with "reader" role) before uploading to the production CMS or sharing for platform use.
+- Remix requests should use inspiration-only transformations with different subjects (avoid near-duplicate likeness/composition).
+- Mixtape templates should avoid tiny text; keep large, clean text-safe zones only.
+- Pack thumbnails default to 4:5 unless explicitly changed.
+
+## Recent Work (2026-02-16)
+- Created and uploaded Mixtape Cover Pack assets (diverse subjects; 2 female + 1 male) with production-safe remix guidance.
+- Added auto-archive workflow: generated images now upload to Drive then delete locally on VPS.
+- Confirmed production endpoint for draft uploads: `https://aiskills.studio/api/v1/clawdbot/upload-pack`.
+- Successful production draft upload:
+  - Pack ID: `1607965b-28a2-4ed2-86aa-acca8cb15ad5`
+  - Template IDs: `d19a5b84-ab9f-4205-a474-4a2bc67d3c56`, `76ab0b10-fb11-414d-bfd2-221dd5f731ee`, `1c76d798-e6a6-4546-acad-e97af2847f9c`
+- Clawdbot schema reference source: `/root/.openclaw/workspace/clawdbot_schemas.md`.

@@ -1,0 +1,29 @@
+{
+  "pack": {
+    "name": "Wellness Minimalist",
+    "description": "High-end editorial aesthetics for luxury skincare and wellness brands. Features earthy stone textures, lush botanicals, and high-tech clinical vibes inspired by top global brands like Aesop and Augustinus Bader.",
+    "thumbnail_url": "https://drive.google.com/uc?export=download&id=14KASrMqeFfi8BH80D37Kakk0hlJuZ5bl"
+  },
+  "templates": [
+    {
+      "title": "Wellness - Earthy Stone",
+      "prompt_text": "A photorealistic high-fashion editorial photo for a luxury skincare brand. A minimalist amber glass bottle sitting on a raw, textured sandstone block. Soft, natural morning side-lighting creating long shadows. The palette is muted earthy tones, beige, and sage green. Professional studio quality, 4:5 aspect ratio.",
+      "image_url": "https://drive.google.com/uc?export=download&id=1y3t_C5zaQVu2dfqB6Yq33hOyZ3etbVlc"
+    },
+    {
+      "title": "Wellness - Botanical Lush",
+      "prompt_text": "A photorealistic high-fashion editorial photo of a luxury organic serum bottle nestled among vibrant, deep green heirloom tomato vines and lush basil leaves. Bright, high-contrast afternoon sunlight. The palette is rich forest green, deep red, and gold. Flamingo Estate aesthetic. Professional studio quality, 4:5 aspect ratio.",
+      "image_url": "https://drive.google.com/uc?export=download&id=1Y59J-6O7yETQ33r3oTrR_nWzqm4D263-"
+    },
+    {
+      "title": "Wellness - Tech Clinical",
+      "prompt_text": "A photorealistic high-fashion editorial photo of a sleek cobalt blue skincare jar with a copper lid, sitting on a mirrored surface with gentle water ripples. Sharp, clinical laboratory-style lighting. High-tech luxury aesthetic, Augustinus Bader style. The palette is royal blue, copper, and crisp white. 4:5 aspect ratio.",
+      "image_url": "https://drive.google.com/uc?export=download&id=1N7_2dGHs1hH6C9G0objdlkLW6K4BMqOK"
+    },
+    {
+      "title": "Wellness - Ethereal Skin",
+      "prompt_text": "A photorealistic close-up editorial photo of a stunning Black woman's face with glowing, hydrated skin. She is in a minimalist spa setting with warm grey stone and soft steam in the background. Extremely high detail on skin texture and water droplets. Soft, ethereal lighting. 4:5 aspect ratio.",
+      "image_url": "https://drive.google.com/uc?export=download&id=1Gdqx3surpJDbcHMN53zur4yMnCC7ozmn"
+    }
+  ]
+}

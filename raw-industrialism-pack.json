@@ -1,0 +1,29 @@
+{
+  "pack": {
+    "name": "Raw Industrialism",
+    "description": "Bold, high-contrast fashion editorial aesthetic featuring brutalist concrete, chrome silver, and moody urban neon vibes. Inspired by Balenciaga's raw industrial photography style.",
+    "thumbnail_url": "https://drive.google.com/uc?export=download&id=1KZcltCKmuczq8NO2H1gKGxcuHkC_MGkk"
+  },
+  "templates": [
+    {
+      "title": "Industrial - Chrome Puffer",
+      "prompt_text": "A photorealistic high-fashion editorial photo in a raw industrial setting. A stylish Black model in an oversized chrome-silver puffer jacket posing against a brutalist grey concrete wall with harsh, dramatic side-shadows. Sharp professional lighting, metallic textures. 4:5 aspect ratio.",
+      "image_url": "https://drive.google.com/uc?export=download&id=1J1PoviQV-vGlTpPJVGtMk4dMYLzEnqQP"
+    },
+    {
+      "title": "Industrial - Neon Trench",
+      "prompt_text": "A photorealistic high-fashion editorial photo. A handsome Black man in a structured black leather trench coat standing on a wet asphalt street at night, reflected neon lights in the puddles. Moody atmospheric lighting, industrial city vibe. 4:5 aspect ratio.",
+      "image_url": "https://drive.google.com/uc?export=download&id=1LZaEBvYvpHcXkLeHRxoIsEdMud8ZMW79"
+    },
+    {
+      "title": "Industrial - Warehouse Green",
+      "prompt_text": "A photorealistic high-fashion editorial photo. A Black woman in a vibrant neon-green sculptural dress posing inside a rusted steel warehouse. High-contrast lighting, raw industrial textures, sharp focus on fabric and metal. 4:5 aspect ratio.",
+      "image_url": "https://drive.google.com/uc?export=download&id=1eXB5ucg7q8rdu42NJaGyMkbSU40aYi-e"
+    },
+    {
+      "title": "Industrial - Brutalist Hardware",
+      "prompt_text": "A photorealistic high-fashion editorial photo. Close-up of high-end designer sneakers with chrome hardware resting on a stack of industrial steel beams. Brutalist aesthetic, sharp details, grey and metallic palette. 4:5 aspect ratio.",
+      "image_url": "https://drive.google.com/uc?export=download&id=1yhxAKw-xIzGEcpiFlkpoF1fpHGfncqOq"
+    }
+  ]
+}
