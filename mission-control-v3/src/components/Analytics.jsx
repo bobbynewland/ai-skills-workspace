@@ -11,8 +11,10 @@ import {
   ArrowDownRight,
   Eye,
   RefreshCw,
-  Zap
+  Zap,
+  Info
 } from 'lucide-react';
+import { database, ref, onValue } from '../lib/firebase';
 
 const AnalyticsCard = ({ title, value, change, trend, icon: Icon, color = 'gold' }) => (
   <div className="glass p-5 rounded-2xl border border-white/5 relative overflow-hidden group hover:border-white/10 transition-all">
@@ -61,7 +63,8 @@ const ChartBar = ({ height, label, active = false }) => (
 );
 
 const Analytics = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [realtimeData, setRealtimeData] = useState(null);
   const [data, setData] = useState({
     pageViews: '1,284',
     avgSession: '4m 32s',
@@ -83,6 +86,27 @@ const Analytics = () => {
     ]
   });
 
+  useEffect(() => {
+    // Listen to Firebase for real-time interaction stats
+    const statsRef = ref(database, 'workspaces/winslow_main/analytics_realtime');
+    const unsubscribe = onValue(statsRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const val = snapshot.val();
+        setRealtimeData(val);
+        // Merge real-time data into display state
+        setData(prev => ({
+          ...prev,
+          activeNow: val.activeUsers || prev.activeNow,
+          pageViews: val.todayViews?.toLocaleString() || prev.pageViews,
+          totalClicks: val.todayClicks?.toLocaleString() || prev.totalClicks
+        }));
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   const refreshData = () => {
     setLoading(true);
     setTimeout(() => setLoading(false), 800);
@@ -100,19 +124,36 @@ const Analytics = () => {
             Real-time Traffic & Interaction Analytics
           </p>
         </div>
-        <button 
-          onClick={refreshData}
-          className="p-3 glass rounded-xl text-white/60 hover:text-white transition-all hover:border-gold/30 group"
-        >
-          <RefreshCw size={18} className={`${loading ? 'animate-spin text-gold' : 'group-hover:rotate-180 transition-transform'}`} />
-        </button>
+        <div className="flex items-center gap-3">
+            <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20">
+                <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                <span className="text-[10px] font-black uppercase text-green-400">Live Sync</span>
+            </div>
+            <button 
+            onClick={refreshData}
+            className="p-3 glass rounded-xl text-white/60 hover:text-white transition-all hover:border-gold/30 group"
+            >
+            <RefreshCw size={18} className={`${loading ? 'animate-spin text-gold' : 'group-hover:rotate-180 transition-transform'}`} />
+            </button>
+        </div>
+      </div>
+
+      {/* Accuracy Alert */}
+      <div className="p-4 bg-blue-500/5 border border-blue-500/10 rounded-2xl flex items-start gap-3">
+        <Info className="text-blue-400 shrink-0" size={18} />
+        <div>
+            <h4 className="text-xs font-bold text-blue-100 uppercase">Data Sources</h4>
+            <p className="text-[10px] text-blue-100/60 leading-relaxed mt-1">
+                Active Users and Action counts are <strong>Real-Time</strong> via Firebase. Historical trends and deep acquisition data currently use <strong>Projected Benchmarks</strong> while GA4 historical API synchronization is being established.
+            </p>
+        </div>
       </div>
 
       {/* KPI Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <AnalyticsCard title="Page Views" value={data.pageViews} change="12.5" trend="up" icon={Eye} color="gold" />
+        <AnalyticsCard title="Today Views" value={data.pageViews} change="12.5" trend="up" icon={Eye} color="gold" />
         <AnalyticsCard title="Avg. Session" value={data.avgSession} change="2.1" trend="down" icon={Clock} color="purple" />
-        <AnalyticsCard title="Button Clicks" value={data.totalClicks} change="24.8" trend="up" icon={MousePointer2} color="green" />
+        <AnalyticsCard title="Today Clicks" value={data.totalClicks} change="24.8" trend="up" icon={MousePointer2} color="green" />
         <AnalyticsCard title="Active Now" value={data.activeNow} change="0" trend="up" icon={Users} color="blue" />
       </div>
 
