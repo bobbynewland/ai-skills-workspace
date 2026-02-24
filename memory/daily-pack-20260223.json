@@ -1,0 +1,27 @@
+{
+  "name": "The Mom-and-Pop Q1 Playbook",
+  "description": "Essential prompts for non-tech local business owners. From tax prep to local SEO, these prompts do the heavy lifting so you can run the floor.",
+  "targetAudience": "Small business owners, local shops",
+  "prompts": [
+    {
+      "name": "The 'Tax Season' Receipt Organizer",
+      "instruction": "I have a pile of disorganized receipts and expenses. I need you to act as a bookkeeping assistant. Ask me for the business expenses one by one, and categorize them into standard IRS categories (Meals, Supplies, Travel, etc.). At the end, generate a clean table I can email straight to my CPA."
+    },
+    {
+      "name": "Local SEO Blog Generator",
+      "instruction": "Act as an expert local SEO copywriter. Write a 500-word blog post for a [INSERT BUSINESS TYPE] in [INSERT CITY]. The post should be about [TOPIC/EVENT]. Naturally include local landmarks, neighborhood names, and keywords that local residents would search for. End with a strong call to action to visit the store."
+    },
+    {
+      "name": "The 24/7 DM Closer Script",
+      "instruction": "Write an auto-reply sequence for Instagram/Facebook DMs. The goal is to acknowledge the customer immediately, answer basic FAQs (hours, location, pricing), and push them to book an appointment or visit the store. Make the tone warm and local, not robotic."
+    },
+    {
+      "name": "Angry Customer 'Fire Extinguisher'",
+      "instruction": "A customer left a 1-star review saying: '[INSERT REVIEW]'. Write a professional, de-escalating response that shows we care, takes the issue offline (asks them to email/call), and preserves our public reputation. Keep it under 4 sentences."
+    },
+    {
+      "name": "The 'Slow Tuesday' Promo Text",
+      "instruction": "It's a slow Tuesday afternoon. Write 3 short, punchy SMS/text message blasts I can send to my loyalty list right now to drive foot traffic within the next 3 hours. Include an irresistible hook (BOGO, free item, secret discount code)."
+    }
+  ]
+}

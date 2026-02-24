@@ -1,0 +1,45 @@
+{
+  "packName": "The AI Growth Engine for SMBs (Feb 2026 Edition)",
+  "concept": "A prompt pack designed for small business owners to leverage the latest 2026 AI trends, including LinkedIn's new SMB premium features, TikTok Shop automation, and AI-first search optimization (AEO).",
+  "date": "2026-02-22",
+  "trends": [
+    "LinkedIn is rolling out SMB-specific AI tools and premium tiers to help small shops maximize professional presence.",
+    "TikTok Shop is expanding merchant access to AI chatbots and 'Creator Picks' for automated sales growth.",
+    "AI Search Optimization (AEO) is becoming critical as Google and Perplexity prioritize authoritative, 'quotable' brand content.",
+    "World Cup 2026 hype is beginning to surge on Reddit, presenting an early local marketing opportunity for small businesses.",
+    "Meta is integrating Manus AI into Ads Manager to streamline high-conversion ad creation for non-designers."
+  ],
+  "howToUse": "Copy these prompts into ChatGPT, Claude, or Gemini. Replace the bracketed text [like this] with your specific business details. Use these to create a week's worth of professional content in minutes.",
+  "prompts": [
+    {
+      "id": 1,
+      "title": "The 'Quotable Authority' Blog Post (AEO Focus)",
+      "useCase": "Search visibility in AI Overviews",
+      "prompt": "Write a 600-word authoritative guide on [Your Industry Topic, e.g., 'Eco-friendly Landscaping']. Use clear, declarative sentences and include a 'Key Takeaways' section with 3 bullet points that are highly 'quotable' (e.g., 'The #1 mistake homeowners make in 2026 is...'). Format it so an AI search engine like Google or Perplexity can easily cite us as an expert source."
+    },
+    {
+      "id": 2,
+      "title": "LinkedIn SMB Premium Hook",
+      "useCase": "Professional networking and lead gen",
+      "prompt": "Create a LinkedIn post targeted at [Your Target Audience, e.g., 'Local Restaurant Owners']. Use a 'Professional but Human' tone to announce our latest [Product/Service]. Focus on how we help small businesses solve [Problem X]. Include a call to action to 'DM for a free consultation' and suggest 3 relevant hashtags."
+    },
+    {
+      "id": 3,
+      "title": "TikTok Shop Chatbot Persona Script",
+      "useCase": "Automated customer service",
+      "prompt": "I am setting up a TikTok Shop AI assistant for my brand [Brand Name] which sells [Products]. Write a 5-sentence 'System Prompt' for the chatbot that defines its personality as [Personality, e.g., 'Friendly, witty, and helpful']. Include 3 example responses to common questions like 'Where is my order?' or 'Do you have discounts?'"
+    },
+    {
+      "id": 4,
+      "title": "Local World Cup 2026 Tie-In",
+      "useCase": "Seasonal/Event-based marketing",
+      "prompt": "Create a marketing plan for my local [Business Type, e.g., 'Coffee Shop'] to capitalize on the upcoming 2026 World Cup buzz. Generate 3 creative ideas for 'World Cup Specials' and a draft for a Reddit post to share in our local community subreddit that feels authentic and non-spammy."
+    },
+    {
+      "id": 5,
+      "title": "Manus AI-Style Ad Copy (Meta Ads)",
+      "useCase": "High-conversion paid social",
+      "prompt": "Generate 3 variations of ad copy for a Meta (Facebook/Instagram) ad campaign promoting [Product/Service]. Variation 1: Direct and Benefit-driven. Variation 2: Story-based/Emotional. Variation 3: Short and Punchy. Each should include a headline, primary text, and a 'Learn More' CTA."
+    }
+  ]
+}

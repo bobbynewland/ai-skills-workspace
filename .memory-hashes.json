@@ -29,6 +29,26 @@
     "source": "/root/.openclaw/workspace/life/areas/people/example-user/items.json",
     "normalized": "speaking  productcon sf  march 2026 about ai integration patterns"
   },
+  "ef4cc43c2f0773ed5cc03d8311fc51e5e7a94eb5e8cd9fc342c07383155a0a26": {
+    "first_seen": "2026-02-23",
+    "source": "/root/.openclaw/workspace/memory/2026-02-23.md",
+    "normalized": "## 2026-02-23 - mission control v3 polish & audience pivot"
+  },
+  "df5eedb4a1b6166764a5f96ede7064d90b11a0bfc08e89e39edc5875751a7161": {
+    "first_seen": "2026-02-23",
+    "source": "/root/.openclaw/workspace/memory/2026-02-23.md",
+    "normalized": "### mission control v3 updates - **google calendar auth** fixed  token expiration bug consolidated a..."
+  },
+  "c82b5dced554beff730d686645f3b85410645ff45caadd2eac60c13d5bf1109d": {
+    "first_seen": "2026-02-23",
+    "source": "/root/.openclaw/workspace/memory/2026-02-23.md",
+    "normalized": "### strategic clarification audience & messaging - **target audience** non-tech \"mom and pop\" small ..."
+  },
+  "5fb8b2d4544158c47b01d9adfa4ca9c13b7bbc9b9a76bb0ccfc0c844f75b755a": {
+    "first_seen": "2026-02-23",
+    "source": "/root/.openclaw/workspace/memory/2026-02-23.md",
+    "normalized": "### infrastructure notes - **qmd (query markdown)** researched tobi l\u00fctke's local-first memory searc..."
+  },
   "a104044328d4c65e09f909124f1bcb30a78310abdee23af9990d26098de182c6": {
     "first_seen": "2026-02-16",
     "source": "/root/.openclaw/workspace/memory/2026-02-16.md",
@@ -1109,10 +1129,55 @@
     "source": "/root/.openclaw/workspace/memory/2026-02-15.md",
     "normalized": "- bobby getting openai api key  embeddings - will enable reliable memory_search - need  add key  con..."
   },
-  "4dba8ae42ee2b378c8ca2db6d268d61b950f8959578ab0870c24fe8e8b4ecbbe": {
+  "953b42a23612a2aedad1b0eda55b6dda2fa276f2cdfdf9559d6f2f32bc6b8a01": {
     "first_seen": "2026-02-21",
     "source": "/root/.openclaw/workspace/memory/2026-02-21.md",
-    "normalized": "# 2026-02-21 daily notes"
+    "normalized": "# morning briefing - february 21 2026"
+  },
+  "ea6169ae98a48e581868dc430458510b8b8b8e32c2a3a62eb96b53b501e02d19": {
+    "first_seen": "2026-02-21",
+    "source": "/root/.openclaw/workspace/memory/2026-02-21.md",
+    "normalized": "## \ud83d\ude80 top tech & ai news * **gemini 31 pro launched** google has announced  release  gemini 31 pro  s..."
+  },
+  "369846061d4a7e8e9453e6d29b3be00638c3f65ac95c16c700b105ea589f453e": {
+    "first_seen": "2026-02-21",
+    "source": "/root/.openclaw/workspace/memory/2026-02-21.md",
+    "normalized": "## \ud83d\udcc8 financing & stock market movers * **tariff turmoil**  us supreme court struck down \"sweeping gl..."
+  },
+  "b276aa10e2d572c46eb12179724c38b65d65b0747de04238b2fcb2fa27c6fe1b": {
+    "first_seen": "2026-02-21",
+    "source": "/root/.openclaw/workspace/memory/2026-02-21.md",
+    "normalized": "## \u20bf crypto market headlines * **bitcoin adoption** analysts  coindesk point   \"next leg  adoption\" ..."
+  },
+  "8379311071952bd0058c33174eb95d2247b8416e953afc21ff9a3a036a7ef4a4": {
+    "first_seen": "2026-02-21",
+    "source": "/root/.openclaw/workspace/memory/2026-02-21.md",
+    "normalized": "## \ud83c\udf24 atlanta weather * **current** overcast  light rain * **temperature** high 63\u00b0f | low 51\u00b0f * **o..."
+  },
+  "f64a1051daa90f5f1d4fc429059babd54b0359fd1648520d61498b2c6c6f1529": {
+    "first_seen": "2026-02-21",
+    "source": "/root/.openclaw/workspace/memory/2026-02-21.md",
+    "normalized": "## \ud83d\udc26 notable \"tweets\" & statements (feb 20-21) * **sam altman (openai)** emphasized   india summit t..."
+  },
+  "d73a31574d367a7b2b2b1a25c72d9f2fb0ae79a661d70b3a5513febc193f12a1": {
+    "first_seen": "2026-02-21",
+    "source": "/root/.openclaw/workspace/memory/2026-02-21.md",
+    "normalized": "## \ud83e\udde0 3 actionable moves  ai skills studio growth 1 **launch  \"gemini 31 pro\" masterclass** be  first..."
+  },
+  "405e49216440c9395129b4dcfcfe5c69f1384fd0755b93784b4b0fb215476b0d": {
+    "first_seen": "2026-02-21",
+    "source": "/root/.openclaw/workspace/memory/2026-02-21.md",
+    "normalized": "--- *generated  ai skills studio memory records*"
+  },
+  "0e19944fe35d719b2220483ed8009e0f3d08f8e3386a0ebaf213e0d3db5951b1": {
+    "first_seen": "2026-02-21",
+    "source": "/root/.openclaw/workspace/memory/2026-02-21.md",
+    "normalized": "## \ud83d\udee0 project updates - intelligence dashboard (ga4 integration) * **real-time fix** identified that ..."
+  },
+  "b9634177c0cccaab26255e3d72d8a730dd5c66a49007205bfb56c54ff0a77347": {
+    "first_seen": "2026-02-21",
+    "source": "/root/.openclaw/workspace/memory/2026-02-21.md",
+    "normalized": "## \u2699\ufe0f system configuration * **primary model** switched  **gemini 31 pro preview** as  primary reaso..."
   },
   "15fda4947b22b7392542bf8f89bfa0c22be0397688268e0a2112aa242b240ec2": {
     "first_seen": "session-handoff",
@@ -1193,6 +1258,26 @@
     "first_seen": "2026-02-14",
     "source": "/root/.openclaw/workspace/memory/2026-02-14.md",
     "normalized": "### minimax usage - 0/300 prompts (all clear)"
+  },
+  "6e16977385fe7d439f03480588c92f2f752bb88dd56ba4314f37ddb6d6662fbd": {
+    "first_seen": "2026-02-24",
+    "source": "/root/.openclaw/workspace/memory/2026-02-24.md",
+    "normalized": "## 2026-02-24 - mission control notes upgrade & discord vip launch"
+  },
+  "4daff7e5a37445dba5d0b072432e251c9d2afcf78e6f5dd2d4c8790a8c7654f8": {
+    "first_seen": "2026-02-24",
+    "source": "/root/.openclaw/workspace/memory/2026-02-24.md",
+    "normalized": "### mission control v3 updates - **knowledge base (notes tab)** replaced local storage  direct fireb..."
+  },
+  "da3622271fb51713ba46c80d53b25dc4009151f942933377e36a1b69a494b55d": {
+    "first_seen": "2026-02-24",
+    "source": "/root/.openclaw/workspace/memory/2026-02-24.md",
+    "normalized": "### discord vip mastermind architecture - **bot integration** connected  \"ai skills studio\" bot  ser..."
+  },
+  "246198ba5c7cd27ea6590934be7628b901555c784c0812edf469c90eef7a0c4b": {
+    "first_seen": "2026-02-24",
+    "source": "/root/.openclaw/workspace/memory/2026-02-24.md",
+    "normalized": "### content generation - ** fitness studio blueprint** generated  4-pack  fitness flyers using seedr..."
   },
   "ebdd432183d8ceeac3a4c5d38ae3dbd2022708ae4114aff60b1ad386b4de36ff": {
     "first_seen": "2026-02-11",

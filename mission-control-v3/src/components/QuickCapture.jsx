@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import { Plus, X, Lightbulb, CheckSquare, FileText, Send, Zap } from 'lucide-react';
+import { database, ref, push, update } from '../lib/firebase';
+
+const BOARD_PATH = 'workspaces/winslow_main/tasks';
+const NOTES_PATH = 'workspaces/winslow_main/notes';
 
 const QuickCapture = () => {
   const [input, setInput] = useState('');
@@ -17,25 +21,43 @@ const QuickCapture = () => {
     if (!input.trim()) return;
     
     setSaving(true);
-    
-    // Save to localStorage (in production, this would be an API)
     const timestamp = new Date().toISOString();
-    const item = {
-      id: Date.now(),
-      type,
-      content: input.trim(),
-      created: timestamp,
-      status: 'pending'
-    };
     
-    // Get existing items
-    const existing = JSON.parse(localStorage.getItem('quick_capture') || '[]');
-    localStorage.setItem('quick_capture', JSON.stringify([item, ...existing]));
-    
-    setInput('');
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    try {
+      if (type === 'task') {
+        // Save to Firebase Tasks
+        const taskRef = push(ref(database, BOARD_PATH));
+        await update(taskRef, {
+          title: input.trim(),
+          description: '',
+          column: 'todo',
+          priority: 'medium',
+          dueDate: null,
+          id: taskRef.key,
+          position: 0,
+          createdAt: Date.now(),
+        });
+      } else {
+        // Save to Firebase Notes (Notes and Ideas)
+        const noteRef = push(ref(database, NOTES_PATH));
+        await update(noteRef, {
+          title: input.trim().split('\n')[0].substring(0, 50),
+          content: input.trim(),
+          type: type,
+          created: timestamp,
+          updated: timestamp
+        });
+      }
+      
+      setInput('');
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } catch (error) {
+      console.error('QuickCapture Error:', error);
+      alert('Failed to save. Check console.');
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleKeyPress = (e) => {

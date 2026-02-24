@@ -34,6 +34,17 @@ export const db = {
     push: (data) => push(ref(database, 'workspaces/winslow_main/agent_activity'), data),
     updateActivity: (id, data) => update(ref(database, `workspaces/winslow_main/agent_activity/${id}`), data),
     removeActivity: (id) => remove(ref(database, `workspaces/winslow_main/agent_activity/${id}`))
+  },
+  notes: {
+    ref: () => ref(database, 'workspaces/winslow_main/notes'),
+    set: (data) => set(ref(database, 'workspaces/winslow_main/notes'), data),
+    get: (id) => get(ref(database, `workspaces/winslow_main/notes/${id}`)),
+    list: () => get(ref(database, 'workspaces/winslow_main/notes')),
+    subscribeList: (callback) => onValue(ref(database, 'workspaces/winslow_main/notes'), (snapshot) => callback(snapshot.val())),
+    subscribeNote: (id, callback) => onValue(ref(database, `workspaces/winslow_main/notes/${id}`), (snapshot) => callback(snapshot.val())),
+    push: (data) => push(ref(database, 'workspaces/winslow_main/notes'), data),
+    updateNote: (id, data) => update(ref(database, `workspaces/winslow_main/notes/${id}`), data),
+    removeNote: (id) => remove(ref(database, `workspaces/winslow_main/notes/${id}`))
   }
 };
 

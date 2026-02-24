@@ -14,6 +14,8 @@ import {
   Trash2,
   Upload,
   X,
+  Flag,
+  Calendar
 } from 'lucide-react';
 import {
   DndContext,
@@ -41,6 +43,12 @@ const COLUMNS = [
   { id: 'progress', title: 'In Progress', accent: 'border-gold/40' },
   { id: 'review', title: 'Review', accent: 'border-purple/40' },
   { id: 'done', title: 'Done', accent: 'border-green-500/40' },
+];
+
+const PRIORITIES = [
+  { id: 'high', label: 'High', color: 'text-red-400', bg: 'bg-red-500/20' },
+  { id: 'medium', label: 'Medium', color: 'text-gold', bg: 'bg-gold/20' },
+  { id: 'low', label: 'Low', color: 'text-blue-400', bg: 'bg-blue-500/20' },
 ];
 
 const emptyBoard = () => ({ todo: [], progress: [], review: [], done: [] });
@@ -77,6 +85,10 @@ function TaskCard({ task, id, onOpen }) {
   const checklist = task.checklist ? Object.values(task.checklist) : [];
   const done = checklist.filter((item) => item.completed).length;
   const files = task.files ? Object.values(task.files) : [];
+  
+  const priority = PRIORITIES.find(p => p.id === task.priority) || PRIORITIES[1];
+  const dueDate = task.dueDate ? new Date(task.dueDate) : null;
+  const isOverdue = dueDate && dueDate < new Date() && task.column !== 'done';
 
   return (
     <div
@@ -89,6 +101,20 @@ function TaskCard({ task, id, onOpen }) {
       className="mb-2.5 w-full max-w-full min-w-0"
     >
       <article className={`glass w-full max-w-full min-w-0 overflow-hidden rounded-2xl border border-white/10 p-3 sm:p-3.5 select-none ${isDragging ? 'shadow-2xl scale-[1.01]' : ''}`}>
+        { /* Priority & Due Date Badge */ }
+        <div className="flex items-center gap-2 mb-2">
+          <span className={`text-[9px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full ${priority.bg} ${priority.color}`}>
+            {priority.label}
+          </span>
+          {dueDate && (
+            <span className={`text-[9px] flex items-center gap-1 ${isOverdue ? 'text-red-400' : 'text-white/40'}`}>
+              <Calendar size={9} />
+              {dueDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+              {isOverdue && <span className="text-red-400 ml-0.5">(Overdue)</span>}
+            </span>
+          )}
+        </div>
+        
         <header className="flex min-w-0 items-start justify-between gap-2">
           <button type="button" onClick={() => onOpen(task, id)} className="flex-1 text-left min-h-0 min-w-0" style={{ minHeight: 'unset', minWidth: 0 }}>
             <h4 className="text-[15px] sm:text-[13px] font-bold text-white/90 leading-tight break-words">{task.title}</h4>
@@ -177,7 +203,13 @@ export default function Kanban() {
   const [uploading, setUploading] = useState(false);
 
   const [showAddModal, setShowAddModal] = useState(false);
-  const [newTask, setNewTask] = useState({ title: '', description: '', column: 'todo', priority: 'medium', tags: [] });
+  const [newTask, setNewTask] = useState({ 
+    title: '', 
+    description: '', 
+    column: 'todo', 
+    priority: 'medium',
+    dueDate: ''
+  });
 
   const [activeColumnIndex, setActiveColumnIndex] = useState(0);
   const [emblaRef, emblaApi] = useEmblaCarousel({ dragFree: false, align: 'start', containScroll: 'trimSnaps' });
@@ -288,14 +320,17 @@ export default function Kanban() {
     if (!newTask.title.trim()) return;
     const taskRef = push(ref(database, BOARD_PATH));
     await update(taskRef, {
-      ...newTask,
       title: newTask.title.trim(),
+      description: newTask.description.trim(),
+      column: newTask.column,
+      priority: newTask.priority || 'medium',
+      dueDate: newTask.dueDate || null,
       id: taskRef.key,
       position: board[newTask.column]?.length || 0,
       createdAt: Date.now(),
     });
     setShowAddModal(false);
-    setNewTask({ title: '', description: '', column: 'todo', priority: 'medium', tags: [] });
+    setNewTask({ title: '', description: '', column: 'todo', priority: 'medium', dueDate: '' });
   };
 
   const saveEdit = async () => {
@@ -354,17 +389,29 @@ export default function Kanban() {
   const DetailsContent = (
     <div>
       <div className="flex items-start justify-between mb-5">
-        <div className="relative">
-          <select
-            value={selectedTask?.column || 'todo'}
-            onChange={(e) => updateColumnManually(e.target.value)}
-            className="appearance-none bg-gold text-black text-[11px] font-black uppercase tracking-widest pl-4 pr-9 py-2 rounded-full"
-          >
-            {COLUMNS.map((col) => (
-              <option key={col.id} value={col.id}>{col.title}</option>
-            ))}
-          </select>
-          <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-black pointer-events-none" />
+        <div className="flex items-center gap-2">
+          <div className="relative">
+            <select
+              value={selectedTask?.column || 'todo'}
+              onChange={(e) => updateColumnManually(e.target.value)}
+              className="appearance-none bg-gold text-black text-[11px] font-black uppercase tracking-widest pl-4 pr-9 py-2 rounded-full"
+            >
+              {COLUMNS.map((col) => (
+                <option key={col.id} value={col.id}>{col.title}</option>
+              ))}
+            </select>
+            <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-black pointer-events-none" />
+          </div>
+          {/* Show Priority Badge */}
+          {selectedTask?.priority && (
+            <span className={`text-[10px] uppercase tracking-wider font-bold px-3 py-1.5 rounded-full ${
+              PRIORITIES.find(p => p.id === selectedTask.priority)?.bg || 'bg-gold/20'
+            } ${
+              PRIORITIES.find(p => p.id === selectedTask.priority)?.color || 'text-gold'
+            }`}>
+              {PRIORITIES.find(p => p.id === selectedTask.priority)?.label || 'Medium'}
+            </span>
+          )}
         </div>
         {!isMobile && (
           <button onClick={() => setSelectedTask(null)} className="text-white/45 hover:text-white">
@@ -387,10 +434,58 @@ export default function Kanban() {
             className="w-full bg-white/5 border border-white/15 rounded-xl px-4 py-3 h-32 text-white"
             placeholder="Description"
           />
+          {/* Priority Edit */}
+          <div>
+            <p className="text-[10px] uppercase tracking-wider text-white/40 mb-2">Priority</p>
+            <div className="flex gap-2">
+              {PRIORITIES.map((p) => (
+                <button
+                  key={p.id}
+                  onClick={() => setEditData((prev) => ({ ...prev, priority: p.id }))}
+                  className={`flex-1 py-2 rounded-xl text-xs font-bold uppercase transition-all ${
+                    editData.priority === p.id 
+                      ? `${p.bg} ${p.color} border border-white/20` 
+                      : 'bg-white/5 text-white/40 border border-white/10'
+                  }`}
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          {/* Due Date Edit */}
+          <div>
+            <p className="text-[10px] uppercase tracking-wider text-white/40 mb-2">Due Date</p>
+            <input
+              type="date"
+              value={editData.dueDate || ''}
+              onChange={(e) => setEditData((prev) => ({ ...prev, dueDate: e.target.value }))}
+              className="w-full bg-white/5 border border-white/15 rounded-xl px-4 py-3 text-white"
+            />
+          </div>
         </div>
       ) : (
         <div>
           <h3 className="text-2xl font-black text-white mb-3">{selectedTask?.title}</h3>
+          {/* Due Date Display */}
+          {selectedTask?.dueDate && (
+            <div className={`flex items-center gap-2 mb-3 text-sm ${
+              new Date(selectedTask.dueDate) < new Date() && selectedTask.column !== 'done' 
+                ? 'text-red-400' 
+                : 'text-white/60'
+            }`}>
+              <Calendar size={14} />
+              <span>Due: {new Date(selectedTask.dueDate).toLocaleDateString(undefined, { 
+                weekday: 'short', 
+                month: 'short', 
+                day: 'numeric',
+                year: new Date(selectedTask.dueDate).getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined
+              })}</span>
+              {new Date(selectedTask.dueDate) < new Date() && selectedTask.column !== 'done' && (
+                <span className="text-red-400 text-xs">(Overdue)</span>
+              )}
+            </div>
+          )}
           <p className="text-sm text-white/65 bg-white/5 border border-white/10 rounded-2xl p-4 mb-6">
             {selectedTask?.description || 'No description provided.'}
           </p>
@@ -622,15 +717,53 @@ export default function Kanban() {
                   value={newTask.title}
                   onChange={(e) => setNewTask((prev) => ({ ...prev, title: e.target.value }))}
                   placeholder="Title"
-                  className="w-full bg-white/5 border border-white/15 rounded-xl px-4 py-3"
+                  className="w-full bg-white/5 border border-white/15 rounded-xl px-4 py-3 text-white"
                 />
                 <textarea
                   value={newTask.description}
                   onChange={(e) => setNewTask((prev) => ({ ...prev, description: e.target.value }))}
                   placeholder="Description"
-                  className="w-full bg-white/5 border border-white/15 rounded-xl px-4 py-3 h-28"
+                  className="w-full bg-white/5 border border-white/15 rounded-xl px-4 py-3 h-28 text-white"
                 />
-                <button onClick={addTask} className="w-full bg-gold text-black rounded-xl py-3.5 font-black uppercase text-xs tracking-widest">Create Task</button>
+                
+                { /* Priority Selection */ }
+                <div>
+                  <p className="text-[10px] uppercase tracking-wider text-white/40 mb-2">Priority</p>
+                  <div className="flex gap-2">
+                    {PRIORITIES.map((p) => (
+                      <button
+                        key={p.id}
+                        onClick={() => setNewTask((prev) => ({ ...prev, priority: p.id }))}
+                        className={`flex-1 py-2 rounded-xl text-xs font-bold uppercase transition-all ${
+                          newTask.priority === p.id 
+                            ? `${p.bg} ${p.color} border border-white/20` 
+                            : 'bg-white/5 text-white/40 border border-white/10'
+                        }`}
+                      >
+                        {p.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                
+                { /* Due Date */ }
+                <div>
+                  <p className="text-[10px] uppercase tracking-wider text-white/40 mb-2">Due Date</p>
+                  <input
+                    type="date"
+                    value={newTask.dueDate}
+                    onChange={(e) => setNewTask((prev) => ({ ...prev, dueDate: e.target.value }))}
+                    className="w-full bg-white/5 border border-white/15 rounded-xl px-4 py-3 text-white"
+                  />
+                </div>
+                
+                <button 
+                  onClick={addTask} 
+                  disabled={!newTask.title.trim()}
+                  className="w-full bg-gold text-black rounded-xl py-3.5 font-black uppercase text-xs tracking-widest disabled:opacity-50"
+                >
+                  Create Task
+                </button>
               </div>
             </motion.div>
           </div>

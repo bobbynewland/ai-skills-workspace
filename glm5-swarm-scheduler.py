@@ -1,0 +1,165 @@
+#!/usr/bin/env python3
+"""
+GLM5 Swarm Scheduler - Distributes tasks across 10 GLM5 keys (via Modal)
+"""
+
+import os
+import json
+import time
+import subprocess
+from datetime import datetime
+
+# Load keys
+KEYS_FILE = "/root/.openclaw/workspace/.keys/glm5.key"
+
+def load_keys():
+    """Load all GLM5 API keys"""
+    with open(KEYS_FILE, 'r') as f:
+        content = f.read().strip()
+    keys = [k.strip() for k in content.split('\n') if k.strip()]
+    return keys
+
+def load_usage():
+    """Load usage tracking"""
+    usage_file = "/root/.openclaw/workspace/.glm5_swarm_usage.json"
+    if os.path.exists(usage_file):
+        with open(usage_file, 'r') as f:
+            return json.load(f)
+    return {str(i): {"requests": 0, "last_used": None} for i in range(1, 11)}
+
+def save_usage(usage):
+    """Save usage tracking"""
+    usage_file = "/root/.openclaw/workspace/.glm5_swarm_usage.json"
+    with open(usage_file, 'w') as f:
+        json.dump(usage, f, indent=2)
+
+def get_least_used_key():
+    """Get the key with least requests in last hour"""
+    keys = load_keys()
+    usage = load_usage()
+    
+    one_hour_ago = time.time() - 3600
+    
+    available = []
+    for i, key in enumerate(keys, 1):
+        last_used = usage.get(str(i), {}).get("last_used", 0) or 0
+        if last_used < one_hour_ago:
+            available.append(i)
+    
+    if not available:
+        available = list(range(1, len(keys) + 1))
+        available.sort(key=lambda x: usage.get(str(x), {}).get("last_used", 0))
+    
+    key_index = available[0] - 1
+    return keys[key_index], key_index + 1
+
+def run_task_with_key(key_index, prompt):
+    """Run a task with a specific key"""
+    keys = load_keys()
+    if key_index < 1 or key_index > len(keys):
+        return {"error": f"Invalid key index: {key_index}"}
+    
+    key = keys[key_index - 1]
+    
+    # Update usage
+    usage = load_usage()
+    usage[str(key_index)]["requests"] += 1
+    usage[str(key_index)]["last_used"] = time.time()
+    save_usage(usage)
+    
+    return {
+        "key_index": key_index,
+        "key_prefix": key[:20] + "...",
+        "status": "ready",
+        "prompt_length": len(prompt)
+    }
+
+def status():
+    """Show swarm status"""
+    keys = load_keys()
+    usage = load_usage()
+    
+    print("🧠 GLM5 SWARM STATUS")
+    print("=" * 40)
+    print(f"Total Keys: {len(keys)}")
+    print()
+    
+    for i in range(1, len(keys) + 1):
+        reqs = usage.get(str(i), {}).get("requests", 0)
+        last = usage.get(str(i), {}).get("last_used")
+        
+        if last:
+            ago = datetime.now() - datetime.fromtimestamp(last)
+            ago_str = f"{int(ago.total_seconds())}s Ago"
+        else:
+            ago_str = "Never"
+        
+        status = "🟢" if not last or time.time() - last > 3600 else "🟡"
+        print(f"Key {i:2d}: {status} {reqs:3d} requests | Last: {ago_str}")
+    
+    print()
+    key, idx = get_least_used_key()
+    print(f"➡️  Next available: Key {idx}")
+
+if __name__ == "__main__":
+    import sys
+    
+    if len(sys.argv) < 2:
+        status()
+    elif sys.argv[1] == "status":
+        status()
+    elif sys.argv[1] == "get-key":
+        key, idx = get_least_used_key()
+        print(f"{idx}:{key}")
+    elif sys.argv[1] == "run" and len(sys.argv) > 2:
+        prompt = sys.argv[2]
+        key, idx = get_least_used_key()
+        result = run_task_with_key(idx, prompt)
+        print(json.dumps(result))
+    elif sys.argv[1] == "use-key" and len(sys.argv) > 2:
+        key_idx = int(sys.argv[2])
+        prompt = sys.argv[3] if len(sys.argv) > 3 else ""
+        result = run_task_with_key(key_idx, prompt)
+        print(json.dumps(result))
+    else:
+        print("Usage:")
+        print("  python3 glm5-swarm-scheduler.py status     # Show all keys")
+        print("  python3 glm5-swarm-scheduler.py get-key    # Get next available key")
+        print("  python3 glm5-swarm-scheduler.py run <prompt>  # Run task with least-used key")
+        print("  python3 glm5-swarm-scheduler.py use-key <1-10> <prompt>  # Use specific key")
+
+# Rate limiting - 30 RPM
+RPM = 30
+REQUEST_DELAY = 60.0 / RPM
+
+_key_last_request_glm5 = {}
+
+def get_least_used_key_glm5():
+    """Get key with rate limiting"""
+    keys = load_keys()
+    usage = load_usage()
+    current_time = time.time()
+    
+    available = []
+    for i in range(1, len(keys) + 1):
+        last_used = _key_last_request_glm5.get(i, 0)
+        if current_time - last_used >= REQUEST_DELAY:
+            available.append(i)
+    
+    if not available:
+        wait_times = [(i, REQUEST_DELAY - (current_time - _key_last_request_glm5.get(i, 0))) 
+                      for i in range(1, len(keys) + 1)]
+        wait_times.sort(key=lambda x: x[1])
+        min_wait = max(0, wait_times[0][1])
+        if min_wait > 0:
+            print(f"⏳ Rate limited. Waiting {min_wait:.1f}s...")
+            time.sleep(min_wait)
+        current_time = time.time()
+        available = [i for i in range(1, len(keys) + 1) 
+                     if current_time - _key_last_request_glm5.get(i, 0) >= REQUEST_DELAY]
+    
+    available.sort(key=lambda x: usage.get(str(x), {}).get("requests", 0))
+    key_index = available[0] - 1
+    _key_last_request_glm5[available[0]] = current_time
+    
+    return keys[key_index], key_index + 1

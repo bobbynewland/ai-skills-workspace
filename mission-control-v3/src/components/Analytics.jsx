@@ -12,7 +12,9 @@ import {
   Eye,
   RefreshCw,
   Zap,
-  Info
+  Info,
+  MapPin,
+  Share2
 } from 'lucide-react';
 import { database, ref, onValue } from '../lib/firebase';
 
@@ -83,7 +85,9 @@ const Analytics = () => {
       { name: 'Sync Memory', count: 98, pct: 60 },
       { name: 'Deploy Vercel', count: 45, pct: 30 },
       { name: 'Quick Capture', count: 156, pct: 95 }
-    ]
+    ],
+    geoData: [],
+    sources: []
   });
 
   useEffect(() => {
@@ -96,9 +100,11 @@ const Analytics = () => {
         // Merge real-time data into display state
         setData(prev => ({
           ...prev,
-          activeNow: val.activeUsers || prev.activeNow,
+          activeNow: val.activeUsers?.toString() || prev.activeNow,
           pageViews: val.todayViews?.toLocaleString() || prev.pageViews,
-          totalClicks: val.todayClicks?.toLocaleString() || prev.totalClicks
+          totalClicks: val.todayClicks?.toLocaleString() || prev.totalClicks,
+          geoData: val.geoData || prev.geoData,
+          sources: val.sources || prev.sources
         }));
       }
       setLoading(false);
@@ -158,26 +164,64 @@ const Analytics = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Engagement Chart */}
-        <div className="lg:col-span-2 glass p-6 rounded-3xl border border-white/5">
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-gold/10 text-gold">
-                <BarChart3 size={18} />
-              </div>
-              <h3 className="text-sm font-black uppercase tracking-widest text-white/80">Platform Engagement</h3>
+        {/* Geographic Data */}
+        <div className="glass p-6 rounded-3xl border border-white/5">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="p-2 rounded-xl bg-blue-500/10 text-blue-400">
+              <MapPin size={18} />
             </div>
-            <div className="flex gap-2">
-              <span className="flex items-center gap-1.5 text-[10px] text-white/40 uppercase font-bold">
-                <div className="w-2 h-2 rounded-full bg-gold" /> Views
-              </span>
-            </div>
+            <h3 className="text-sm font-black uppercase tracking-widest text-white/80">Real-time Locations</h3>
           </div>
-          
-          <div className="flex items-end justify-between gap-4 h-40 mt-4 px-2">
-            {data.viewsByTab.map((tab, i) => (
-              <ChartBar key={tab.label} height={tab.value} label={tab.label} active={i === 3} />
-            ))}
+
+          <div className="space-y-4">
+            {data.geoData.length > 0 ? (
+                data.geoData.map((loc, i) => (
+                    <div key={i} className="flex items-center justify-between">
+                        <div className="flex flex-col">
+                            <span className="text-xs font-bold text-white/80">{loc.city}</span>
+                            <span className="text-[10px] text-white/40 uppercase tracking-tighter">{loc.region}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <div className="h-1.5 w-24 bg-white/5 rounded-full overflow-hidden">
+                                <div className="h-full bg-blue-500/50 rounded-full" style={{ width: `${(loc.users / (parseInt(data.activeNow) || 1)) * 100}%` }} />
+                            </div>
+                            <span className="text-[10px] font-mono text-blue-400">{loc.users}</span>
+                        </div>
+                    </div>
+                ))
+            ) : (
+                <div className="py-8 text-center">
+                    <p className="text-[10px] text-white/20 uppercase tracking-widest">Waiting for traffic data...</p>
+                </div>
+            )}
+          </div>
+        </div>
+
+        {/* Acquisition Sources */}
+        <div className="glass p-6 rounded-3xl border border-white/5">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="p-2 rounded-xl bg-purple-500/10 text-purple-400">
+              <Share2 size={18} />
+            </div>
+            <h3 className="text-sm font-black uppercase tracking-widest text-white/80">Traffic Sources</h3>
+          </div>
+
+          <div className="space-y-4">
+            {data.sources.length > 0 ? (
+                data.sources.map((src, i) => (
+                    <div key={i} className="flex items-center justify-between">
+                        <div className="flex flex-col">
+                            <span className="text-xs font-bold text-white/80">{src.source}</span>
+                            <span className="text-[10px] text-white/40 truncate max-w-[120px]">{src.page}</span>
+                        </div>
+                        <span className="text-[10px] font-mono text-purple-400">{src.users} sessions</span>
+                    </div>
+                ))
+            ) : (
+                <div className="py-8 text-center">
+                    <p className="text-[10px] text-white/20 uppercase tracking-widest">Waiting for source data...</p>
+                </div>
+            )}
           </div>
         </div>
 
@@ -210,10 +254,10 @@ const Analytics = () => {
         </div>
       </div>
 
-      {/* Acquisition Table */}
+      {/* Access Logs */}
       <div className="glass p-6 rounded-3xl border border-white/5 overflow-hidden">
         <div className="flex items-center gap-3 mb-6">
-          <div className="p-2 rounded-xl bg-purple/10 text-purple">
+          <div className="p-2 rounded-xl bg-gold/10 text-gold">
             <Globe size={18} />
           </div>
           <h3 className="text-sm font-black uppercase tracking-widest text-white/80">System Access Logs</h3>

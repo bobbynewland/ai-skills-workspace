@@ -1,0 +1,41 @@
+{
+  "pack_name": "Local Hero: The 'Main Street' AI Growth Pack",
+  "intro": "Welcome to your Daily Prompt Pack! You don't need to be a tech wizard to use AI. These prompts are designed for busy small business owners—simply copy, paste into ChatGPT or Gemini, and fill in the bracketed info [like this] to get professional results in seconds.",
+  "prompts": [
+    {
+      "id": 1,
+      "title": "Hyper-Local Instagram Hook",
+      "use_case": "Social Media",
+      "prompt": "Act as a local social media expert. Create 3 engaging Instagram caption options for my [type of business, e.g., bakery] located in [neighborhood/city]. Mention that we are locally owned and focus the content on [current seasonal theme, e.g., early spring blossoms or tax season relief]. Include 5 trending local hashtags."
+    },
+    {
+      "id": 2,
+      "title": "Google Review Reply Assistant",
+      "use_case": "Customer Service",
+      "prompt": "I will provide a customer review below. Write a professional, warm, and personalized response that thanks the customer by name, addresses their specific compliment about [product/service], and invites them back for [upcoming event/special]. Keep it under 100 words. Review: [Paste Review Here]"
+    },
+    {
+      "id": 3,
+      "title": "The 'Flash Sale' Email Blast",
+      "use_case": "Email Marketing",
+      "prompt": "Write a high-energy email for a 48-hour flash sale for my business, [Business Name]. The goal is to clear out [seasonal inventory] to make room for new spring stock. Use a subject line that creates urgency and a call to action that directs them to [website/physical store address]."
+    },
+    {
+      "id": 4,
+      "title": "Community Partnership Pitch",
+      "use_case": "Networking",
+      "prompt": "Write a friendly DM or short email to a nearby business owner of a [complementary business type, e.g., coffee shop if you're a bookstore]. Suggest a simple 'cross-promotion' for March where customers who show a receipt from one shop get 10% off at the other. Keep it low-pressure and community-focused."
+    },
+    {
+      "id": 5,
+      "title": "Neighborhood Problem-Solver Ad",
+      "use_case": "Facebook Ads",
+      "prompt": "Write a Facebook ad targeting local residents. Identify a common problem they face in [Late February/Early March, e.g., 'winter blues' or 'pre-spring cleaning stress'] and explain how [Business Name] provides the perfect solution. Use a friendly, neighborly tone."
+    }
+  ],
+  "trend_angles": [
+    "Hyper-local personalization is trending as small businesses use AI to sound more like 'neighbors' than corporations.",
+    "The 'Pre-Spring Pivot' is hot, with businesses using AI to rapidly transition marketing from winter clearance to spring launches.",
+    "Community cross-pollination is a rising trend, using AI to draft partnership pitches between local mom-and-pop shops."
+  ]
+}

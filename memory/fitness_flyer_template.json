@@ -1,0 +1,96 @@
+{
+  "templateId": "tpl_fitness_flyer_001",
+  "name": "High-End Fitness Trainer Promo",
+  "type": "Instagram Portrait",
+  "category": "Fitness/Health",
+  "dimensions": {
+    "width": 1080,
+    "height": 1350
+  },
+  "metadata": {
+    "style": "Moody Industrial, High-Contrast",
+    "colors": [
+      "#000000",
+      "#0D1B2A",
+      "#E0E0E0",
+      "#FF3366"
+    ],
+    "tags": ["fitness", "trainer", "gym", "promo", "workout"]
+  },
+  "layers": [
+    {
+      "id": "bg-image",
+      "type": "image",
+      "name": "Background Image",
+      "src": "https://drive.google.com/uc?export=view&id=12AS0tt_04Ff0eOx3fXrhKduNs0qakPuU",
+      "locked": true,
+      "zIndex": 1
+    },
+    {
+      "id": "headline",
+      "type": "text",
+      "name": "Headline",
+      "content": "ELEVATE YOUR GRIND",
+      "fontFamily": "Montserrat",
+      "fontWeight": 900,
+      "fontSize": 72,
+      "color": "#FFFFFF",
+      "textAlign": "center",
+      "position": {
+        "x": "center",
+        "y": 120
+      },
+      "zIndex": 2
+    },
+    {
+      "id": "subtitle",
+      "type": "text",
+      "name": "Subtitle",
+      "content": "1-ON-1 PREMIUM PERSONAL TRAINING",
+      "fontFamily": "Montserrat",
+      "fontWeight": 600,
+      "fontSize": 32,
+      "color": "#FF3366",
+      "textAlign": "center",
+      "position": {
+        "x": "center",
+        "y": 220
+      },
+      "zIndex": 3
+    },
+    {
+      "id": "promo-details",
+      "type": "text",
+      "name": "Promo Details",
+      "content": "NOW ACCEPTING CLIENTS FOR Q1\\nLIMITED SPOTS AVAILABLE",
+      "fontFamily": "Inter",
+      "fontWeight": 500,
+      "fontSize": 28,
+      "color": "#E0E0E0",
+      "textAlign": "center",
+      "position": {
+        "x": "center",
+        "y": 1080
+      },
+      "zIndex": 4
+    },
+    {
+      "id": "cta-button",
+      "type": "button",
+      "name": "CTA Button",
+      "content": "BOOK YOUR SESSION",
+      "backgroundColor": "#FF3366",
+      "textColor": "#FFFFFF",
+      "fontFamily": "Montserrat",
+      "fontWeight": 800,
+      "fontSize": 24,
+      "padding": "20px 60px",
+      "borderRadius": "4px",
+      "position": {
+        "x": "center",
+        "y": 1180
+      },
+      "zIndex": 5
+    }
+  ]
+}

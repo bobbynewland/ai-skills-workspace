@@ -1,0 +1,61 @@
+# Weather and time queries
+^what'?s the weather
+^what time is it
+^current time
+^what day is
+^what date is
+
+# Math and calculations
+^calculate
+^what is \d+
+^\d+[\+\-\*/]\d+
+^convert \d+
+^how many (days|hours|minutes)
+
+# Greetings and pleasantries  
+^hi\b
+^hello\b
+^hey\b
+^good (morning|afternoon|evening)
+^how are you
+^thanks?\b
+^thank you
+
+# Single tool commands (no context needed)
+^check crypto
+^show calendar
+^list files
+^run tests?
+^git status
+^git 
+^weather
+^time
+^date
+
+# Simple facts that don't need personal context
+^what is [A-Z][a-z]+\b
+^define \w+
+^how do you
+^what does \w+ mean
+^explain \w+
+
+# Update/meeting queries that need context
+# (These are moved to ensure they DON'T skip)
+
+# System/technical queries
+^error:
+^failed to
+^permission denied
+^command not found
+^install
+^update
+^version
+
+# Very short queries (likely simple)
+^yes\b
+^no\b
+^ok\b
+^sure\b
+^done\b
+^cancel
+^stop

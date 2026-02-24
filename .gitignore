@@ -40,3 +40,6 @@ cookies.txt
 *.token
 client_secret_*.json
 command-center-v2/src/googleWorkspace.js
+winslow-dev-ops-*.json
+scripts/discord_*.py
+.env*

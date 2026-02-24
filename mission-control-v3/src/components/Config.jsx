@@ -65,6 +65,7 @@ const Config = () => {
   });
 
   const handleSave = () => {
+    trackEvent('Config', 'Save', 'Settings Updated');
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };

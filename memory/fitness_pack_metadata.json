@@ -1,0 +1,11 @@
+{
+  "name": "The Fitness Studio Blueprint",
+  "description": "One-shot social promo flyers covering all aspects of the fitness industry. Bold typography baked right in.",
+  "targetAudience": "Fitness trainers, gyms, yoga instructors",
+  "templates": [
+    {"name": "Power Up (Gym)", "driveId": "1lpC6v1aIHkfGlnYT-Ac2Xn8iFYo24yE6"},
+    {"name": "Dance It Out (Zumba)", "driveId": "1nOP1jTd9VyLNUTCqWDrNPLPjdwEy3A7E"},
+    {"name": "Strike First (Boxing)", "driveId": "1jYZ_6eo2tJ9mtciHl_Fn6lq-OTVRFZib"},
+    {"name": "Find Balance (Yoga)", "driveId": "1OpHRPW8MY83CQuccOhpD2gvMGDsPhPfQ"}
+  ]
+}

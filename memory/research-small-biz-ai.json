@@ -1,0 +1,137 @@
+{
+  "research_tasks": [
+    {
+      "task_number": 1,
+      "task_name": "AI Pricing for Small Business Owners",
+      "findings": [
+        "SBOs prefer flat-fee subscriptions (e.g., $20-$49/mo) over complex usage-based or credit-based models which create 'billing anxiety'.",
+        "Successful tools often include a 'Free Forever' tier to reduce the friction of trying new tech.",
+        "Pricing is increasingly tied to 'Time Saved' or 'Revenue Generated' metrics in marketing copy rather than technical features.",
+        "Bundle pricing (e.g., all-in-one marketing AI) is more attractive than managing 5 separate $10/mo subscriptions."
+      ],
+      "real_examples": [
+        "Canva Pro ($12.99/mo)",
+        "ChatGPT Plus ($20/mo)",
+        "Chatbase Standard ($99/mo for custom support bots)",
+        "Jasper Pro ($59/mo)"
+      ],
+      "how_to_win": "AI Skills Studio can win here by offering a single, transparent membership fee that includes training, a library of curated prompts, and tool discounts, acting as a 'unified' value proposition."
+    },
+    {
+      "task_number": 2,
+      "task_name": "Top 5 AI Tools Actually Being Used by Small Businesses",
+      "findings": [
+        "Canva Magic Studio is the primary way SBOs use AI for social media and marketing materials without hiring a designer.",
+        "Fathom/Otter.ai are widely used for recording client meetings and automatically generating action items, saving hours of manual note-taking.",
+        "Chatbase/Intercom Fin are being implemented by service businesses to handle 24/7 customer FAQs on their websites.",
+        "Zapier/Make are the 'glue' used to automate lead follow-ups between forms and CRMs using AI parsing.",
+        "Bench/Zeni are becoming the standard for 'AI-powered bookkeeping' that categorizes transactions automatically for non-accountants."
+      ],
+      "real_examples": [
+        "Canva (Design)",
+        "Fathom (Meetings)",
+        "Chatbase (Customer Service)",
+        "Zapier (Automation)",
+        "Bench (Bookkeeping)"
+      ],
+      "how_to_win": "Focus curriculum specifically on 'The Essential 5' tools to provide immediate ROI rather than teaching high-level AI theory."
+    },
+    {
+      "task_number": 3,
+      "task_name": "Low-Cost Ways to Reach Small Business Owners",
+      "findings": [
+        "Facebook Groups (e.g., 'Small Business Owners Network') remain the most active online hub for mom-and-pop shops.",
+        "Local Chambers of Commerce are desperate for 'AI 101' speakers and educational partners for their members.",
+        "Nextdoor 'Business' section is an untapped resource for reaching local service providers like plumbers and landscapers.",
+        "Partnering with local CPAs and Bookkeepers who can refer AI Skills Studio as a way for their clients to clean up operations."
+      ],
+      "real_examples": [
+        "The 7-Figure Small Business (Facebook Group)",
+        "Local Rotary Clubs",
+        "Alignable (Small business referral network)",
+        "Substack newsletters like 'The Tilt' (for content entrepreneurs)"
+      ],
+      "how_to_win": "Position as a 'guest speaker' for local business associations to build high-trust authority without expensive ad spend."
+    },
+    {
+      "task_number": 4,
+      "task_name": "Micro-Influencers Who Teach AI to Non-Techies",
+      "findings": [
+        "Influencers who focus on 'Solopreneurship' and 'Systems' have the highest engagement with this ICP.",
+        "Short-form video creators on TikTok/Reels who show 'Step-by-Step' screen recordings are more trusted than 'Thought Leaders'.",
+        "Creators who focus on 'Time Freedom' rather than 'AI Coding' resonate best with overworked entrepreneurs."
+      ],
+      "real_examples": [
+        "Jeremy Nguyen (The AI Solopreneur - 150k+ followers, focus on systems)",
+        "Rachel Woods (The AI Exchange - focuses on practical business workflows)",
+        "Justin Welsh (Focuses on solopreneur systems, heavily integrates AI)",
+        "The AI Guy (@theaiguy on TikTok - bite-sized tool reviews)"
+      ],
+      "how_to_win": "Partner with 'Trade-Specific' micro-influencers (e.g., an AI-savvy real estate coach) to reach highly targeted, underserved markets."
+    },
+    {
+      "task_number": 5,
+      "task_name": "Underserved Small Business Niches for AI Education",
+      "findings": [
+        "Skilled Trades (Plumbers, HVAC, Electricians) have massive scheduling and dispatching inefficiencies that AI can solve but lack any tailored training.",
+        "Local Beauty Salons/Spas spend hours on manual booking and social media that could be fully automated.",
+        "Independent Medical/Dental Clinics are overwhelmed with administrative paperwork and insurance summaries.",
+        "Family-run Restaurants need AI for menu optimization, inventory tracking, and managing local review responses."
+      ],
+      "real_examples": [
+        "Residential HVAC companies",
+        "Boutique hair salons",
+        "Independent law firms (solo practitioners)",
+        "Local landscaping businesses"
+      ],
+      "how_to_win": "Create 'Industry Blueprints' (e.g., 'The AI-Powered Plumbing Shop') to dominate niches that are being ignored by generalist AI consultants."
+    },
+    {
+      "task_number": 6,
+      "task_name": "Competitor Analysis: Who's Teaching AI to Small Business?",
+      "findings": [
+        "Marketing AI Institute: Very high quality, but often too 'corporate' or high-level for a 5-person local business.",
+        "Section (by Scott Galloway): Prestigious and high-end, but pricing and depth may be intimidating for a true beginner.",
+        "AI Solopreneur: Excellent for one-person digital businesses, but misses the mark for 'brick-and-mortar' or service-based local businesses."
+      ],
+      "real_examples": [
+        "Marketing AI Institute (Paul Roetzer)",
+        "Section (AI for Business course)",
+        "The AI Solopreneur Academy (Jeremy Nguyen)"
+      ],
+      "how_to_win": "Fill the gap by being the 'Blue-Collar AI Studio'—focusing on local, service-based entrepreneurs who need AI for physical world operations."
+    },
+    {
+      "task_number": 7,
+      "task_name": "Features Small Business Owners Actually Need",
+      "findings": [
+        "Done-for-you prompt libraries tailored to their specific industry (not general ones).",
+        "Short, 2-minute 'Look over my shoulder' video tutorials rather than 1-hour webinars.",
+        "Direct 1-on-1 'Implementation Audits' where someone sets up their first automation for them.",
+        "A supportive community where they don't feel 'stupid' for asking basic tech questions."
+      ],
+      "real_examples": [
+        "Copy-paste Zapier templates",
+        "Prompt 'Cheatsheets' for local SEO",
+        "Weekly Live 'Work-Along' sessions"
+      ],
+      "how_to_win": "Offer 'Done-With-You' implementation services as a high-ticket upsell to the base education platform."
+    },
+    {
+      "task_number": 8,
+      "task_name": "Viral Content Ideas for AI for Small Business",
+      "findings": [
+        "Content that highlights 'Regaining Time' (e.g., 'How I got my Sundays back using AI') performs best.",
+        "Shock-factor hooks regarding the 'Cost of Doing Nothing' (e.g., 'You're losing $2k/mo by not using this 1 tool').",
+        "Step-by-step 'Watch me automate a boring task in 60 seconds' videos."
+      ],
+      "real_examples": [
+        "Hook: 'Stop answering your business phone. Let AI do it.'",
+        "Hook: 'The $0 marketing strategy for local businesses in 2025.'",
+        "Hook: 'How a local plumber saved 20 hours a week with ChatGPT.'"
+      ],
+      "how_to_win": "Focus all marketing content on 'Time and Money' rather than 'Tech and Innovation'."
+    }
+  ],
+  "summary": "The core opportunity for AI Skills Studio lies in moving away from 'Generative Art' and 'Theory' toward 'Physical World Operations' and 'Service Business Automation'. By targeting underserved local trades (HVAC, Salons, Law) with flat-fee, high-implementation support, the Studio can fill the gap left by corporate-focused competitors. The winning strategy is to be the 'Practical Partner' who sets up systems rather than just another video course provider."
+}

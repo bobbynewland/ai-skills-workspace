@@ -13,6 +13,7 @@ const MemorySearch = () => {
 
   const runSearch = async ({ sync = false } = {}) => {
     if (!q.trim() && !sync) return;
+    trackEvent('Memory', 'Search', sync ? 'Sync+Search' : 'Standard');
     setLoading(true);
 
     try {
