@@ -25,7 +25,6 @@ const Agents = () => {
   const [loading, setLoading] = useState(true);
   const [cronJobs, setCronJobs] = useState([]);
   const [agents, setAgents] = useState([
-    { id: 'ceo', name: 'Bobby Newland', role: 'CEO / Founder', status: 'active', model: 'Human Intelligence', lastActive: 'Now' },
     { id: 'cos', name: 'Winslow (Win)', role: 'Chief of Staff / CTO', status: 'active', model: 'Gemini 3.1 Pro', lastActive: 'Now' },
     { id: 'research', name: 'Research Team', role: 'Market & Trend Analysis', status: 'active', model: 'Kimi Swarm (10 Nodes)', lastActive: 'Ongoing' },
     { id: 'engineering', name: 'Engineering Team', role: 'Full-Stack Development', status: 'idle', model: 'Kimi Swarm (10 Nodes)', lastActive: '2h ago' },
@@ -48,12 +47,11 @@ const Agents = () => {
 
   const loadData = async () => {
     try {
-      setLoading(true);
-      
       // Load telemetry from Firebase (stats, cron jobs, agents)
       const teleSnap = await get(ref(database, 'workspaces/winslow_main/live_telemetry'));
       if (teleSnap.exists()) {
         const data = teleSnap.val();
+        console.log('Telemetry received:', data);
         
         // System Stats
         setSystemStats({
@@ -63,13 +61,12 @@ const Agents = () => {
           apiHealth: data?.stats?.apiHealthPct || 100
         });
 
-        // Cron Jobs
+        // Cron Jobs - ensure we map the status correctly for icons
         if (data.cronJobs) {
-          setCronJobs(data.cronJobs.map(job => ({
-            ...job,
-            // Ensure status icons work with the existing getStatusIcon/Color
-            status: job.status || 'idle'
-          })));
+          setCronJobs(data.cronJobs);
+        } else if (data.jobs) {
+          // Fallback to old path if needed
+          setCronJobs(data.jobs);
         }
 
         // AI Agents
