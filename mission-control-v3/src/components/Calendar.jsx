@@ -102,6 +102,26 @@ const Calendar = () => {
   // Load events
   useEffect(() => {
     loadEvents();
+
+    // Auto-refresh token on tab visibility change (the "Wake Up" fix)
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        console.log('🔄 Tab visible, checking calendar vitals...');
+        loadEvents();
+      }
+    };
+
+    // Proactive background refresh every 30 minutes
+    const refreshInterval = setInterval(() => {
+      console.log('🕒 Proactive token heartbeat...');
+      getValidToken();
+    }, 30 * 60 * 1000);
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      clearInterval(refreshInterval);
+    };
   }, []);
 
   const loadEvents = async () => {

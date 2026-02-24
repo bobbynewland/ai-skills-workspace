@@ -53,7 +53,7 @@ async function handleInit(req, res) {
   oauthUrl.searchParams.set('response_type', 'code');
   oauthUrl.searchParams.set('scope', scopes.join(' '));
   oauthUrl.searchParams.set('access_type', 'offline');
-  oauthUrl.searchParams.set('prompt', 'consent');
+  oauthUrl.searchParams.set('prompt', 'select_account consent');
   oauthUrl.searchParams.set('state', 'calendar-auth');
 
   res.writeHead(302, { Location: oauthUrl.toString() });
