@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { createPortal } from 'react-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Radio,
   Clock,
@@ -17,7 +18,9 @@ import {
   Play,
   Pause,
   Square,
-  Calendar
+  Calendar,
+  X,
+  Code
 } from 'lucide-react';
 import { database, ref, get } from '../lib/firebase';
 
@@ -38,6 +41,8 @@ const Agents = () => {
     apiHealth: 100
   });
   const [activeTab, setActiveTab] = useState('crons');
+  const [selectedJob, setSelectedJob] = useState(null);
+  const [showJobDetail, setShowJobDetail] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -199,12 +204,18 @@ const Agents = () => {
                 </div>
               ) : (
                 cronJobs.map(job => (
-                  <div key={job.id} className={`p-4 rounded-xl border transition-all ${
+                  <div 
+                    key={job.id} 
+                    onClick={() => {
+                      setSelectedJob(job);
+                      setShowJobDetail(true);
+                    }}
+                    className={`p-4 rounded-xl border transition-all cursor-pointer ${
                     job.status === 'error' 
-                      ? 'bg-red-500/5 border-red-500/20' 
+                      ? 'bg-red-500/5 border-red-500/20 hover:border-red-500/40' 
                       : job.status === 'running'
-                      ? 'bg-green-500/5 border-green-500/20'
-                      : 'bg-white/5 border-white/10 hover:border-white/20'
+                      ? 'bg-green-500/5 border-green-500/20 hover:border-green-500/40'
+                      : 'bg-white/5 border-white/10 hover:border-gold/30 hover:bg-white/[0.08]'
                   }`}>
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex items-center gap-3">
@@ -353,6 +364,100 @@ const Agents = () => {
           </section>
         )}
       </div>
+
+      {/* Cron Job Detail Modal */}
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {showJobDetail && selectedJob && (
+            <div className="fixed inset-0 z-[10000] flex items-center justify-center px-4" style={{ zIndex: 10000 }}>
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setShowJobDetail(false)}
+                className="absolute inset-0 bg-black/90 backdrop-blur-md"
+              />
+              <motion.div 
+                initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                className="glass w-full max-w-lg rounded-[2rem] relative z-10 border border-white/10 overflow-hidden flex flex-col shadow-2xl"
+              >
+                <div className="p-6 border-b border-white/10 flex justify-between items-center bg-white/[0.02]">
+                  <div>
+                    <h3 className="text-xl font-black uppercase tracking-tighter italic text-white">
+                      Job <span className="text-gold">Detail</span>
+                    </h3>
+                  </div>
+                  <button 
+                    onClick={() => setShowJobDetail(false)}
+                    className="w-10 h-10 glass rounded-full flex items-center justify-center text-white/40 hover:text-white"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+
+                <div className="p-8 space-y-6 overflow-y-auto max-h-[70vh] no-scrollbar">
+                  <div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className={`w-2.5 h-2.5 rounded-full ${getStatusColor(selectedJob.status)}`} />
+                      <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30">Current Status: {selectedJob.status}</span>
+                    </div>
+                    <h2 className="text-2xl font-black text-white leading-tight">{selectedJob.name}</h2>
+                    <p className="text-sm text-gold font-bold mt-1 flex items-center gap-2">
+                      <Calendar size={14} /> {selectedJob.schedule}
+                    </p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="p-4 bg-white/5 rounded-2xl border border-white/5">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-1">Last Run</p>
+                        <p className="text-xs text-white/80 font-bold">{selectedJob.lastRun}</p>
+                      </div>
+                      <div className="p-4 bg-white/5 rounded-2xl border border-white/5">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-1">Last Duration</p>
+                        <p className="text-xs text-white/80 font-bold">{selectedJob.lastDuration}</p>
+                      </div>
+                    </div>
+
+                    <div className="p-4 bg-white/5 rounded-2xl border border-white/5">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-1">Next Scheduled</p>
+                      <p className="text-xs text-white/80 font-bold">{selectedJob.nextRun}</p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <h4 className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-white/30 ml-1">
+                      <Code size={14} /> Execution Payload
+                    </h4>
+                    <div className="p-5 bg-black/40 rounded-[1.5rem] border border-white/5 font-mono text-xs leading-relaxed text-green-400/90 break-all whitespace-pre-wrap">
+                      {selectedJob.payload?.text || selectedJob.payload?.message || JSON.stringify(selectedJob.payload, null, 2)}
+                    </div>
+                  </div>
+
+                  {selectedJob.lastError && (
+                    <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-2xl space-y-1">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-red-400">Last Known Error</p>
+                      <p className="text-xs text-red-300/70 font-mono italic">{selectedJob.lastError}</p>
+                    </div>
+                  )}
+
+                  <div className="pt-4">
+                    <button 
+                      onClick={() => setShowJobDetail(false)}
+                      className="w-full py-4 bg-white/5 border border-white/10 rounded-2xl text-white font-black uppercase tracking-widest text-sm hover:bg-white/10 transition-all"
+                    >
+                      Close Detail
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </div>
   );
 };
