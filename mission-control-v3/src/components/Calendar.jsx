@@ -22,6 +22,8 @@ const Calendar = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [showBottomSheet, setShowBottomSheet] = useState(false);
   const [showEventForm, setShowEventForm] = useState(false);
+  const [showEventDetail, setShowEventDetail] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
   const [editingEvent, setEditingEvent] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
   const [needsAuth, setNeedsAuth] = useState(false);
@@ -102,6 +104,27 @@ const Calendar = () => {
   // Load events
   useEffect(() => {
     loadEvents();
+
+    // Check for open event ID from Today page
+    const openEventId = localStorage.getItem('mc3_open_event_id');
+    if (openEventId) {
+      localStorage.removeItem('mc3_open_event_id');
+      // We need to wait for events to load to find the event
+      setTimeout(() => {
+        const event = events.find(e => e.id === openEventId);
+        if (event) {
+          setEditingEvent(event);
+          setNewEvent({
+            title: event.title,
+            start: event.start.toISOString().slice(0, 16),
+            end: event.end.toISOString().slice(0, 16),
+            location: event.location || '',
+            description: event.description || ''
+          });
+          setShowEventForm(true);
+        }
+      }, 1000);
+    }
 
     // Auto-refresh token on tab visibility change (the "Wake Up" fix)
     const handleVisibilityChange = () => {
@@ -297,6 +320,19 @@ const Calendar = () => {
     } catch (err) {
       alert('Failed to delete event');
     }
+  };
+
+  const handleEditFromDetail = (event) => {
+    setEditingEvent(event);
+    setNewEvent({
+      title: event.title,
+      start: event.start.toISOString().slice(0, 16),
+      end: event.end.toISOString().slice(0, 16),
+      location: event.location || '',
+      description: event.description || ''
+    });
+    setShowEventDetail(false);
+    setShowEventForm(true);
   };
 
   const handleDayPress = (day) => {
@@ -572,15 +608,8 @@ const Calendar = () => {
                         key={event.id}
                         layoutId={event.id}
                         onClick={() => {
-                          setEditingEvent(event);
-                          setNewEvent({
-                            title: event.title,
-                            start: event.start.toISOString().slice(0, 16),
-                            end: event.end.toISOString().slice(0, 16),
-                            location: event.location || '',
-                            description: event.description || ''
-                          });
-                          setShowEventForm(true);
+                          setSelectedEvent(event);
+                          setShowEventDetail(true);
                         }}
                         className="p-4 bg-white/5 rounded-2xl border border-white/10 active:bg-white/10 transition-colors group cursor-pointer"
                       >
@@ -745,6 +774,98 @@ const Calendar = () => {
                     Delete Event
                   </button>
                 )}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Event Detail Modal */}
+      <AnimatePresence>
+        {showEventDetail && selectedEvent && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowEventDetail(false)}
+              className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[80]"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="fixed inset-4 top-24 bottom-24 bg-[#0f0f0f] rounded-[2.5rem] z-[90] overflow-hidden flex flex-col border border-white/10 shadow-2xl"
+            >
+              <div className="p-6 border-b border-white/10 flex justify-between items-center bg-white/[0.02]">
+                <h3 className="text-xl font-black uppercase tracking-tighter italic text-white">
+                  Event <span className="text-gold">Detail</span>
+                </h3>
+                <button 
+                  onClick={() => setShowEventDetail(false)}
+                  className="w-10 h-10 glass rounded-full flex items-center justify-center text-white/40 hover:text-white"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto p-8 space-y-6 no-scrollbar">
+                <div>
+                  <h2 className="text-2xl font-black text-white leading-tight">{selectedEvent.title}</h2>
+                  <div className="flex flex-wrap gap-4 mt-4">
+                    <div className="flex items-center gap-2 text-gold font-bold">
+                      <Clock size={16} />
+                      <span className="text-sm">
+                        {format(selectedEvent.start, 'h:mm a')} - {format(selectedEvent.end, 'h:mm a')}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 text-white/40 font-bold">
+                      <CalendarIcon size={16} />
+                      <span className="text-sm">
+                        {format(selectedEvent.start, 'EEEE, MMMM d')}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {selectedEvent.location && (
+                  <div className="flex items-start gap-3 p-4 bg-white/5 rounded-2xl border border-white/5">
+                    <MapPin className="text-purple-400 mt-1" size={20} />
+                    <div>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-1">Location</p>
+                      <p className="text-sm text-white/80 font-medium">{selectedEvent.location}</p>
+                    </div>
+                  </div>
+                )}
+
+                {selectedEvent.description && (
+                  <div className="space-y-2">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-1">Description</p>
+                    <div className="p-4 bg-white/5 rounded-2xl border border-white/5 text-sm text-white/60 leading-relaxed whitespace-pre-wrap">
+                      {selectedEvent.description}
+                    </div>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 gap-3 pt-4">
+                  {selectedEvent.hangoutLink && (
+                    <a 
+                      href={selectedEvent.hangoutLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 py-4 bg-blue-500/20 border border-blue-500/30 rounded-2xl text-blue-400 font-black uppercase tracking-widest text-sm hover:bg-blue-500/30 transition-all"
+                    >
+                      <Video size={20} />
+                      Join Google Meet
+                    </a>
+                  )}
+                  <button 
+                    onClick={() => handleEditFromDetail(selectedEvent)}
+                    className="flex items-center justify-center gap-2 py-4 bg-gold text-black rounded-2xl font-black uppercase tracking-widest text-sm shadow-[0_4px_20px_rgba(234,179,8,0.3)] active:scale-95 transition-all"
+                  >
+                    Edit Event Details
+                  </button>
+                </div>
               </div>
             </motion.div>
           </>

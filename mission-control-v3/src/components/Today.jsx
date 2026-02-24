@@ -44,6 +44,8 @@ const Today = ({ onNavigate }) => {
   const [calendarEvents, setCalendarEvents] = useState([]);
   const [calendarConnected, setCalendarConnected] = useState(false);
   const [showAllUpcoming, setShowAllUpcoming] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [showEventDetail, setShowEventDetail] = useState(false);
   const [error, setError] = useState(null);
 
   // Clock
@@ -94,6 +96,19 @@ const Today = ({ onNavigate }) => {
       clearInterval(interval);
     };
   }, []);
+
+  const handleEventClick = (event) => {
+    setSelectedEvent(event);
+    setShowEventDetail(true);
+  };
+
+  const handleEditEvent = (event) => {
+    // Navigate to calendar with the event ID to open edit modal
+    localStorage.setItem('mc3_open_event_id', event.id);
+    onNavigate?.('calendar');
+    setShowEventDetail(false);
+    setShowAllUpcoming(false);
+  };
 
   const loadData = async () => {
     try {
@@ -377,7 +392,11 @@ const Today = ({ onNavigate }) => {
                   <p className="text-[10px] text-white/40 uppercase tracking-wider mb-2">Today's Events</p>
                   <div className="space-y-2">
                     {todayEvents.map((event, idx) => (
-                      <div key={idx} className="flex items-start gap-3 p-3 bg-white/5 rounded-xl border border-white/5">
+                      <div 
+                        key={idx} 
+                        onClick={() => handleEventClick(event)}
+                        className="flex items-start gap-3 p-3 bg-white/5 rounded-xl border border-white/5 cursor-pointer hover:bg-white/10 transition-colors"
+                      >
                         <div className="flex-shrink-0 w-16 text-center">
                           <p className="text-[10px] text-gold font-bold">{formatEventTime(event.start, event.end)}</p>
                         </div>
@@ -388,17 +407,6 @@ const Today = ({ onNavigate }) => {
                               <MapPin size={10} className="text-white/30" />
                               <p className="text-[10px] text-white/40 truncate">{event.location}</p>
                             </div>
-                          )}
-                          {event.hangoutLink && (
-                            <a 
-                              href={event.hangoutLink}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex items-center gap-1 mt-1 text-[10px] text-blue-400 hover:text-blue-300"
-                            >
-                              <Video size={10} />
-                              Join Meet
-                            </a>
                           )}
                         </div>
                       </div>
@@ -420,7 +428,11 @@ const Today = ({ onNavigate }) => {
                   </div>
                   <div className="space-y-2">
                     {upcomingEvents.map((event, idx) => (
-                      <div key={idx} className="flex items-center gap-3 p-2.5 bg-white/[0.02] rounded-xl border border-white/5">
+                      <div 
+                        key={idx} 
+                        onClick={() => handleEventClick(event)}
+                        className="flex items-center gap-3 p-2.5 bg-white/[0.02] rounded-xl border border-white/5 cursor-pointer hover:bg-white/10 transition-colors"
+                      >
                         <div className="flex-shrink-0 w-16">
                           <p className="text-[9px] text-white/40 font-bold uppercase leading-tight">
                             {new Date(event.start).toLocaleDateString('en-US', { weekday: 'short' })}
@@ -644,7 +656,8 @@ const Today = ({ onNavigate }) => {
                     calendarEvents.map((event, idx) => (
                       <div 
                         key={event.id || idx}
-                        className="p-4 bg-white/5 rounded-2xl border border-white/10 hover:bg-white/[0.08] transition-all group"
+                        onClick={() => handleEventClick(event)}
+                        className="p-4 bg-white/5 rounded-2xl border border-white/10 hover:bg-white/[0.08] transition-all group cursor-pointer"
                       >
                         <div className="flex items-start gap-4">
                           <div className="flex-shrink-0 w-20 text-center">
@@ -703,6 +716,99 @@ const Today = ({ onNavigate }) => {
                   >
                     Open Full Calendar View
                   </button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
+
+      {/* Event Detail Modal */}
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {showEventDetail && selectedEvent && (
+            <div className="fixed inset-0 z-[10000] flex items-center justify-center px-4" style={{ zIndex: 10000 }}>
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setShowEventDetail(false)}
+                className="absolute inset-0 bg-black/90 backdrop-blur-md"
+              />
+              <motion.div 
+                initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                className="glass w-full max-w-lg rounded-[2rem] relative z-10 border border-white/10 overflow-hidden flex flex-col shadow-2xl"
+              >
+                <div className="p-6 border-b border-white/10 flex justify-between items-center bg-white/[0.02]">
+                  <div>
+                    <h3 className="text-xl font-black uppercase tracking-tighter italic text-white">
+                      Event <span className="text-gold">Detail</span>
+                    </h3>
+                  </div>
+                  <button 
+                    onClick={() => setShowEventDetail(false)}
+                    className="w-10 h-10 glass rounded-full flex items-center justify-center text-white/40 hover:text-white"
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+
+                <div className="p-8 space-y-6">
+                  <div>
+                    <h2 className="text-2xl font-black text-white leading-tight">{selectedEvent.summary}</h2>
+                    <div className="flex flex-wrap gap-4 mt-4">
+                      <div className="flex items-center gap-2 text-gold font-bold">
+                        <Clock size={16} />
+                        <span className="text-sm">{formatEventTime(selectedEvent.start, selectedEvent.end)}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-white/40 font-bold">
+                        <Calendar size={16} />
+                        <span className="text-sm">{new Date(selectedEvent.start).toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {selectedEvent.location && (
+                    <div className="flex items-start gap-3 p-4 bg-white/5 rounded-2xl border border-white/5">
+                      <MapPin className="text-purple-400 mt-1" size={20} />
+                      <div>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-1">Location</p>
+                        <p className="text-sm text-white/80 font-medium">{selectedEvent.location}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {selectedEvent.description && (
+                    <div className="space-y-2">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-1">Description</p>
+                      <div className="p-4 bg-white/5 rounded-2xl border border-white/5 text-sm text-white/60 leading-relaxed whitespace-pre-wrap">
+                        {selectedEvent.description}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-1 gap-3 pt-4">
+                    {selectedEvent.hangoutLink && (
+                      <a 
+                        href={selectedEvent.hangoutLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-2 py-4 bg-blue-500/20 border border-blue-500/30 rounded-2xl text-blue-400 font-black uppercase tracking-widest text-sm hover:bg-blue-500/30 transition-all"
+                      >
+                        <Video size={20} />
+                        Join Google Meet
+                      </a>
+                    )}
+                    <button 
+                      onClick={() => handleEditEvent(selectedEvent)}
+                      className="flex items-center justify-center gap-2 py-4 bg-gold text-black rounded-2xl font-black uppercase tracking-widest text-sm shadow-[0_4px_20px_rgba(234,179,8,0.3)] active:scale-95 transition-all"
+                    >
+                      Edit Event Details
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             </div>
