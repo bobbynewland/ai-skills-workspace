@@ -50,76 +50,32 @@ const Agents = () => {
     try {
       setLoading(true);
       
-      // Load cron jobs from Gateway API
-      let jobs = [];
-      try {
-        const cronRes = await fetch('/api/cron-jobs', { cache: 'no-store' });
-        if (cronRes.ok) {
-          const cronData = await cronRes.json();
-          if (cronData.jobs) {
-            jobs = cronData.jobs.map(job => {
-              const lastRun = job.state?.lastRunAtMs;
-              const nextRun = job.state?.nextRunAtMs;
-              const lastStatus = job.state?.lastStatus;
-              
-              let status = 'idle';
-              if (job.state?.runningAtMs) status = 'running';
-              else if (lastStatus === 'ok') status = 'success';
-              else if (lastStatus === 'error') status = 'error';
-              else if (!job.enabled) status = 'paused';
-              
-              // Format schedule for display
-              let scheduleDisplay = job.schedule?.expr || 'N/A';
-              if (job.schedule?.kind === 'cron') {
-                if (scheduleDisplay === '0 9 * * *') scheduleDisplay = 'Daily at 9:00 AM';
-                else if (scheduleDisplay === '0 7 * * *') scheduleDisplay = 'Daily at 7:00 AM';
-                else if (scheduleDisplay === '0 12 * * *') scheduleDisplay = 'Daily at 12:00 PM';
-                else if (scheduleDisplay === '30 12 * * *') scheduleDisplay = 'Daily at 12:30 PM';
-                else if (scheduleDisplay === '0 14 * * *') scheduleDisplay = 'Daily at 2:00 PM';
-                else if (scheduleDisplay === '0 * * * *') scheduleDisplay = 'Every hour';
-                else if (scheduleDisplay === '*/5 * * * *') scheduleDisplay = 'Every 5 minutes';
-                else if (scheduleDisplay === '0 */2 * * *') scheduleDisplay = 'Every 2 hours';
-                else if (scheduleDisplay.includes('*/')) scheduleDisplay = `Cron: ${scheduleDisplay}`;
-              } else if (job.schedule?.kind === 'every') {
-                const mins = Math.round(job.schedule.everyMs / 60000);
-                scheduleDisplay = mins < 60 ? `Every ${mins} min` : `Every ${Math.round(mins/60)} hr`;
-              }
-              
-              return {
-                id: job.id || job.jobId,
-                name: job.name || 'Unnamed Job',
-                schedule: scheduleDisplay,
-                fullSchedule: job.schedule?.expr || 'N/A',
-                status,
-                enabled: job.enabled !== false,
-                lastRun: lastRun ? new Date(lastRun).toLocaleString() : 'Never',
-                nextRun: nextRun ? new Date(nextRun).toLocaleString() : 'N/A',
-                lastDuration: job.state?.lastDurationMs 
-                  ? `${Math.round(job.state.lastDurationMs / 1000)}s` 
-                  : 'N/A',
-                consecutiveErrors: job.state?.consecutiveErrors || 0,
-                lastError: job.state?.lastError || null
-              };
-            });
-          }
-        }
-      } catch (e) {
-        console.log('Gateway API not available, falling back to Firebase');
-      }
-      
-      setCronJobs(jobs);
-
-      // Load agent telemetry
+      // Load telemetry from Firebase (stats, cron jobs, agents)
       const teleSnap = await get(ref(database, 'workspaces/winslow_main/live_telemetry'));
       if (teleSnap.exists()) {
         const data = teleSnap.val();
-        // Keep hardcoded structure for now, only update status from telemetry if available
+        
+        // System Stats
         setSystemStats({
           uptime: data?.stats?.uptime || '0h',
           diskUsage: data?.stats?.diskUsage || '0%',
           memoryUsage: data?.stats?.memoryUsage || '0%',
           apiHealth: data?.stats?.apiHealthPct || 100
         });
+
+        // Cron Jobs
+        if (data.cronJobs) {
+          setCronJobs(data.cronJobs.map(job => ({
+            ...job,
+            // Ensure status icons work with the existing getStatusIcon/Color
+            status: job.status || 'idle'
+          })));
+        }
+
+        // AI Agents
+        if (data.agents) {
+          setAgents(data.agents);
+        }
       }
     } catch (err) {
       console.error('Error loading agent data:', err);
