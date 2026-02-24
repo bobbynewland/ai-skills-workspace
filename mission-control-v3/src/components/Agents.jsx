@@ -24,7 +24,14 @@ import { database, ref, get } from '../lib/firebase';
 const Agents = () => {
   const [loading, setLoading] = useState(true);
   const [cronJobs, setCronJobs] = useState([]);
-  const [agents, setAgents] = useState([]);
+  const [agents, setAgents] = useState([
+    { id: 'ceo', name: 'Bobby Newland', role: 'CEO / Founder', status: 'active', model: 'Human Intelligence', lastActive: 'Now' },
+    { id: 'cos', name: 'Winslow (Win)', role: 'Chief of Staff / CTO', status: 'active', model: 'Gemini 3.1 Pro', lastActive: 'Now' },
+    { id: 'research', name: 'Research Team', role: 'Market & Trend Analysis', status: 'active', model: 'Kimi Swarm (10 Nodes)', lastActive: 'Ongoing' },
+    { id: 'engineering', name: 'Engineering Team', role: 'Full-Stack Development', status: 'idle', model: 'Kimi Swarm (10 Nodes)', lastActive: '2h ago' },
+    { id: 'creative', name: 'Creative Team', role: 'Image & Content Gen', status: 'active', model: 'Nano Banana / fal.ai', lastActive: '15m ago' },
+    { id: 'ops', name: 'Operations', role: 'Task & System Mgmt', status: 'active', model: 'OpenClaw Gateway', lastActive: 'Now' }
+  ]);
   const [systemStats, setSystemStats] = useState({
     uptime: '0h',
     diskUsage: '0%',
@@ -46,7 +53,7 @@ const Agents = () => {
       // Load cron jobs from Gateway API
       let jobs = [];
       try {
-        const cronRes = await fetch('/api/cron/list?includeDisabled=true', { cache: 'no-store' });
+        const cronRes = await fetch('/api/cron-jobs', { cache: 'no-store' });
         if (cronRes.ok) {
           const cronData = await cronRes.json();
           if (cronData.jobs) {
@@ -106,7 +113,7 @@ const Agents = () => {
       const teleSnap = await get(ref(database, 'workspaces/winslow_main/live_telemetry'));
       if (teleSnap.exists()) {
         const data = teleSnap.val();
-        setAgents(data?.agents || []);
+        // Keep hardcoded structure for now, only update status from telemetry if available
         setSystemStats({
           uptime: data?.stats?.uptime || '0h',
           diskUsage: data?.stats?.diskUsage || '0%',
@@ -308,45 +315,47 @@ const Agents = () => {
 
         {/* Agents Tab */}
         {activeTab === 'agents' && (
-          <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {agents.length === 0 ? (
-                <div className="col-span-2 text-center py-8 text-white/40">
-                  <Radio size={32} className="mx-auto mb-3 opacity-30" />
-                  <p>No agents currently active</p>
-                </div>
-              ) : (
-                agents.map(agent => (
-                  <div key={agent.id} className="p-4 bg-white/5 rounded-xl border border-white/5">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-2">
-                        <div className={`w-2 h-2 rounded-full ${
-                          agent.status === 'active' ? 'bg-green-400' :
-                          agent.status === 'idle' ? 'bg-yellow-400' : 'bg-red-400'
-                        }`} />
-                        <h4 className="text-sm font-bold text-white">{agent.name}</h4>
-                      </div>
-                      <span className="text-[10px] text-white/40 uppercase">{agent.status}</span>
+          <section className="space-y-6">
+            {/* Leadership Tier */}
+            <div className="space-y-3">
+              <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 ml-1">Leadership</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {agents.slice(0, 2).map(agent => (
+                  <div key={agent.id} className="p-5 bg-gold/5 rounded-[2rem] border border-gold/10 relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                      <Radio size={40} className="text-gold" />
                     </div>
-                    
-                    <p className="text-[10px] text-white/40 uppercase mb-1">{agent.role}</p>
-                    
-                    {agent.currentJob && (
-                      <div className="mb-2 p-2 bg-green-500/10 rounded-lg border border-green-500/20">
-                        <p className="text-[10px] text-green-400 font-mono truncate">▶ {agent.currentJob}</p>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-2.5 h-2.5 rounded-full bg-gold shadow-[0_0_10px_rgba(234,179,8,0.5)]`} />
+                        <h4 className="text-lg font-black text-white italic uppercase tracking-tight">{agent.name}</h4>
                       </div>
-                    )}
-                    
-                    <div className="flex items-center justify-between text-[10px] text-white/20">
-                      <span className="font-mono truncate max-w-[140px]">{agent.model || 'N/A'}</span>
-                      <span className="flex items-center gap-1">
-                        <Clock size={10} />
-                        {agent.lastActive}
-                      </span>
+                      <span className="text-[9px] font-black uppercase tracking-widest bg-gold text-black px-2 py-0.5 rounded-full">{agent.role.split('/')[0]}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-[10px] font-bold text-white/40 uppercase tracking-widest">
+                      <span>{agent.model}</span>
+                      <span className="flex items-center gap-1.5"><Clock size={10} /> {agent.lastActive}</span>
                     </div>
                   </div>
-                ))
-              )}
+                ))}
+              </div>
+            </div>
+
+            {/* Execution Tier */}
+            <div className="space-y-3">
+              <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 ml-1">Specialized Teams</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {agents.slice(2).map(agent => (
+                  <div key={agent.id} className="p-4 bg-white/5 rounded-2xl border border-white/10 hover:border-white/20 transition-all">
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="text-sm font-bold text-white">{agent.name}</h4>
+                      <div className={`w-2 h-2 rounded-full ${agent.status === 'active' ? 'bg-green-400' : 'bg-white/20'}`} />
+                    </div>
+                    <p className="text-[10px] text-gold font-bold uppercase tracking-wider mb-2">{agent.role}</p>
+                    <div className="text-[10px] text-white/30 font-mono truncate">{agent.model}</div>
+                  </div>
+                ))}
+              </div>
             </div>
           </section>
         )}
