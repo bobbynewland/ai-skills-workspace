@@ -105,27 +105,6 @@ const Calendar = () => {
   useEffect(() => {
     loadEvents();
 
-    // Check for open event ID from Today page
-    const openEventId = localStorage.getItem('mc3_open_event_id');
-    if (openEventId) {
-      localStorage.removeItem('mc3_open_event_id');
-      // We need to wait for events to load to find the event
-      setTimeout(() => {
-        const event = events.find(e => e.id === openEventId);
-        if (event) {
-          setEditingEvent(event);
-          setNewEvent({
-            title: event.title,
-            start: event.start.toISOString().slice(0, 16),
-            end: event.end.toISOString().slice(0, 16),
-            location: event.location || '',
-            description: event.description || ''
-          });
-          setShowEventForm(true);
-        }
-      }, 1000);
-    }
-
     // Auto-refresh token on tab visibility change (the "Wake Up" fix)
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
@@ -146,6 +125,28 @@ const Calendar = () => {
       clearInterval(refreshInterval);
     };
   }, []);
+
+  // Watch for external navigation with event ID (Today -> Calendar)
+  useEffect(() => {
+    if (events.length > 0) {
+      const openEventId = localStorage.getItem('mc3_open_event_id');
+      if (openEventId) {
+        localStorage.removeItem('mc3_open_event_id');
+        const event = events.find(e => e.id === openEventId);
+        if (event) {
+          setEditingEvent(event);
+          setNewEvent({
+            title: event.title,
+            start: event.start.toISOString().slice(0, 16),
+            end: event.end.toISOString().slice(0, 16),
+            location: event.location || '',
+            description: event.description || ''
+          });
+          setShowEventForm(true);
+        }
+      }
+    }
+  }, [events]);
 
   const loadEvents = async () => {
     try {
