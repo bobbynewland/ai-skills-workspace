@@ -156,7 +156,7 @@
               <div class="relative aspect-[16/11]">
                 <img
                   class="absolute inset-0 h-full w-full object-cover opacity-80"
-                  src="./assets/img/ig-profile-fullpage.jpg"
+                  src="https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=800&q=80"
                   alt="Instagram Feed"
                 />
                 <div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/20 to-transparent"></div>
@@ -179,7 +179,7 @@
               <div class="absolute -right-3 -bottom-10 sm:-right-6 sm:-bottom-12 w-44 sm:w-56">
                 <div class="rounded-3xl bg-gradient-to-b from-white/10 to-white/0 p-[1px] shadow-luxe">
                   <div class="rounded-3xl bg-ink ring-1 ring-white/10 overflow-hidden">
-                    <img class="h-64 sm:h-72 w-full object-cover" src="./assets/img/ig-profile-grid.jpg" alt="Profile Grid" />
+                    <img class="h-64 sm:h-72 w-full object-cover" src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400&q=80" alt="Profile Grid" />
                   </div>
                 </div>
               </div>
@@ -345,7 +345,42 @@
   </main>
 
   <script>
-    document.getElementById('y').textContent = new Date().getFullYear();
+    // Mobile menu toggle
+    (function() {
+      const btn = document.querySelector('[data-menu-btn]');
+      const panel = document.querySelector('[data-menu-panel]');
+      const backdrop = document.querySelector('[data-menu-backdrop]');
+      
+      function open() {
+        panel.setAttribute('data-open', 'true');
+        backdrop.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
+      
+      function close() {
+        panel.setAttribute('data-open', 'false');
+        backdrop.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+      
+      // Start closed
+      close();
+      
+      btn.addEventListener('click', function() {
+        if (panel.getAttribute('data-open') === 'true') {
+          close();
+        } else {
+          open();
+        }
+      });
+      
+      backdrop.addEventListener('click', close);
+      
+      // Close on link click
+      panel.querySelectorAll('a').forEach(function(link) {
+        link.addEventListener('click', close);
+      });
+    })();
   </script>
 </body>
 </html>
